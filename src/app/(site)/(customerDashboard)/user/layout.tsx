@@ -1,4 +1,4 @@
-import Sidebar from "@/components/customerDashboard/Sidebar/Sidebar";
+import Sidebar from "@/components/Dashboard/Sidebar";
 import React from "react";
 
 export default function UserDashboardLayout({

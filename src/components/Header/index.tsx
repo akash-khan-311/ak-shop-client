@@ -1,10 +1,9 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import CustomSelect from "./CustomSelect";
 import { menuData } from "./menuData";
 import Dropdown from "./Dropdown";
-
 import { useCartModalContext } from "@/app/context/CartSidebarModalContext";
 import { Fade as Hamburger } from "hamburger-react";
 import { PhoneCall, User, ShoppingCart, Search } from "lucide-react";
@@ -13,6 +12,14 @@ import NavbarRight from "./NavbarRight";
 import { AnimatedThemeToggler } from "../ui/animated-theme-toggler";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import { useAppSelector } from "@/redux/hook";
+import {
+  selectCurrentToken,
+  selectCurrentUser,
+} from "@/redux/features/auth/authSlice";
+import UserDropDown from "../ui/Dropdown/user.dropdown";
+import { useGetMeQuery } from "@/redux/features/auth/authApi";
+import { usePathname } from "next/navigation";
 
 const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -20,6 +27,11 @@ const Header = () => {
   const [stickyMenu, setStickyMenu] = useState(false);
   const { openCartModal } = useCartModalContext();
   const wishlists = useSelector((state: RootState) => state.wishlist.items);
+  const token = useAppSelector(selectCurrentToken);
+  const { data, isLoading, error } = useGetMeQuery(null);
+  const user = data?.data;
+  const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
   const handleOpenCartModal = () => {
     openCartModal();
   };
@@ -50,7 +62,7 @@ const Header = () => {
 
   return (
     <header
-      className={`fixed  left-0 top-0 w-full z-9999 bg-white dark:bg-dark-2 transition-all ease-in-out duration-300 ${
+      className={`${pathname === "/vendor/dashboard" && "hidden"} ${pathname === "/admin/dashboard" && "hidden"} ${pathname === "/superAdmin/dashboard" && "hidden"} fixed  left-0 top-0 w-full z-9999 bg-white dark:bg-dark-2 transition-all ease-in-out duration-300 ${
         stickyMenu &&
         "shadow-[0px_2px_20px_1px_rgba(0,_0,_0,_0.7)] dark:shadow-[0px_15px_18px_5px_rgba(255,_255,_255,_0.05)] "
       }`}
@@ -117,18 +129,25 @@ const Header = () => {
 
             <div className="flex w-full lg:w-auto justify-between items-center gap-5">
               <div className="flex items-center gap-5">
-                <Link href="/signin" className="flex items-center gap-2.5">
-                  <User color="#A3004C" size={25} />
-
-                  <div>
-                    <span className="block text-2xs text-dark-4 uppercase dark:text-white">
-                      account
-                    </span>
-                    <p className="font-medium text-custom-sm text-dark dark:text-white">
-                      Sign In
-                    </p>
-                  </div>
-                </Link>
+                {user ? (
+                  <>
+                    {user.role === "user" && (
+                      <UserDropDown setIsOpen={setIsOpen} isOpen={isOpen} />
+                    )}
+                  </>
+                ) : (
+                  <Link href="/signin" className="flex items-center gap-2.5">
+                    <User color="#A3004C" size={25} />
+                    <div>
+                      <span className="block text-2xs text-dark-4 uppercase dark:text-white">
+                        account
+                      </span>
+                      <p className="font-medium text-custom-sm text-dark dark:text-white">
+                        Sign In
+                      </p>
+                    </div>
+                  </Link>
+                )}
 
                 <button
                   onClick={handleOpenCartModal}

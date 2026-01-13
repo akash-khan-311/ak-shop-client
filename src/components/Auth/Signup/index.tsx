@@ -1,10 +1,17 @@
 "use client";
 import Breadcrumb from "@/components/Common/Breadcrumb";
 import FormField from "@/components/ui/FormField";
+import { useSignupMutation } from "@/redux/features/auth/authApi";
+import { selectCurrentUser, setUser } from "@/redux/features/auth/authSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/hook";
+import { verifyToken } from "@/utils";
 import Link from "next/link";
-import React, { useState } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-
+import { showToast } from "nextjs-toast-notify";
+import ButtonLoading from "@/components/ui/Loader/ButtonLoading";
+import Cookies from "js-cookie";
+import { useRouter, useSearchParams } from "next/navigation";
 const Signup = () => {
   const {
     register,
@@ -12,21 +19,62 @@ const Signup = () => {
     control,
     reset,
     watch,
+    trigger,
     formState: { errors },
   } = useForm();
   const password = watch("password");
-  const [loading, setLoading] = useState(false);
-  const [err, setErr] = useState(null);
-  const onSubmitForm = async (data: any) => {
-    const { confirmPassword, password } = data;
-    if (confirmPassword !== password) {
-      setErr("Password Does not Match");
-      return;
-    } else {
-      setErr("");
-    }
+  const confirmPassword = watch("confirmPassword");
+  const [signup, { isLoading: loading }] = useSignupMutation();
+  const params = useSearchParams();
+  const user = useAppSelector(selectCurrentUser);
+  const router = useRouter();
+  const dispatch = useAppDispatch();
 
-    console.log(data);
+  const redirectTo = params.get("redirect");
+
+  useEffect(() => {
+    if (user?.role) {
+      if (redirectTo) {
+        router.push(redirectTo);
+      } else {
+        router.push("/");
+      }
+    }
+  }, [user, redirectTo, router]);
+
+  useEffect(() => {
+    if (confirmPassword) {
+      trigger("confirmPassword");
+    }
+  }, [password, confirmPassword, trigger]);
+  const onSubmitForm = async (data: any) => {
+    const userInfo = {
+      name: data.fullName,
+      email: data.email,
+      phone: data.phone,
+      password: data.password,
+    };
+
+    const res = await signup(userInfo).unwrap();
+    console.log(res);
+    if (res.data.accessToken) {
+      const user = verifyToken(res.data.accessToken);
+      dispatch(setUser({ user, token: res.data.accessToken }));
+      Cookies.set("accessToken", res.data.accessToken);
+    }
+    if (res.success) {
+      reset();
+
+      showToast.success("Signup Successfully", {
+        duration: 4000,
+        progress: true,
+        position: "bottom-right",
+        transition: "fadeIn",
+        icon: "",
+        sound: true,
+      });
+      router.push(redirectTo || "/");
+    }
   };
   return (
     <>
@@ -127,6 +175,28 @@ const Signup = () => {
                     errorMessage="Full Name is Required"
                   />
                 </div>
+                <div className="mb-5 ">
+                  <FormField
+                    label="Phone"
+                    required
+                    register={register}
+                    type="text"
+                    name="phone"
+                    placeholder="Enter Your Phone Number"
+                    errors={errors}
+                    errorMessage="Phone Number is Required"
+                    rules={{
+                      pattern: {
+                        value: /^[0-9]+$/,
+                        message: "Phone number must contain only numbers",
+                      },
+                      minLength: {
+                        value: 11,
+                        message: "Phone number must be at least 11 digits",
+                      },
+                    }}
+                  />
+                </div>
 
                 <div className="mb-5">
                   <FormField
@@ -138,6 +208,12 @@ const Signup = () => {
                     placeholder="Enter Your Email"
                     errors={errors}
                     errorMessage="Email Address is Required"
+                    rules={{
+                      pattern: {
+                        value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                        message: "Invalid email address",
+                      },
+                    }}
                   />
                 </div>
 
@@ -169,19 +245,17 @@ const Signup = () => {
                     name="confirmPassword"
                     placeholder="Enter Password Again"
                     errors={errors}
-                    errorMessage={err}
                     rules={{
                       validate: (value: string) =>
                         value === password || "Password did not match",
                     }}
                   />
                 </div>
-
                 <button
                   type="submit"
-                  className="w-full flex justify-center font-medium text-white bg-dark  py-3 px-6 rounded-lg ease-out duration-200 hover:bg-pink mt-7.5"
+                  className="w-full flex justify-center font-medium text-white bg-dark py-3 px-6 rounded-lg ease-out duration-200 hover:bg-pink mt-7.5"
                 >
-                  Create Account
+                  {loading ? <ButtonLoading /> : "Create Account"}
                 </button>
 
                 <p className="text-center mt-6">

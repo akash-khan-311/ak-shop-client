@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import "../css/euclid-circular-a-font.css";
 import "../css/style.css";
+import "flatpickr/dist/flatpickr.css";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 
@@ -17,6 +18,7 @@ import PreLoader from "@/components/Common/PreLoader";
 import { Provider } from "react-redux";
 import { persistor, store } from "@/redux/store";
 import { PersistGate } from "redux-persist/integration/react";
+import { SidebarProvider } from "../context/SidebarContext";
 
 export default function RootLayout({
   children,
@@ -59,20 +61,21 @@ export default function RootLayout({
           <>
             <Provider store={store}>
               <PersistGate loading={null} persistor={persistor}>
-                <CartModalProvider>
-                  <ModalProvider>
-                    <PreviewSliderProvider>
-                      <Header />
+                <SidebarProvider>
+                  <CartModalProvider>
+                    <ModalProvider>
+                      <PreviewSliderProvider>
+                        <Header />
 
-                      {children}
+                        {children}
 
-                      {/* <QuickViewModal /> */}
-                      <CartSidebarModal />
-                      <PreviewSliderModal />
-                    </PreviewSliderProvider>
-                  </ModalProvider>
-                </CartModalProvider>
-
+                        {/* <QuickViewModal /> */}
+                        <CartSidebarModal />
+                        <PreviewSliderModal />
+                      </PreviewSliderProvider>
+                    </ModalProvider>
+                  </CartModalProvider>
+                </SidebarProvider>
                 <ScrollToTop />
                 <Footer />
               </PersistGate>

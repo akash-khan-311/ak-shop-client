@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import {
   Controller,
   FieldErrors,
@@ -15,7 +15,7 @@ import {
   PopoverContent,
 } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
-import { ChevronDownIcon } from "lucide-react";
+import { ChevronDownIcon, Eye, EyeOff } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
 type FormFieldProps = {
@@ -63,6 +63,8 @@ const FormField: React.FC<FormFieldProps> = ({
   append,
 }) => {
   const error = errors?.[name];
+
+  const [showPassword, setShowPassword] = useState(false);
 
   // 🔹 Dynamic array input
   if (isArray && fields.length > 0) {
@@ -198,16 +200,30 @@ const FormField: React.FC<FormFieldProps> = ({
           ))}
         </div>
       ) : (
-        <input
-          id={name}
-          {...register(name, {
-            required: required ? errorMessage : false,
-            ...rules,
-          })}
-          type={type}
-          placeholder={placeholder}
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-1 focus:ring-pink focus:border-pink outline-none transition-all dark:text-white dark:bg-dark-4 dark:bg-transparent"
-        />
+        <div className="relative">
+          <input
+            id={name}
+            {...register(name, {
+              required: required ? errorMessage : false,
+              ...rules,
+            })}
+            type={showPassword ? "text" : type}
+            placeholder={placeholder}
+            className="w-full px-4 py-3 relative border border-gray-300 rounded-lg focus:ring-1 focus:ring-pink focus:border-pink outline-none transition-all dark:text-white dark:bg-dark-4 dark:bg-transparent"
+          />
+          {type === "password" && (
+            <div
+              onClick={() => setShowPassword(!showPassword)}
+              className="cursor-pointer"
+            >
+              {type === "password" && !showPassword ? (
+                <Eye size={20} className="absolute top-3 right-5" />
+              ) : (
+                <EyeOff size={20} className="absolute top-3 right-5  " />
+              )}
+            </div>
+          )}
+        </div>
       )}
 
       {error && (

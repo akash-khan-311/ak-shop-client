@@ -1,10 +1,16 @@
 "use client";
 import Breadcrumb from "@/components/Common/Breadcrumb";
 import FormField from "@/components/ui/FormField";
+import { useLoginMutation } from "@/redux/features/auth/authApi";
+import { selectCurrentUser, setUser } from "@/redux/features/auth/authSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/hook";
+import { verifyToken } from "@/utils";
 import Link from "next/link";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
-
+import Cookies from "js-cookie";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
+import { showToast } from "nextjs-toast-notify";
 const Signin = () => {
   const {
     register,
@@ -13,9 +19,61 @@ const Signin = () => {
     reset,
     formState: { errors },
   } = useForm();
-  const [loading, setLoading] = useState(false);
+
+  const params = useSearchParams();
+  const router = useRouter();
+  const [login, { isLoading: loading, isSuccess }] = useLoginMutation();
+  const user = useAppSelector(selectCurrentUser);
+  const dispatch = useAppDispatch();
+
+  const redirectTo = params.get("redirect");
+
+  useEffect(() => {
+    if (user?.role) {
+      if (redirectTo) {
+        router.push(redirectTo);
+      } else {
+        router.push("/");
+      }
+    }
+  }, [user, redirectTo, router]);
+
   const onSubmitForm = async (data: any) => {
-    console.log(data);
+    const loginInfo = {
+      email: data.email,
+      password: data.password,
+    };
+    try {
+      const res = await login(loginInfo).unwrap();
+      if (res.data.accessToken) {
+        const user = verifyToken(res.data.accessToken);
+        dispatch(setUser({ user, token: res.data.accessToken }));
+        Cookies.set("accessToken", res.data.accessToken);
+      }
+    } catch (error) {
+      if (error.status === 404) {
+        showToast.error("User Not Found Please Register", {
+          duration: 4000,
+          progress: true,
+          position: "bottom-right",
+          transition: "fadeIn",
+          icon: "",
+          sound: true,
+        });
+      }
+    }
+
+    // if (data.status === 404) {
+    //   console.log("user not found");
+    //   showToast.error("User Not Found", {
+    //     duration: 4000,
+    //     progress: true,
+    //     position: "bottom-right",
+    //     transition: "fadeIn",
+    //     icon: "",
+    //     sound: true,
+    //   });
+    // }
   };
   return (
     <>
@@ -38,6 +96,7 @@ const Signin = () => {
                     name="email"
                     type="email"
                     control={control}
+                    required
                     register={register}
                     errors={errors}
                     errorMessage="Email is Required"
@@ -47,6 +106,7 @@ const Signin = () => {
 
                 <div className="mb-5">
                   <FormField
+                    required
                     label="Password"
                     name="password"
                     type="password"

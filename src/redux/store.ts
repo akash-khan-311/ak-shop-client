@@ -1,38 +1,28 @@
 import { configureStore } from "@reduxjs/toolkit";
-import {
-  FLUSH,
-  PAUSE,
-  PERSIST,
-  PURGE,
-  REGISTER,
-  REHYDRATE,
-  persistStore,
-  persistReducer,
-} from "redux-persist";
+import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import wishlistReducer from "./features/wishListsSlice";
-const persistsConfig = {
-  key: "wishlist",
+import { baseApi } from "./api/baseApi";
+import rootReducer from "./rootReducer";
+import type { Reducer } from "@reduxjs/toolkit";
+
+const persistConfig = {
+  key: "root",
   storage,
+  version: 1,
+  whitelist: ["wishlist", "auth"],
 };
 
-const persistedWishlistReducer = persistReducer(
-  persistsConfig,
-  wishlistReducer
-);
+const persistedReducer = persistReducer(persistConfig, rootReducer) as Reducer;
 
 export const store = configureStore({
-  reducer: {
-    wishlist: persistedWishlistReducer,
-  },
+  reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
-      serializableCheck: {
-        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-      },
-    }),
+      serializableCheck: false,
+    }).concat(baseApi.middleware),
 });
 
 export const persistor = persistStore(store);
+
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
