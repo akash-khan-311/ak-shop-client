@@ -1,6 +1,10 @@
 "use client";
 
-import { logout, selectCurrentUser } from "@/redux/features/auth/authSlice";
+import {
+  logout,
+  selectCurrentToken,
+  selectCurrentUser,
+} from "@/redux/features/auth/authSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
 import { Heart, LogOut, ShoppingBag, UserCog, UserPen } from "lucide-react";
 import Link from "next/link";
@@ -22,12 +26,12 @@ const dropDownItems = [
 ];
 
 export default function UserDropDown({ setIsOpen, isOpen }) {
-  const { data, isLoading, error } = useGetMeQuery(null);
+  const token = useAppSelector(selectCurrentToken);
+  const { data, isLoading, error } = useGetMeQuery(token);
   const user = data?.data;
-  console.log(user);
   return (
     <div onClick={() => setIsOpen(!isOpen)} className="relative cursor-pointer">
-      {user?.name}
+      {user?.name} Your Name
       <div
         className={`absolute overflow-hidden top-5 transition-[opacity,margin] duration-300 ease-in-out ${isOpen ? "opacity-100" : "opacity-0 invisible"}   min-w-60 backdrop-blur-md bg-white/10 shadow-md rounded-lg p-2 mt-2 divide-y divide-gray-200 dark:bg-gray-800 dark:border dark:border-gray-700 dark:divide-gray-700`}
       >

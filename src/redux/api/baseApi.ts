@@ -17,7 +17,7 @@ const baseQuery = fetchBaseQuery({
   prepareHeaders: (headers, { getState }) => {
     const token = (getState() as RootState).auth.token;
 
-    if (token) headers.set("authorization", `${token}`);
+    if (token) headers.set("Authorization", `${token}`);
 
     return headers;
   },
@@ -28,24 +28,42 @@ const baseQueryWithRefreshToken: BaseQueryFn<
   BaseQueryApi,
   DefinitionType
 > = async (args, api, extraOptions): Promise<any> => {
-  let result = await baseQuery(args, api, extraOptions);
+  const state = api.getState() as RootState;
 
-  if (result?.error?.status === 400) {
-    const errorData = result.error.data as { message?: string };
+  if (!state.auth.token) {
+    return await baseQuery(args, api, extraOptions);
   }
-  if (result.error?.status === 401) {
-    //* Send Refresh Token
+  let result = await baseQuery(args, api, extraOptions);
+  console.log("this is from redux error", result.error);
 
+  // 🔴 only if token expired / unauthorized
+  if (result?.error?.status === 401 || result?.error?.status === 500) {
+    // 🛑 আবার check — logout হয়ে গেছে কিনা
+    const latestState = api.getState() as RootState;
+    if (!latestState.auth.token) {
+      api.dispatch(logout());
+      return result;
+    }
+
+    // 🔁 refresh token call
     const res = await fetch(`${baseUrl}/auth/refresh-token`, {
       method: "POST",
       credentials: "include",
     });
-    const { data } = await res.json();
 
-    if (data?.accessToken) {
+    const refreshResult = await res.json();
+
+    if (refreshResult?.data?.accessToken) {
       const user = (api.getState() as RootState).auth.user;
-      api.dispatch(setUser({ user, token: data?.accessToken }));
 
+      api.dispatch(
+        setUser({
+          user,
+          token: refreshResult.data.accessToken,
+        })
+      );
+
+      // retry original query
       result = await baseQuery(args, api, extraOptions);
     } else {
       api.dispatch(logout());

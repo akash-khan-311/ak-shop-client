@@ -31,7 +31,7 @@ import { useEffect } from "react";
 function Sidebar() {
   const token = useAppSelector(selectCurrentToken);
   const dispatch = useAppDispatch();
-  const { data, isLoading, error } = useGetMeQuery(null);
+  const { data, isLoading, error } = useGetMeQuery(token);
   const user = data?.data;
 
   console.log("this is user from sidebar", token);

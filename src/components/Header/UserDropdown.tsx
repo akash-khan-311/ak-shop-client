@@ -12,8 +12,12 @@ import Logout from "../ui/Auth/Logout";
 
 export default function UserDropdown() {
   const token = useAppSelector(selectCurrentToken);
-  const { data, isLoading, error } = useGetMeQuery(token);
+  const { data, isLoading, error } = useGetMeQuery(token, {
+    skip: !token,
+    refetchOnMountOrArgChange: true,
+  });
   const user = data?.data;
+  console.log("this is from app header user dropwodn", data);
   const [isOpen, setIsOpen] = useState(false);
 
   function toggleDropdown(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
@@ -100,7 +104,7 @@ export default function UserDropdown() {
           </li>
         </ul>
         <div className="">
-          <Logout className="flex items-center gap-3 px-3 py-2 font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300" />
+          <Logout className="flex items-center gap-3 px-3 py-2 w-full mt-2 font-medium text-gray-700 rounded-lg group text-theme-sm hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300" />
         </div>
       </Dropdown>
     </div>

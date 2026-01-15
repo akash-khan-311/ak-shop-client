@@ -23,3 +23,15 @@ export const uploadImageToCloudinary = async (file: File) => {
   if (!res.ok) throw new Error(data.error?.message || "Upload failed");
   return data.secure_url;
 };
+
+export const statuses = ["Processing", "Pending", "Delivered", "Cancelled"];
+
+export const getStatusColor = (status: string) => {
+  const colors = {
+    Processing: "bg-orange/30 text-orange",
+    Pending: "bg-yellow/30 text-yellow",
+    Delivered: "bg-green/30 text-green",
+    Cancelled: "bg-red/30 text-red",
+  };
+  return colors[status] || "bg-gray-500";
+};

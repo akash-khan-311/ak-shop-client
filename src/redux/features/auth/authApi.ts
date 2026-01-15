@@ -21,10 +21,14 @@ const authApi = baseApi.injectEndpoints({
       },
     }),
     getMe: builder.query({
-      query: () => ({
+      query: (token) => ({
         url: "/users/me",
         method: "GET",
         credentials: "include",
+        headers: {
+          Authorization: `${token}`,
+          "Content-Type": "application/json",
+        },
       }),
       providesTags: ["Me"],
     }),

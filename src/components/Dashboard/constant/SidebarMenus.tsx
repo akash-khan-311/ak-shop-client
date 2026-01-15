@@ -18,6 +18,14 @@ import {
   Shield,
   Database,
   Activity,
+  DollarSign,
+  Banknote,
+  Boxes,
+  TicketPercent,
+  Store,
+  Box,
+  Settings2,
+  Ticket,
 } from "lucide-react";
 
 export const userMenuItems = [
@@ -30,16 +38,16 @@ export const userMenuItems = [
   { name: "Support Ticket", href: "/user/ticket", icon: TicketCheck },
 ];
 
-export const vendorMenuItems = [
-  { name: "Dashboard", href: "/vendor/dashboard", icon: LayoutDashboard },
-  { name: "My Products", href: "/vendor/products", icon: Package },
-  { name: "Add Product", href: "/vendor/products/add", icon: PlusSquare },
-  { name: "Orders", href: "/vendor/orders", icon: ShoppingCart },
-  { name: "Sales Report", href: "/vendor/reports", icon: BarChart },
-  { name: "Withdrawals", href: "/vendor/withdraw", icon: Wallet },
-  { name: "Reviews", href: "/vendor/reviews", icon: Star },
-  { name: "Shop Settings", href: "/vendor/settings", icon: Settings },
-];
+// export const vendorMenuItems = [
+//   { name: "Dashboard", href: "/vendor/dashboard", icon: LayoutDashboard },
+//   { name: "My Products", href: "/vendor/products", icon: Package },
+//   { name: "Add Product", href: "/vendor/products/add", icon: PlusSquare },
+//   { name: "Orders", href: "/vendor/orders", icon: ShoppingCart },
+//   { name: "Sales Report", href: "/vendor/reports", icon: BarChart },
+//   { name: "Withdrawals", href: "/vendor/withdraw", icon: Wallet },
+//   { name: "Reviews", href: "/vendor/reviews", icon: Star },
+//   { name: "Shop Settings", href: "/vendor/settings", icon: Settings },
+// ];
 
 export const adminMenuItems = [
   { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
@@ -59,4 +67,65 @@ export const superAdminMenuItems = [
   { name: "System Settings", href: "/super-admin/settings", icon: Settings },
   { name: "Database Logs", href: "/super-admin/logs", icon: Database },
   { name: "Activity Monitor", href: "/super-admin/activity", icon: Activity },
+];
+
+export const vendorMenuItems = [
+  { name: "Dashboard", href: "/vendor/dashboard", icon: LayoutDashboard },
+
+  {
+    name: "Products",
+    icon: Box,
+    subItems: [
+      { name: "All Products", path: "/vendor/products" },
+      { name: "Add Product", path: "/vendor/products/add" },
+    ],
+  },
+
+  {
+    name: "Orders",
+    href: "/vendor/orders",
+    icon: ShoppingBag,
+  },
+
+  {
+    name: "Earnings",
+    href: "/vendor/earnings",
+    icon: DollarSign,
+  },
+
+  {
+    name: "Profile",
+    href: "/vendor/profile",
+    icon: Settings,
+  },
+
+  {
+    name: "Tickets",
+    href: "/vendor/tickets",
+    icon: Ticket,
+  },
+
+  {
+    name: "Reviews",
+    href: "/vendor/reviews",
+    icon: Star,
+  },
+
+  {
+    name: "Coupons",
+    href: "/vendor/coupons",
+    icon: TicketPercent,
+  },
+
+  {
+    name: "Store Settings",
+    href: "/vendor/store",
+    icon: Store,
+  },
+
+  {
+    name: "Settings",
+    href: "/vendor/settings",
+    icon: Settings,
+  },
 ];

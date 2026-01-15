@@ -20,6 +20,7 @@ import {
 import UserDropDown from "../ui/Dropdown/user.dropdown";
 import { useGetMeQuery } from "@/redux/features/auth/authApi";
 import { usePathname } from "next/navigation";
+import VendorDropDown from "../ui/Dropdown/vendor.dropdown";
 
 const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -28,8 +29,7 @@ const Header = () => {
   const { openCartModal } = useCartModalContext();
   const wishlists = useSelector((state: RootState) => state.wishlist.items);
   const token = useAppSelector(selectCurrentToken);
-  const { data, isLoading, error } = useGetMeQuery(null);
-  const user = data?.data;
+  const user = useAppSelector(selectCurrentUser);
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
   const handleOpenCartModal = () => {
@@ -60,9 +60,13 @@ const Header = () => {
     { label: "Tablet", value: "7" },
   ];
 
+  const isVendorDashboard = pathname.startsWith("/vendor/");
+  const isAdminDashboard = pathname.startsWith("/admin/");
+  const isSuperAdminDashboard = pathname.startsWith("/superAdmin/");
+
   return (
     <header
-      className={`${pathname === "/vendor/dashboard" && "hidden"} ${pathname === "/admin/dashboard" && "hidden"} ${pathname === "/superAdmin/dashboard" && "hidden"} fixed  left-0 top-0 w-full z-9999 bg-white dark:bg-dark-2 transition-all ease-in-out duration-300 ${
+      className={`${isVendorDashboard && "hidden"} ${isAdminDashboard && "hidden"} ${isSuperAdminDashboard && "hidden"} fixed  left-0 top-0 w-full z-9999 bg-white dark:bg-dark-2 transition-all ease-in-out duration-300 ${
         stickyMenu &&
         "shadow-[0px_2px_20px_1px_rgba(0,_0,_0,_0.7)] dark:shadow-[0px_15px_18px_5px_rgba(255,_255,_255,_0.05)] "
       }`}
@@ -134,6 +138,11 @@ const Header = () => {
                     {user.role === "user" && (
                       <UserDropDown setIsOpen={setIsOpen} isOpen={isOpen} />
                     )}
+                    {user.role === "vendor" && (
+                      <VendorDropDown setIsOpen={setIsOpen} isOpen={isOpen} />
+                    )}
+                    {user.role === "admin" && <>Admin</>}
+                    {user.role === "superAdmin" && <>Super Admin</>}
                   </>
                 ) : (
                   <Link href="/signin" className="flex items-center gap-2.5">
