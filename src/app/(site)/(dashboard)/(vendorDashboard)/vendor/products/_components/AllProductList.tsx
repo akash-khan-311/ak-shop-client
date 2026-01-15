@@ -21,6 +21,7 @@ import {
   TableCell,
   TableCaption,
 } from "@/components/ui/table";
+import DashboardPageHeader from "@/components/Dashboard/DashboardPageHeader";
 const initialProducts = [
   {
     id: 1,
@@ -271,23 +272,27 @@ export default function AllProductsList() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-6">
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-2xl font-bold mb-6">Products</h1>
+    <div className="">
+      <div className="">
+        <DashboardPageHeader
+          pathnames={["Products", "All Products"]}
+          title="All Product"
+          description="All Products Listing Here"
+        />
 
         {/* Action Bar */}
-        <div className="bg-gray-800 rounded-lg p-4 mb-4 flex flex-wrap gap-3 items-center justify-between">
+        <div className="bg-white dark:bg-dark border  rounded-lg p-4 mb-4 flex flex-wrap gap-3 items-center justify-between">
           <div className="flex gap-2">
             <button
               onClick={exportCSV}
-              className="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded flex items-center gap-2"
+              className="px-4 py-2 dark:bg-gray-7 bg-gray-3 hover:bg-gray-4 dark:hover:bg-gray-6 rounded flex items-center gap-2 transition-all duration-300"
             >
               <Download size={16} />
               Export CSV
             </button>
             <button
               onClick={exportJSON}
-              className="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded flex items-center gap-2"
+              className="px-4 py-2 dark:bg-gray-7 bg-gray-3 hover:bg-gray-4 dark:hover:bg-gray-6 rounded flex items-center gap-2 transition-all duration-300"
             >
               <Download size={16} />
               Export JSON
@@ -295,18 +300,29 @@ export default function AllProductsList() {
             <button
               onClick={bulkDelete}
               disabled={selectedProducts.length === 0}
-              className="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 dark:bg-gray-7 bg-gray-3 hover:bg-gray-4 dark:hover:bg-gray-6 rounded flex items-center gap-2 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Trash2 size={16} />
               Bulk Action
             </button>
           </div>
           <div className="flex gap-2">
-            <button className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded flex items-center gap-2">
+            <button
+              onClick={bulkDelete}
+              disabled={selectedProducts.length === 0}
+              className="px-4 py-2 dark:bg-gray-7 bg-gray-3 hover:bg-gray-4 dark:hover:bg-gray-6 rounded flex items-center gap-2 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <Trash2 size={16} />
+              Bulk Action
+            </button>
+            <button
+              disabled={selectedProducts.length === 0}
+              className="px-4 text-white py-2 bg-red hover:bg-red rounded flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
               <Trash2 size={16} />
               Delete
             </button>
-            <button className="px-4 py-2 bg-green-600 hover:bg-green-700 rounded flex items-center gap-2">
+            <button className="px-4 py-2 text-white bg-green hover:bg-green-dark transition-all duration-200 rounded flex items-center gap-2">
               <Plus size={16} />
               Add Product
             </button>
@@ -314,18 +330,18 @@ export default function AllProductsList() {
         </div>
 
         {/* Filters */}
-        <div className="bg-gray-800 rounded-lg p-4 mb-4 flex flex-wrap gap-3 items-center">
+        <div className="dark:bg-dark rounded-lg p-4 mb-4 flex flex-col md:flex-row gap-3 items-center">
           <input
             type="text"
             placeholder="Search product..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="px-4 py-2 bg-gray-700 rounded flex-1 min-w-[200px] focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="p-4 dark:bg-gray-7 bg-gray-3 w-full rounded flex-2 min-w-[500px]   focus:outline-none focus:ring-2 focus:ring-green-500"
           />
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="px-4 py-2 bg-gray-700 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="p-4 dark:bg-gray-7 bg-gray-3 w-full rounded focus:outline-none focus:ring-2 focus:ring-green-500"
           >
             {categories.map((cat) => (
               <option key={cat} value={cat}>
@@ -336,7 +352,7 @@ export default function AllProductsList() {
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
-            className="px-4 py-2 bg-gray-700 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="dark:bg-gray-7 w-full bg-gray-3 p-4 bg-gray-700 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
           >
             <option>No Sort</option>
             <option>Price: Low to High</option>
@@ -344,27 +360,29 @@ export default function AllProductsList() {
             <option>Name: A-Z</option>
             <option>Stock: Low to High</option>
           </select>
-          <button
-            onClick={() => {
-              setSearchTerm("");
-              setCategoryFilter("All Categories");
-              setSortBy("No Sort");
-            }}
-            className="px-6 py-2 bg-green-600 hover:bg-green-700 rounded"
-          >
-            Filter
-          </button>
-          <button
-            onClick={() => {
-              setSearchTerm("");
-              setCategoryFilter("All Categories");
-              setSortBy("No Sort");
-              setCurrentPage(1);
-            }}
-            className="px-6 py-2 bg-gray-700 hover:bg-gray-600 rounded"
-          >
-            Reset
-          </button>
+          <div className="flex justify-between items-center w-full gap-x-5">
+            <button
+              onClick={() => {
+                setSearchTerm("");
+                setCategoryFilter("All Categories");
+                setSortBy("No Sort");
+              }}
+              className="py-4 w-full px-8 text-white bg-green hover:bg-green-dark duration-200 rounded"
+            >
+              Filter
+            </button>
+            <button
+              onClick={() => {
+                setSearchTerm("");
+                setCategoryFilter("All Categories");
+                setSortBy("No Sort");
+                setCurrentPage(1);
+              }}
+              className="py-4 w-full px-8 dark:bg-gray-7 bg-gray-3 hover:bg-gray-4 dark:hover:bg-gray-7 duration-200 rounded"
+            >
+              Reset
+            </button>
+          </div>
         </div>
 
         {/* Table */}
