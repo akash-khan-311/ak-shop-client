@@ -26,6 +26,7 @@ import {
   Box,
   Settings2,
   Ticket,
+  ListChecks,
 } from "lucide-react";
 
 export const userMenuItems = [
@@ -78,6 +79,14 @@ export const vendorMenuItems = [
     subItems: [
       { name: "All Products", path: "/vendor/products" },
       { name: "Add Product", path: "/vendor/products/add" },
+    ],
+  },
+  {
+    name: "Category",
+    icon: ListChecks,
+    subItems: [
+      { name: "All Category", path: "/vendor/category" },
+      { name: "Add Category", path: "/vendor/category/add" },
     ],
   },
 

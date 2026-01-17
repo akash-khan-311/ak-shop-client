@@ -9,6 +9,12 @@ import DashboardPageHeader from "@/components/Dashboard/DashboardPageHeader";
 import StatusOverview from "../../../_components/StatusOverview";
 import DashboardCharts from "../../../_components/dashboard-charts";
 import OrdersTable from "../orders/_components/orders-table/RecentOrders";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Dashboard | AK Shop E-Commerce Solutions",
+  description: "This is Dashboard for AK Shop",
+};
 
 export default function DashBoard() {
   return (

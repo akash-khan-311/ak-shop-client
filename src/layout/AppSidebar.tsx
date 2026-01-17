@@ -9,8 +9,12 @@ import Logo from "@/components/Logo";
 import { vendorMenuItems } from "@/components/Dashboard/constant/SidebarMenus";
 import { NavItem } from "@/types";
 import MenuItem from "@/components/Dashboard/MenuItem/MenuItem";
+import { useAppSelector } from "@/redux/hook";
+import { selectCurrentUser } from "@/redux/features/auth/authSlice";
 
 const AppSidebar: React.FC = () => {
+  const user = useAppSelector(selectCurrentUser);
+  console.log(user);
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const pathname = usePathname();
 
@@ -109,24 +113,63 @@ const AppSidebar: React.FC = () => {
           </h2>
 
           <ul className="flex flex-col gap-2">
-            {vendorMenuItems.map((item, index) => {
-              const Icon = item.icon;
+            {user.role === "vendor" &&
+              vendorMenuItems.map((item, index) => {
+                const Icon = item.icon;
 
-              return (
-                <MenuItem
-                  key={item.name}
-                  label={item.name}
-                  path={item.href}
-                  icon={<Icon size={20} />}
-                  subItems={item.subItems}
-                  isOpen={openIndex === index}
-                  onToggle={() => handleToggle(index)}
-                  isExpanded={isExpanded}
-                  isHovered={isHovered}
-                  isMobileOpen={isMobileOpen}
-                />
-              );
-            })}
+                return (
+                  <MenuItem
+                    key={item.name}
+                    label={item.name}
+                    path={item.href}
+                    icon={<Icon size={20} />}
+                    subItems={item.subItems}
+                    isOpen={openIndex === index}
+                    onToggle={() => handleToggle(index)}
+                    isExpanded={isExpanded}
+                    isHovered={isHovered}
+                    isMobileOpen={isMobileOpen}
+                  />
+                );
+              })}
+            {user.role === "admin" &&
+              vendorMenuItems.map((item, index) => {
+                const Icon = item.icon;
+
+                return (
+                  <MenuItem
+                    key={item.name}
+                    label={item.name}
+                    path={item.href}
+                    icon={<Icon size={20} />}
+                    subItems={item.subItems}
+                    isOpen={openIndex === index}
+                    onToggle={() => handleToggle(index)}
+                    isExpanded={isExpanded}
+                    isHovered={isHovered}
+                    isMobileOpen={isMobileOpen}
+                  />
+                );
+              })}
+            {user.role === "superAdmin" &&
+              vendorMenuItems.map((item, index) => {
+                const Icon = item.icon;
+
+                return (
+                  <MenuItem
+                    key={item.name}
+                    label={item.name}
+                    path={item.href}
+                    icon={<Icon size={20} />}
+                    subItems={item.subItems}
+                    isOpen={openIndex === index}
+                    onToggle={() => handleToggle(index)}
+                    isExpanded={isExpanded}
+                    isHovered={isHovered}
+                    isMobileOpen={isMobileOpen}
+                  />
+                );
+              })}
           </ul>
         </nav>
       </div>

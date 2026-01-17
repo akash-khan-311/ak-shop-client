@@ -1,3 +1,32 @@
+export const COMMON_BRANDS = ["Non Brand / Other"];
+
+export const productColors = [
+  "Black",
+  "White",
+  "Gray",
+  "Silver",
+  "Red",
+  "Maroon",
+  "Pink",
+  "Purple",
+  "Violet",
+  "Blue",
+  "Sky Blue",
+  "Navy Blue",
+  "Teal",
+  "Green",
+  "Lime",
+  "Olive",
+  "Yellow",
+  "Orange",
+  "Brown",
+  "Beige",
+  "Gold",
+  "Bronze",
+  "Copper",
+  "Multi Color",
+  "Other",
+];
 export const allProducts = [
   {
     id: 1,
@@ -322,3 +351,615 @@ export const orders = [
     status: "Cancelled",
   },
 ];
+
+export const categories = [
+  {
+    name: "Electronics",
+    slug: "electronics",
+    subcategories: [
+      "Mobiles",
+      "Mobile Accessories",
+      "Laptops",
+      "Desktops",
+      "Tablets",
+      "Cameras",
+      "Smart Watches",
+      "Headphones",
+      "Power Banks",
+    ],
+  },
+  {
+    name: "Fashion",
+    slug: "fashion",
+    subcategories: [
+      "Men's Clothing",
+      "Women's Clothing",
+      "Kids & Baby Clothing",
+      "Shoes",
+      "Bags & Wallets",
+      "Watches",
+      "Jewelry",
+      "Traditional Wear",
+    ],
+  },
+  {
+    name: "Home & Living",
+    slug: "home-living",
+    subcategories: [
+      "Furniture",
+      "Home Decor",
+      "Lighting",
+      "Bedding",
+      "Curtains",
+      "Kitchen Tools",
+      "Storage & Organization",
+    ],
+  },
+  {
+    name: "Health & Beauty",
+    slug: "health-beauty",
+    subcategories: [
+      "Skincare",
+      "Makeup",
+      "Hair Care",
+      "Perfume",
+      "Grooming Tools",
+      "Health Supplements",
+    ],
+  },
+  {
+    name: "TV & Home Appliances",
+    slug: "tv-appliances",
+    subcategories: [
+      "Television",
+      "Refrigerator",
+      "Washing Machine",
+      "Air Conditioner",
+      "Microwave Oven",
+      "Blender & Juicer",
+    ],
+  },
+  {
+    name: "Mother & Baby",
+    slug: "mother-baby",
+    subcategories: [
+      "Baby Food",
+      "Diapers",
+      "Baby Toys",
+      "Baby Clothing",
+      "Strollers",
+      "Maternity Wear",
+    ],
+  },
+  {
+    name: "Sports & Outdoor",
+    slug: "sports-outdoor",
+    subcategories: [
+      "Gym Equipment",
+      "Sportswear",
+      "Bicycles",
+      "Camping Gear",
+      "Fitness Accessories",
+    ],
+  },
+  {
+    name: "Books & Stationery",
+    slug: "books-stationery",
+    subcategories: [
+      "Academic Books",
+      "Story Books",
+      "Novels",
+      "Islamic Books",
+      "Office Supplies",
+      "Art Supplies",
+    ],
+  },
+  {
+    name: "Automotive & Motorbike",
+    slug: "automotive",
+    subcategories: [
+      "Motorbike Accessories",
+      "Car Accessories",
+      "Helmet",
+      "Engine Oil",
+      "Tyres",
+      "Car Electronics",
+    ],
+  },
+  {
+    name: "Groceries",
+    slug: "groceries",
+    subcategories: [
+      "Rice & Grains",
+      "Cooking Oil",
+      "Snacks",
+      "Beverages",
+      "Spices",
+      "Dairy Products",
+      "Organic Foods",
+    ],
+  },
+  {
+    name: "Gaming",
+    slug: "gaming",
+    subcategories: [
+      "Gaming Consoles",
+      "Games",
+      "Gaming Accessories",
+      "Controllers",
+      "Gaming Chairs",
+    ],
+  },
+  {
+    name: "Pet Supplies",
+    slug: "pet-supplies",
+    subcategories: [
+      "Pet Food",
+      "Pet Toys",
+      "Pet Accessories",
+      "Pet Health Care",
+      "Aquarium Supplies",
+    ],
+  },
+  {
+    name: "Gifts & Occasions",
+    slug: "gifts",
+    subcategories: [
+      "Gift Items",
+      "Flower & Chocolates",
+      "Greeting Cards",
+      "Festival Decorations",
+      "Party Supplies",
+    ],
+  },
+  {
+    name: "Tools & Hardware",
+    slug: "tools-hardware",
+    subcategories: [
+      "Power Tools",
+      "Hand Tools",
+      "Electrical Tools",
+      "Plumbing Items",
+      "Safety Equipment",
+    ],
+  },
+  {
+    name: "Office & Business",
+    slug: "office-business",
+    subcategories: [
+      "Printers",
+      "Ink & Toner",
+      "Office Furniture",
+      "Networking Devices",
+      "POS Machines",
+    ],
+  },
+];
+
+export const categoryBrandMap: Record<string, Record<string, string[]>> = {
+  Electronics: {
+    Mobiles: [
+      "Samsung",
+      "Apple",
+      "Xiaomi",
+      "Realme",
+      "Oppo",
+      "Vivo",
+      "OnePlus",
+      "Infinix",
+      "Tecno",
+      ...COMMON_BRANDS,
+    ],
+    "Mobile Accessories": [
+      "Anker",
+      "Baseus",
+      "Ugreen",
+      "Oraimo",
+      "XO",
+      ...COMMON_BRANDS,
+    ],
+    Laptops: [
+      "HP",
+      "Dell",
+      "Lenovo",
+      "Asus",
+      "Acer",
+      "Apple",
+      ...COMMON_BRANDS,
+    ],
+    Desktops: ["HP", "Dell", "Lenovo", "Asus", ...COMMON_BRANDS],
+    Tablets: ["Apple", "Samsung", "Xiaomi", "Lenovo", ...COMMON_BRANDS],
+    Cameras: ["Canon", "Nikon", "Sony", "Fujifilm", ...COMMON_BRANDS],
+    "Smart Watches": [
+      "Apple",
+      "Samsung",
+      "Xiaomi",
+      "Amazfit",
+      ...COMMON_BRANDS,
+    ],
+    Headphones: ["Sony", "JBL", "Realme", "Baseus", ...COMMON_BRANDS],
+    "Power Banks": ["Anker", "Xiaomi", "Baseus", "Oraimo", ...COMMON_BRANDS],
+  },
+
+  Fashion: {
+    "Men's Clothing": [
+      "Aarong",
+      "Yellow",
+      "Cats Eye",
+      "Easy",
+      ...COMMON_BRANDS,
+    ],
+    "Women's Clothing": ["Aarong", "Sailor", "Ecstasy", ...COMMON_BRANDS],
+    "Kids & Baby Clothing": ["Babyshop", "Hopscotch", ...COMMON_BRANDS],
+    Shoes: ["Bata", "Apex", "Nike", "Adidas", ...COMMON_BRANDS],
+    "Bags & Wallets": ["Wildcraft", "Lavie", ...COMMON_BRANDS],
+    Watches: ["Casio", "Fossil", "Titan", ...COMMON_BRANDS],
+    Jewelry: ["Aarong", "Diamond World", ...COMMON_BRANDS],
+    "Traditional Wear": ["Aarong", "Kay Kraft", ...COMMON_BRANDS],
+  },
+
+  "Home & Living": {
+    Furniture: ["Otobi", "Hatil", "Navana", ...COMMON_BRANDS],
+    "Home Decor": ["IKEA", "HomeTex", ...COMMON_BRANDS],
+    Lighting: ["Philips", "Havells", ...COMMON_BRANDS],
+    Bedding: ["Regal", "HomeTex", ...COMMON_BRANDS],
+    Curtains: ["HomeTex", ...COMMON_BRANDS],
+    "Kitchen Tools": ["Prestige", "Walton", ...COMMON_BRANDS],
+    "Storage & Organization": ["IKEA", ...COMMON_BRANDS],
+  },
+
+  "Health & Beauty": {
+    Skincare: ["Nivea", "Pond's", "The Ordinary", ...COMMON_BRANDS],
+    Makeup: ["Maybelline", "L'Oreal", "Lakme", ...COMMON_BRANDS],
+    "Hair Care": ["Pantene", "Tresemme", "Dove", ...COMMON_BRANDS],
+    Perfume: ["Fogg", "Armaf", "Gucci", ...COMMON_BRANDS],
+    "Grooming Tools": ["Philips", "Nova", ...COMMON_BRANDS],
+    "Health Supplements": ["Herbalife", "MuscleBlaze", ...COMMON_BRANDS],
+  },
+
+  "TV & Home Appliances": {
+    Television: ["Samsung", "LG", "Sony", "Walton", ...COMMON_BRANDS],
+    Refrigerator: ["Walton", "Samsung", "LG", ...COMMON_BRANDS],
+    "Washing Machine": ["LG", "Samsung", "Whirlpool", ...COMMON_BRANDS],
+    "Air Conditioner": ["Gree", "Walton", "LG", ...COMMON_BRANDS],
+    "Microwave Oven": ["Sharp", "Samsung", ...COMMON_BRANDS],
+    "Blender & Juicer": ["Philips", "Panasonic", ...COMMON_BRANDS],
+  },
+
+  "Mother & Baby": {
+    "Baby Food": ["Nestle", "Cerelac", ...COMMON_BRANDS],
+    Diapers: ["Pampers", "Huggies", ...COMMON_BRANDS],
+    "Baby Toys": ["Fisher Price", ...COMMON_BRANDS],
+    "Baby Clothing": ["Babyshop", ...COMMON_BRANDS],
+    Strollers: ["Chicco", "Mee Mee", ...COMMON_BRANDS],
+    "Maternity Wear": ["Mommy Care", ...COMMON_BRANDS],
+  },
+
+  "Sports & Outdoor": {
+    "Gym Equipment": ["Decathlon", "Body Solid", ...COMMON_BRANDS],
+    Sportswear: ["Nike", "Adidas", "Puma", ...COMMON_BRANDS],
+    Bicycles: ["Hero", "Duronto", ...COMMON_BRANDS],
+    "Camping Gear": ["Quechua", ...COMMON_BRANDS],
+    "Fitness Accessories": ["Reebok", ...COMMON_BRANDS],
+  },
+
+  "Books & Stationery": {
+    "Academic Books": ["Oxford", "Cambridge", ...COMMON_BRANDS],
+    "Story Books": ["Penguin", ...COMMON_BRANDS],
+    Novels: ["Penguin", "HarperCollins", ...COMMON_BRANDS],
+    "Islamic Books": ["Darussalam", ...COMMON_BRANDS],
+    "Office Supplies": ["Deli", "Matador", ...COMMON_BRANDS],
+    "Art Supplies": ["Faber-Castell", ...COMMON_BRANDS],
+  },
+
+  Automotive: {
+    "Motorbike Accessories": ["Yamaha", "Honda", ...COMMON_BRANDS],
+    "Car Accessories": ["Bosch", "Michelin", ...COMMON_BRANDS],
+    Helmet: ["Studds", "Vega", ...COMMON_BRANDS],
+    "Engine Oil": ["Shell", "Mobil", ...COMMON_BRANDS],
+    Tyres: ["MRF", "CEAT", ...COMMON_BRANDS],
+    "Car Electronics": ["Pioneer", ...COMMON_BRANDS],
+  },
+
+  Groceries: {
+    "Rice & Grains": ["ACI", "Pran", ...COMMON_BRANDS],
+    "Cooking Oil": ["Teer", "Fresh", ...COMMON_BRANDS],
+    Snacks: ["Pran", "Olympic", ...COMMON_BRANDS],
+    Beverages: ["Coca-Cola", "Pepsi", ...COMMON_BRANDS],
+    Spices: ["Radhuni", "Pran", ...COMMON_BRANDS],
+    "Dairy Products": ["Aarong", "Milk Vita", ...COMMON_BRANDS],
+    "Organic Foods": ["Organic Hat", ...COMMON_BRANDS],
+  },
+
+  Gaming: {
+    "Gaming Consoles": ["Sony", "Microsoft", "Nintendo", ...COMMON_BRANDS],
+    Games: ["EA", "Ubisoft", ...COMMON_BRANDS],
+    "Gaming Accessories": ["Razer", "Logitech", ...COMMON_BRANDS],
+    Controllers: ["Sony", "Xbox", ...COMMON_BRANDS],
+    "Gaming Chairs": ["DXRacer", ...COMMON_BRANDS],
+  },
+
+  "Pet Supplies": {
+    "Pet Food": ["Royal Canin", "Drools", ...COMMON_BRANDS],
+    "Pet Toys": ["PetSafe", ...COMMON_BRANDS],
+    "Pet Accessories": ["Trixie", ...COMMON_BRANDS],
+    "Pet Health Care": ["Himalaya", ...COMMON_BRANDS],
+    "Aquarium Supplies": ["Resun", ...COMMON_BRANDS],
+  },
+
+  "Gifts & Occasions": {
+    "Gift Items": ["Archies", ...COMMON_BRANDS],
+    "Flower & Chocolates": ["Ferrero", ...COMMON_BRANDS],
+    "Greeting Cards": ["Archies", ...COMMON_BRANDS],
+    "Festival Decorations": ["Party Zone", ...COMMON_BRANDS],
+    "Party Supplies": ["Party Land", ...COMMON_BRANDS],
+  },
+
+  "Tools & Hardware": {
+    "Power Tools": ["Bosch", "Makita", ...COMMON_BRANDS],
+    "Hand Tools": ["Stanley", ...COMMON_BRANDS],
+    "Electrical Tools": ["Havells", ...COMMON_BRANDS],
+    "Plumbing Items": ["RFL", ...COMMON_BRANDS],
+    "Safety Equipment": ["3M", ...COMMON_BRANDS],
+  },
+
+  "Office & Business": {
+    Printers: ["HP", "Canon", "Epson", ...COMMON_BRANDS],
+    "Ink & Toner": ["HP", "Canon", ...COMMON_BRANDS],
+    "Office Furniture": ["Hatil", "Otobi", ...COMMON_BRANDS],
+    "Networking Devices": ["TP-Link", "D-Link", ...COMMON_BRANDS],
+    "POS Machines": ["Sunmi", ...COMMON_BRANDS],
+  },
+};
+export const productSpecifications: Record<
+  string,
+  Record<
+    string,
+    {
+      label: string;
+      name: string;
+      type: string;
+      options?: string[];
+      optional?: boolean;
+    }[]
+  >
+> = {
+  Electronics: {
+    Mobiles: [
+      { label: "Model", name: "model", type: "text" },
+      { label: "Processor", name: "processor", type: "text" },
+      { label: "Release Date", name: "release", type: "date" },
+      {
+        label: "RAM",
+        name: "ram",
+        type: "combobox",
+        options: ["6GB", "8GB", "16GB", "32GB"],
+      },
+
+      {
+        label: "Storage",
+        name: "storage",
+        type: "combobox",
+        options: ["64GB", "128GB", "256GB", "512GB"],
+      },
+      { label: "Main Camera", name: "mainCamera", type: "text" },
+      { label: "Front Camera", name: "frontCamera", type: "text" },
+      { label: "Display Size", name: "displaySize", type: "text" },
+      {
+        label: "Display Type",
+        name: "displayType",
+        type: "combobox",
+        options: ["IPS", "LCD", "AMOLED", "OLED"],
+      },
+      { label: "Battery", name: "battery", type: "text" },
+    ],
+    "Mobile Accessories": [
+      { label: "Compatibility", name: "compatibility", type: "text" },
+    ],
+    Laptops: [
+      {
+        label: "RAM",
+        name: "ram",
+        type: "combobox",
+        options: ["4GB", "8GB", "16GB", "32GB"],
+      },
+      {
+        label: "Storage SSD",
+        name: "ssd",
+        type: "combobox",
+        options: ["256GB", "512GB", "1TB", "2TB"],
+      },
+      {
+        label: "Storage HDD",
+        name: "hdd",
+        type: "combobox",
+        options: ["512GB", "1TB", "2TB"],
+      },
+      { label: "Processor", name: "processor", type: "text" },
+      { label: "Display Size", name: "display", type: "text" },
+      { label: "Battery", name: "battery", type: "text" },
+    ],
+    Desktops: [
+      {
+        label: "RAM",
+        name: "ram",
+        type: "combobox",
+        options: ["4GB", "8GB", "16GB", "32GB"],
+      },
+      {
+        label: "Storage SSD",
+        name: "ssd",
+        type: "combobox",
+        options: ["256GB", "512GB", "1TB", "2TB"],
+      },
+      {
+        label: "Storage HDD",
+        name: "hdd",
+        type: "combobox",
+        options: ["512GB", "1TB", "2TB"],
+      },
+
+      { label: "Processor", name: "processor", type: "text" },
+      {
+        label: "Graphics Card",
+        name: "graphics",
+        type: "text",
+        optional: true,
+      },
+    ],
+    Tablets: [
+      { label: "RAM", name: "ram", type: "text" },
+      { label: "Storage", name: "storage", type: "text" },
+      { label: "Display Size", name: "display", type: "text" },
+      { label: "Battery", name: "battery", type: "text" },
+    ],
+    Cameras: [
+      { label: "Megapixels", name: "megapixels", type: "text" },
+      { label: "Lens Type", name: "lens", type: "text" },
+      { label: "Sensor Type", name: "sensor", type: "text" },
+    ],
+    "Smart Watches": [
+      { label: "Compatibility", name: "compatibility", type: "text" },
+      { label: "Battery", name: "battery", type: "text" },
+      { label: "Display Type", name: "display", type: "text" },
+    ],
+    Headphones: [
+      { label: "Type", name: "type", type: "text" },
+      { label: "Connectivity", name: "connectivity", type: "text" },
+    ],
+    "Power Banks": [
+      { label: "Capacity", name: "capacity", type: "text" },
+      { label: "Output Ports", name: "ports", type: "text" },
+    ],
+  },
+
+  Fashion: {
+    "Men's Clothing": [
+      {
+        label: "Size",
+        name: "size",
+        type: "combobox",
+        options: ["S", "M", "L", "XL", "XXL"],
+      },
+
+      { label: "Material", name: "material", type: "text" },
+    ],
+    "Women's Clothing": [
+      {
+        label: "Size",
+        name: "size",
+        type: "combobox",
+        options: ["S", "M", "L", "XL"],
+      },
+
+      { label: "Material", name: "material", type: "text" },
+    ],
+    "Kids & Baby Clothing": [
+      {
+        label: "Size",
+        name: "size",
+        type: "combobox",
+        options: ["0-6M", "6-12M", "12-24M", "2-5Y"],
+      },
+
+      { label: "Material", name: "material", type: "text" },
+    ],
+    Shoes: [
+      { label: "Size", name: "size", type: "text" },
+
+      { label: "Material", name: "material", type: "text" },
+    ],
+    "Bags & Wallets": [
+      { label: "Type", name: "type", type: "text" },
+
+      { label: "Material", name: "material", type: "text" },
+    ],
+    Watches: [{ label: "Type", name: "type", type: "text" }],
+    Jewelry: [
+      { label: "Type", name: "type", type: "text" },
+      { label: "Material", name: "material", type: "text" },
+    ],
+    "Traditional Wear": [
+      {
+        label: "Size",
+        name: "size",
+        type: "combobox",
+        options: ["S", "M", "L", "XL", "XXL"],
+      },
+
+      { label: "Material", name: "material", type: "text" },
+    ],
+  },
+
+  "Home & Living": {
+    Furniture: [
+      { label: "Material", name: "material", type: "text" },
+      { label: "Dimensions", name: "dimensions", type: "text" },
+    ],
+    "Home Decor": [{ label: "Material", name: "material", type: "text" }],
+    Lighting: [
+      { label: "Type", name: "type", type: "text" },
+      { label: "Power", name: "power", type: "text" },
+    ],
+    Bedding: [{ label: "Material", name: "material", type: "text" }],
+    Curtains: [{ label: "Material", name: "material", type: "text" }],
+    "Kitchen Tools": [{ label: "Material", name: "material", type: "text" }],
+    "Storage & Organization": [
+      { label: "Material", name: "material", type: "text" },
+    ],
+  },
+
+  "Health & Beauty": {
+    Skincare: [
+      { label: "Type", name: "type", type: "text" },
+      { label: "Volume", name: "volume", type: "text" },
+    ],
+    Makeup: [
+      { label: "Type", name: "type", type: "text" },
+      { label: "Shade", name: "shade", type: "text" },
+    ],
+    "Hair Care": [
+      { label: "Type", name: "type", type: "text" },
+      { label: "Size", name: "size", type: "text" },
+    ],
+    Perfume: [
+      { label: "Type", name: "type", type: "text" },
+      { label: "Volume", name: "volume", type: "text" },
+    ],
+    "Grooming Tools": [
+      { label: "Type", name: "type", type: "text" },
+      { label: "Power", name: "power", type: "text" },
+    ],
+    "Health Supplements": [
+      { label: "Ingredients", name: "ingredients", type: "text" },
+      { label: "Quantity", name: "quantity", type: "text" },
+    ],
+  },
+
+  "TV & Home Appliances": {
+    Television: [
+      { label: "Screen Size", name: "screenSize", type: "text" },
+      { label: "Resolution", name: "resolution", type: "text" },
+    ],
+    Refrigerator: [
+      { label: "Capacity", name: "capacity", type: "text" },
+      { label: "Type", name: "type", type: "text" },
+    ],
+    "Washing Machine": [
+      { label: "Capacity", name: "capacity", type: "text" },
+      { label: "Type", name: "type", type: "text" },
+    ],
+    "Air Conditioner": [
+      { label: "Capacity", name: "capacity", type: "text" },
+      { label: "Type", name: "type", type: "text" },
+    ],
+    "Microwave Oven": [
+      { label: "Capacity", name: "capacity", type: "text" },
+      { label: "Type", name: "type", type: "text" },
+    ],
+    "Blender & Juicer": [
+      { label: "Capacity", name: "capacity", type: "text" },
+      { label: "Type", name: "type", type: "text" },
+    ],
+  },
+};

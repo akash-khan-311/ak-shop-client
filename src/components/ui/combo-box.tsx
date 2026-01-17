@@ -5,6 +5,7 @@ import { useState, useRef, useEffect } from "react";
 interface ComboBoxProps {
   options: string[];
   placeholder?: string;
+  className?: string;
   onSelect?: (option: string | null) => void;
 }
 
@@ -12,8 +13,8 @@ const ComboBox = ({
   options = [],
   placeholder = "Select an option...",
   onSelect,
+  className,
 }: ComboBoxProps) => {
-    
   const [inputValue, setInputValue] = useState<string>("");
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
@@ -141,7 +142,7 @@ const ComboBox = ({
   };
 
   return (
-    <div className="relative w-full max-w-md" ref={comboBoxRef}>
+    <div className="relative w-full" ref={comboBoxRef}>
       <div className="relative">
         <input
           type="text"
@@ -150,7 +151,7 @@ const ComboBox = ({
           onFocus={handleInputFocus}
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
-          className="w-full px-4 py-2 pr-20 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent placeholder-gray-500 dark:placeholder-gray-400"
+          className={`w-full px-4 py-3 pr-20 border bg-gray-2 dark:bg-dark border-gray-3 dark:border-gray-6  text-gray-7 dark:text-gray-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink dark:focus:ring-pink focus:border-transparent placeholder-gray-5 dark:placeholder-gray-4 ${className}`}
           role="combobox"
           aria-expanded={isOpen}
           aria-haspopup="listbox"
@@ -164,7 +165,7 @@ const ComboBox = ({
           <button
             type="button"
             onClick={handleClearSelection}
-            className="absolute right-8 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+            className="absolute right-8 top-1/2 transform -translate-y-1/2 text-gray-4 dark:text-gray-5 hover:text-gray-6 dark:hover:text-gray-3 transition-colors"
             aria-label="Clear selection"
           >
             <svg
@@ -207,7 +208,7 @@ const ComboBox = ({
       {isOpen && (
         <div
           id="combobox-options"
-          className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg max-h-60 overflow-y-scroll"
+          className="absolute z-10 w-full mt-1 bg-gray-2  dark:bg-dark border border-gray-3 dark:border-gray-6 rounded-lg shadow-lg max-h-60 overflow-y-scroll"
           role="listbox"
         >
           {filteredOptions.length > 0 ? (
@@ -221,8 +222,8 @@ const ComboBox = ({
                 onClick={() => handleOptionSelect(option)}
                 className={`w-full px-4 py-2 text-left focus:outline-none first:rounded-t-lg last:rounded-b-lg transition-colors ${
                   index === highlightedIndex
-                    ? "bg-blue-100 dark:bg-blue-900/20 text-blue-900 dark:text-blue-300"
-                    : "text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700 focus:bg-gray-50 dark:focus:bg-gray-700"
+                    ? "dark:bg-dark-2/40 bg-gray-4 text-blue-6 dark:text-blue"
+                    : "text-gray-900 dark:text-gray-1 hover:bg-gray-5 dark:hover:bg-gray-7 focus:bg-gray-5 dark:focus:bg-gray-7"
                 }`}
                 role="option"
                 aria-selected={selectedOption === option}
@@ -233,7 +234,7 @@ const ComboBox = ({
             ))
           ) : (
             <div
-              className="px-4 py-2 text-gray-500 dark:text-gray-400"
+              className="px-4 py-2 text-gray-5 dark:text-gray-4"
               role="status"
             >
               No options found

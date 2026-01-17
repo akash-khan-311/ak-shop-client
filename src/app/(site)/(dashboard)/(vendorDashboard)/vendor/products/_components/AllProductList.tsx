@@ -22,6 +22,10 @@ import {
   TableCaption,
 } from "@/components/ui/table";
 import DashboardPageHeader from "@/components/Dashboard/DashboardPageHeader";
+import Link from "next/link";
+import DataTableActions from "@/components/data-table/DataTableActions";
+import DataTableFilters from "@/components/data-table/DataTableFilters";
+import DataTablePagination from "@/components/data-table/DataTablePagination";
 const initialProducts = [
   {
     id: 1,
@@ -186,7 +190,7 @@ export default function AllProductsList() {
   }, [products, searchTerm, categoryFilter, sortBy]);
 
   // Pagination
-  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+
   const paginatedProducts = filteredProducts.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
@@ -281,109 +285,27 @@ export default function AllProductsList() {
         />
 
         {/* Action Bar */}
-        <div className="bg-white dark:bg-dark border  rounded-lg p-4 mb-4 flex flex-wrap gap-3 items-center justify-between">
-          <div className="flex gap-2">
-            <button
-              onClick={exportCSV}
-              className="px-4 py-2 dark:bg-gray-7 bg-gray-3 hover:bg-gray-4 dark:hover:bg-gray-6 rounded flex items-center gap-2 transition-all duration-300"
-            >
-              <Download size={16} />
-              Export CSV
-            </button>
-            <button
-              onClick={exportJSON}
-              className="px-4 py-2 dark:bg-gray-7 bg-gray-3 hover:bg-gray-4 dark:hover:bg-gray-6 rounded flex items-center gap-2 transition-all duration-300"
-            >
-              <Download size={16} />
-              Export JSON
-            </button>
-            <button
-              onClick={bulkDelete}
-              disabled={selectedProducts.length === 0}
-              className="px-4 py-2 dark:bg-gray-7 bg-gray-3 hover:bg-gray-4 dark:hover:bg-gray-6 rounded flex items-center gap-2 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <Trash2 size={16} />
-              Bulk Action
-            </button>
-          </div>
-          <div className="flex gap-2">
-            <button
-              onClick={bulkDelete}
-              disabled={selectedProducts.length === 0}
-              className="px-4 py-2 dark:bg-gray-7 bg-gray-3 hover:bg-gray-4 dark:hover:bg-gray-6 rounded flex items-center gap-2 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <Trash2 size={16} />
-              Bulk Action
-            </button>
-            <button
-              disabled={selectedProducts.length === 0}
-              className="px-4 text-white py-2 bg-red hover:bg-red rounded flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              <Trash2 size={16} />
-              Delete
-            </button>
-            <button className="px-4 py-2 text-white bg-green hover:bg-green-dark transition-all duration-200 rounded flex items-center gap-2">
-              <Plus size={16} />
-              Add Product
-            </button>
-          </div>
-        </div>
+        <DataTableActions
+          exportCSV={exportCSV}
+          exportJSON={exportJSON}
+          bulkDelete={bulkDelete}
+          selectedProducts={selectedProducts}
+        />
 
         {/* Filters */}
-        <div className="dark:bg-dark rounded-lg p-4 mb-4 flex flex-col md:flex-row gap-3 items-center">
-          <input
-            type="text"
-            placeholder="Search product..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="p-4 dark:bg-gray-7 bg-gray-3 w-full rounded flex-2 min-w-[500px]   focus:outline-none focus:ring-2 focus:ring-green-500"
-          />
-          <select
-            value={categoryFilter}
-            onChange={(e) => setCategoryFilter(e.target.value)}
-            className="p-4 dark:bg-gray-7 bg-gray-3 w-full rounded focus:outline-none focus:ring-2 focus:ring-green-500"
-          >
-            {categories.map((cat) => (
-              <option key={cat} value={cat}>
-                {cat}
-              </option>
-            ))}
-          </select>
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
-            className="dark:bg-gray-7 w-full bg-gray-3 p-4 bg-gray-700 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
-          >
-            <option>No Sort</option>
-            <option>Price: Low to High</option>
-            <option>Price: High to Low</option>
-            <option>Name: A-Z</option>
-            <option>Stock: Low to High</option>
-          </select>
-          <div className="flex justify-between items-center w-full gap-x-5">
-            <button
-              onClick={() => {
-                setSearchTerm("");
-                setCategoryFilter("All Categories");
-                setSortBy("No Sort");
-              }}
-              className="py-4 w-full px-8 text-white bg-green hover:bg-green-dark duration-200 rounded"
-            >
-              Filter
-            </button>
-            <button
-              onClick={() => {
-                setSearchTerm("");
-                setCategoryFilter("All Categories");
-                setSortBy("No Sort");
-                setCurrentPage(1);
-              }}
-              className="py-4 w-full px-8 dark:bg-gray-7 bg-gray-3 hover:bg-gray-4 dark:hover:bg-gray-7 duration-200 rounded"
-            >
-              Reset
-            </button>
-          </div>
-        </div>
+        <DataTableFilters
+          isProducts={true}
+          isCategory={false}
+          isOrders={false}
+          products={products}
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          categoryFilter={categoryFilter}
+          setCategoryFilter={setCategoryFilter}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
+          setCurrentPage={setCurrentPage}
+        />
 
         {/* Table */}
         <div className="bg-gray-800 rounded-lg overflow-hidden">
@@ -394,7 +316,18 @@ export default function AllProductsList() {
                 <TableRow>
                   {tableHeading.map((item) => (
                     <TableHead className="uppercase" key={item}>
-                      {item}
+                      {item === "Product Name" ? (
+                        <div className="flex items-center gap-x-5">
+                          <input
+                            onChange={toggleSelectAll}
+                            type="checkbox"
+                            className="w-4 h-4"
+                          />
+                          {item}
+                        </div>
+                      ) : (
+                        <>{item}</>
+                      )}
                     </TableHead>
                   ))}
                 </TableRow>
@@ -451,6 +384,7 @@ export default function AllProductsList() {
                     <TableCell>
                       <label className="relative inline-block">
                         <input
+                          onChange={() => togglePublished(product.id)}
                           checked={product.published}
                           type="checkbox"
                           className="peer invisible"
@@ -477,44 +411,12 @@ export default function AllProductsList() {
           </div>
 
           {/* Pagination */}
-          <div className="p-4 dark:bg-dark flex items-center justify-between border-t border-gray-700">
-            <div className="text-sm text-gray-400">
-              SHOWING {(currentPage - 1) * itemsPerPage + 1} TO{" "}
-              {Math.min(currentPage * itemsPerPage, filteredProducts.length)} OF{" "}
-              {filteredProducts.length}
-            </div>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
-                disabled={currentPage === 1}
-                className="p-2 dark:text-white text-dark-2 hover:text-white hover:bg-gray-6 dark:hover:bg-dark-2 rounded disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <ChevronLeft size={20} />
-              </button>
-              {[...Array(totalPages)].map((_, i) => (
-                <button
-                  key={i + 1}
-                  onClick={() => setCurrentPage(i + 1)}
-                  className={`w-8 h-8 rounded text-[#000]  dark:text-white ${
-                    currentPage === i + 1
-                      ? "dark:bg-dark-2 bg-gray-6 hover:text-white text-[#fff]"
-                      : "dark:hover:bg-dark-2 hover:bg-gray-6 hover:text-white"
-                  }`}
-                >
-                  {i + 1}
-                </button>
-              ))}
-              <button
-                onClick={() =>
-                  setCurrentPage((prev) => Math.min(totalPages, prev + 1))
-                }
-                disabled={currentPage === totalPages}
-                className="p-2 dark:text-white text-dark-2 hover:text-white hover:bg-gray-6 dark:hover:bg-dark-2 rounded disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <ChevronRight size={20} />
-              </button>
-            </div>
-          </div>
+          <DataTablePagination
+            filteredItems={filteredProducts}
+            itemsPerPage={itemsPerPage}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+          />
         </div>
       </div>
     </div>

@@ -15,13 +15,13 @@ export default function DashboardPageHeader({
     <div className="flex justify-between items-center mb-2">
       {/* Title Section */}
       <div className="mb-8">
-        <h2 className="text-2xl font-semibold text-white mb-1">{title}</h2>
-        <p className="text-slate-400 text-sm">{description}</p>
+        <h2 className="text-2xl font-semibold  mb-1">{title}</h2>
+        <p className="text-slate-400 text-sm text-gray-6">{description}</p>
       </div>
-      <div className="text-sm text-slate-400">
-        <span className="hover:text-white cursor-pointer">{pathnames[0]}</span>
+      <div className="text-sm text-gray-6">
+        <span className="text-gray-6 cursor-pointer">{pathnames[0]}</span>
         <span className="mx-2">{">"}</span>
-        <span className="text-white">{pathnames[1]}</span>
+        <span className="text-gray-6">{pathnames[1]}</span>
       </div>
     </div>
   );
