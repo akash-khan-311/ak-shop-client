@@ -10,6 +10,7 @@ export type TSubCategory = {
 export type TCategory = {
   _id?: string;
   name: string;
+  image: string;
   slug: string;
   subCategories: TSubCategory[];
   isDeleted: boolean;

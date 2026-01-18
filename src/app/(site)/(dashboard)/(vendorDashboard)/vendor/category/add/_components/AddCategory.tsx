@@ -6,6 +6,13 @@ import { useForm, useFieldArray } from "react-hook-form";
 import SubCategoryFields from "./SubCategoryFields";
 import DashboardPageHeader from "@/components/Dashboard/DashboardPageHeader";
 import { slugify } from "@/app/(site)/(dashboard)/utils/slugify";
+import { useCreateCategoryMutation } from "@/redux/features/category/categoryApi";
+import { useAppSelector } from "@/redux/hook";
+import { selectCurrentToken } from "@/redux/features/auth/authSlice";
+
+import SingleImageUploadField from "@/helpers/SingleImageUploadField";
+import { uploadImageToCloudinary } from "@/lib/utils";
+import toast from "react-hot-toast";
 
 /* ---------------- TYPES ---------------- */
 
@@ -20,6 +27,7 @@ type SubCategory = {
 };
 
 type CategoryFormData = {
+  image?: File | null;
   name: string;
   slug: string;
   subcategories: SubCategory[];
@@ -29,6 +37,7 @@ type CategoryFormData = {
 
 const CreateCategory = () => {
   const {
+    reset,
     register,
     control,
     watch,
@@ -57,6 +66,8 @@ const CreateCategory = () => {
     control,
     name: "subcategories",
   });
+  const token = useAppSelector(selectCurrentToken);
+  const [createCategory, { isLoading }] = useCreateCategoryMutation();
   const categoryName = watch("name");
   useEffect(() => {
     if (categoryName) {
@@ -69,17 +80,34 @@ const CreateCategory = () => {
   /* ---------------- SUBMIT ---------------- */
 
   const onSubmit = async (data: CategoryFormData) => {
-    const formattedData = {
-      name: data.name,
-      slug: data.slug,
-      subcategories: data.subcategories.map((sub) => ({
-        name: sub.name,
-        slug: sub.slug,
-        brands: sub.brands.map((b) => b.value).filter(Boolean),
-      })),
-    };
+    try {
+      let imageUrl = "";
 
-    console.log(formattedData);
+      if (data.image) {
+        imageUrl = await uploadImageToCloudinary(data.image);
+      }
+
+      const formattedData = {
+        token,
+        categoryData: {
+          image: imageUrl,
+          name: data.name,
+          slug: data.slug,
+          subcategories: data.subcategories.map((sub) => ({
+            name: sub.name,
+            slug: sub.slug,
+            brands: sub.brands.map((b) => b.value).filter(Boolean),
+          })),
+        },
+      };
+
+      const result = await createCategory(formattedData).unwrap();
+      if (result.success) {
+        toast.success("Category created successfully");
+        reset();
+      }
+      console.log(result);
+    } catch (error) {}
   };
 
   /* ---------------- UI ---------------- */
@@ -135,7 +163,12 @@ const CreateCategory = () => {
               canRemove={subcategoryFields.length > 1}
             />
           ))}
-
+          <div className="dark:bg-dark bg-gray-3 p-6 rounded-xl mt-10">
+            <h2 className="text-xl md:text-2xl border-b dark:border-gray-6 border-gray-5 pb-4">
+              Product Images
+            </h2>
+            <SingleImageUploadField setValue={setValue} />
+          </div>
           <div className="flex justify-between items-center mt-10">
             {/* ADD SUBCATEGORY */}
             <button

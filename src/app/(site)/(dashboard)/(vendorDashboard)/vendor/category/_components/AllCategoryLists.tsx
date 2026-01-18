@@ -22,6 +22,7 @@ import {
 import { useAppSelector } from "@/redux/hook";
 import { TCategory } from "@/types/category";
 import { SquarePen, Trash2, ZoomIn } from "lucide-react";
+import Image from "next/image";
 import { useMemo, useState } from "react";
 
 export default function AllCategoryLists() {
@@ -187,16 +188,15 @@ export default function AllCategoryLists() {
                           onChange={() => toggleSelect(category._id)}
                           className="w-4 h-4 cursor-pointer"
                         />
-                        <div className="flex items-center gap-x-2">
-                          {/* <Image
-                            src={product.image}
+                        <div className="flex  items-center gap-x-2 rounded-full">
+                          <Image
+                            src={category?.image}
                             width={50}
                             height={50}
-                            alt="Product"
-                          /> */}
-                          <span className="text-2xl p-3 rounded-full border">
-                            {/* {category?.image} */}
-                          </span>
+                            alt={category.name}
+                            className="rounded-full w-10 h-10 object-cover"
+                          />
+
                           <h2 className="text-base">{category.name}</h2>
                         </div>
                       </div>
