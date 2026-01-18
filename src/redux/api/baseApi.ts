@@ -9,6 +9,7 @@ import {
 } from "@reduxjs/toolkit/query/react";
 import { RootState } from "../store";
 import { logout, setUser } from "../features/auth/authSlice";
+import toast from "react-hot-toast";
 const baseUrl = "http://localhost:5000/v1/api";
 
 const baseQuery = fetchBaseQuery({
@@ -28,42 +29,28 @@ const baseQueryWithRefreshToken: BaseQueryFn<
   BaseQueryApi,
   DefinitionType
 > = async (args, api, extraOptions): Promise<any> => {
-  const state = api.getState() as RootState;
-
-  if (!state.auth.token) {
-    return await baseQuery(args, api, extraOptions);
-  }
   let result = await baseQuery(args, api, extraOptions);
-  console.log("this is from redux error", result.error);
 
-  // 🔴 only if token expired / unauthorized
-  if (result?.error?.status === 401 || result?.error?.status === 500) {
-    // 🛑 আবার check — logout হয়ে গেছে কিনা
-    const latestState = api.getState() as RootState;
-    if (!latestState.auth.token) {
-      api.dispatch(logout());
-      return result;
+  if (result?.error?.status === 400) {
+    const errorData = result.error.data as { message?: string };
+
+    if (errorData?.message) {
+      toast.error(errorData.message);
     }
+  }
+  if (result.error?.status === 401) {
+    //* Send Refresh Token
 
-    // 🔁 refresh token call
     const res = await fetch(`${baseUrl}/auth/refresh-token`, {
       method: "POST",
       credentials: "include",
     });
+    const { data } = await res.json();
 
-    const refreshResult = await res.json();
-
-    if (refreshResult?.data?.accessToken) {
+    if (data?.accessToken) {
       const user = (api.getState() as RootState).auth.user;
+      api.dispatch(setUser({ user, token: data?.accessToken }));
 
-      api.dispatch(
-        setUser({
-          user,
-          token: refreshResult.data.accessToken,
-        })
-      );
-
-      // retry original query
       result = await baseQuery(args, api, extraOptions);
     } else {
       api.dispatch(logout());
@@ -75,6 +62,6 @@ const baseQueryWithRefreshToken: BaseQueryFn<
 export const baseApi = createApi({
   reducerPath: "baseApi",
   baseQuery: baseQueryWithRefreshToken,
-  tagTypes: ["Me"],
+  tagTypes: ["Me", "category"],
   endpoints: () => ({}),
 });

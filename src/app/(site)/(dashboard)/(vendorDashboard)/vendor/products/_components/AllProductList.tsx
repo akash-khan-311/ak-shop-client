@@ -336,7 +336,10 @@ export default function AllProductsList() {
               {/* Table Body */}
               <TableBody className="dark:bg-[#000] bg-gray-2">
                 {paginatedProducts.map((product: any, index: number) => (
-                  <TableRow key={product.id}>
+                  <TableRow
+                    className={`hover:bg-muted/50 ${selectedProducts.includes(product.id) && "bg-muted/50"}`}
+                    key={product.id}
+                  >
                     <TableCell>
                       <div className="flex items-center gap-x-5">
                         <input
@@ -359,7 +362,7 @@ export default function AllProductsList() {
                         </div>
                       </div>
                     </TableCell>
-                    <TableCell>{product.category}</TableCell>
+                    <TableCell className="">{product.category}</TableCell>
                     <TableCell>${product.price.toFixed()}</TableCell>
                     <TableCell>${product.salePrice.toFixed()}</TableCell>
                     <TableCell>{product.stock}</TableCell>

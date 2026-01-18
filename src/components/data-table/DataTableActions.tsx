@@ -7,7 +7,7 @@ export default function DataTableActions({
   exportJSON,
   bulkDelete,
   selectedProducts,
-}) {
+}: any) {
   return (
     <div className="bg-white dark:bg-dark border  rounded-lg p-4 mb-4 flex flex-wrap gap-3 items-center justify-between">
       <div className="flex gap-2">

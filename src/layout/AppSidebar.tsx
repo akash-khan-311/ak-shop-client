@@ -20,7 +20,7 @@ const AppSidebar: React.FC = () => {
 
   const renderMenuItems = (
     navItems: NavItem[],
-    menuType: "main" | "others"
+    menuType: "main" | "others",
   ) => (
     <ul className="flex flex-col gap-4">
       {vendorMenuItems.map((item, index) => {
@@ -48,7 +48,7 @@ const AppSidebar: React.FC = () => {
     index: number;
   } | null>(null);
   const [subMenuHeight, setSubMenuHeight] = useState<Record<string, number>>(
-    {}
+    {},
   );
   const subMenuRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
@@ -113,7 +113,7 @@ const AppSidebar: React.FC = () => {
           </h2>
 
           <ul className="flex flex-col gap-2">
-            {user.role === "vendor" &&
+            {user?.role === "vendor" &&
               vendorMenuItems.map((item, index) => {
                 const Icon = item.icon;
 
@@ -132,7 +132,7 @@ const AppSidebar: React.FC = () => {
                   />
                 );
               })}
-            {user.role === "admin" &&
+            {user?.role === "admin" &&
               vendorMenuItems.map((item, index) => {
                 const Icon = item.icon;
 
@@ -151,7 +151,7 @@ const AppSidebar: React.FC = () => {
                   />
                 );
               })}
-            {user.role === "superAdmin" &&
+            {user?.role === "superAdmin" &&
               vendorMenuItems.map((item, index) => {
                 const Icon = item.icon;
 

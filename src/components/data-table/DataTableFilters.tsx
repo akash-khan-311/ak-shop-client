@@ -6,17 +6,17 @@ interface Product {
 }
 
 interface DataTableFiltersProps {
-  isProducts: boolean;
-  isCategory: boolean;
+  isProducts?: boolean;
+  isCategory?: boolean;
   isOrders?: boolean;
   searchTerm: string;
   setSearchTerm: (value: string) => void;
-  categoryFilter: string;
-  setCategoryFilter: (value: string) => void;
-  sortBy: string;
-  setSortBy: (value: string) => void;
-  setCurrentPage: (value: number) => void;
-  products: Product[];
+  categoryFilter?: string;
+  setCategoryFilter?: (value: string) => void;
+  sortBy?: string;
+  setSortBy?: (value: string) => void;
+  setCurrentPage?: (value: number) => void;
+  products?: Product[];
 }
 
 export default function DataTableFilters({
@@ -34,7 +34,7 @@ export default function DataTableFilters({
 }: DataTableFiltersProps) {
   const categories = [
     "All Categories",
-    ...Array.from(new Set(products.map((p) => p.category))),
+    ...Array.from(new Set(products?.map((p) => p.category))),
   ];
 
   return (
@@ -82,8 +82,15 @@ export default function DataTableFilters({
         <button
           onClick={() => {
             setSearchTerm("");
-            setCategoryFilter("All Categories");
-            setSortBy("No Sort");
+            {
+              isProducts &&
+                categoryFilter !== "All Categories" &&
+                setCategoryFilter("All Categories");
+            }
+            {
+              isProducts && sortBy !== "No Sort" && setSortBy("No Sort");
+            }
+            setCurrentPage(1);
           }}
           className="py-4 w-full px-8 text-white bg-green hover:bg-green-dark duration-200 rounded"
         >
@@ -91,9 +98,12 @@ export default function DataTableFilters({
         </button>
         <button
           onClick={() => {
+            if (isProducts) {
+              setCategoryFilter("All Categories");
+              setSortBy("No Sort");
+            }
             setSearchTerm("");
-            setCategoryFilter("All Categories");
-            setSortBy("No Sort");
+
             setCurrentPage(1);
           }}
           className="py-4 w-full px-8 dark:bg-gray-7 bg-gray-3 hover:bg-gray-4 dark:hover:bg-gray-7 duration-200 rounded"

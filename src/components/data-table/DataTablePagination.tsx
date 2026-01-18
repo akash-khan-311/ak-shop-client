@@ -7,13 +7,13 @@ export default function DataTablePagination({
   currentPage,
   setCurrentPage,
 }: any) {
-  const totalPages = Math.ceil(filteredItems.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredItems?.length / itemsPerPage);
   return (
     <div className="p-4 dark:bg-dark flex items-center justify-between border-t border-gray-700">
       <div className="text-sm text-gray-400">
         SHOWING {(currentPage - 1) * itemsPerPage + 1} TO{" "}
-        {Math.min(currentPage * itemsPerPage, filteredItems.length)} OF{" "}
-        {filteredItems.length}
+        {Math.min(currentPage * itemsPerPage, filteredItems?.length)} OF{" "}
+        {filteredItems?.length}
       </div>
       <div className="flex items-center gap-2">
         <button
@@ -23,19 +23,20 @@ export default function DataTablePagination({
         >
           <ChevronLeft size={20} />
         </button>
-        {[...Array(totalPages)].map((_, i) => (
-          <button
-            key={i + 1}
-            onClick={() => setCurrentPage(i + 1)}
-            className={`w-8 h-8 rounded text-[#000]  dark:text-white ${
-              currentPage === i + 1
-                ? "dark:bg-dark-2 bg-gray-6 hover:text-white text-[#fff]"
-                : "dark:hover:bg-dark-2 hover:bg-gray-6 hover:text-white"
-            }`}
-          >
-            {i + 1}
-          </button>
-        ))}
+        {filteredItems &&
+          [...Array(totalPages)]?.map((_, i) => (
+            <button
+              key={i + 1}
+              onClick={() => setCurrentPage(i + 1)}
+              className={`w-8 h-8 rounded text-[#000]  dark:text-white ${
+                currentPage === i + 1
+                  ? "dark:bg-dark-2 bg-gray-6 hover:text-white text-[#fff]"
+                  : "dark:hover:bg-dark-2 hover:bg-gray-6 hover:text-white"
+              }`}
+            >
+              {i + 1}
+            </button>
+          ))}
         <button
           onClick={() =>
             setCurrentPage((prev) => Math.min(totalPages, prev + 1))

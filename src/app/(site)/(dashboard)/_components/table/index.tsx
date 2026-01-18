@@ -51,7 +51,7 @@ export default function Table({
 
           {/* Table Body */}
           <TableBody className="dark:bg-[#000] bg-gray-2">
-            {currentOrders.map((order: any, index: number) => (
+            {currentOrders?.map((order: any, index: number) => (
               <TableRow key={order.id}>
                 <TableCell>{order.id}</TableCell>
                 <TableCell>{order.time}</TableCell>
@@ -105,7 +105,7 @@ export default function Table({
                           <button
                             onClick={() =>
                               setInvoiceDropdown(
-                                invoiceDropdown === index ? null : index
+                                invoiceDropdown === index ? null : index,
                               )
                             }
                           >
