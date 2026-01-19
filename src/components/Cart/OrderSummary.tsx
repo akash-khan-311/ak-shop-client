@@ -1,11 +1,11 @@
-import { selectTotalPrice } from "@/redux/features/cart-slice";
-import { useAppSelector } from "@/redux/store";
+import { useAppSelector } from "@/redux/hook";
+
 import React from "react";
 import { useSelector } from "react-redux";
 
 const OrderSummary = () => {
   const cartItems = useAppSelector((state) => state.cartReducer.items);
-  const totalPrice = useSelector(selectTotalPrice);
+  // const totalPrice = useSelector(state=> state.cartReducer.totalPrice);
 
   return (
     <div className="lg:max-w-[455px] w-full">
@@ -49,7 +49,7 @@ const OrderSummary = () => {
               <p className="font-medium text-lg ">Total</p>
             </div>
             <div>
-              <p className="font-medium text-lg  text-right">${totalPrice}</p>
+              {/* <p className="font-medium text-lg  text-right">${totalPrice}</p> */}
             </div>
           </div>
 

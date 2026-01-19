@@ -80,7 +80,7 @@ const FormField: React.FC<FormFieldProps> = ({
                 required: required ? errorMessage : false,
                 ...rules,
               })}
-              className={`flex-1 px-4 py-2 border   border-gray-300 rounded-lg focus:ring-1 focus:ring-pink focus:border-pink outline-none transition-all ${className}`}
+              className={`flex-1 px-4 py-2 border  border-gray-6 rounded-lg focus:ring-1 focus:ring-pink focus:border-pink outline-none transition-all ${className}`}
               placeholder={placeholder || label}
             />
             {index === fields.length - 1 && append && (
