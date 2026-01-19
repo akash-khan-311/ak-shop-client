@@ -3,7 +3,6 @@
 import FormField from "@/components/ui/FormField";
 import React, { useEffect } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
-import SubCategoryFields from "./SubCategoryFields";
 import DashboardPageHeader from "@/components/Dashboard/DashboardPageHeader";
 import { slugify } from "@/app/(site)/(dashboard)/utils/slugify";
 import { useCreateCategoryMutation } from "@/redux/features/category/categoryApi";
@@ -58,14 +57,6 @@ const CreateCategory = () => {
     },
   });
 
-  const {
-    fields: subcategoryFields,
-    append: appendSubcategory,
-    remove: removeSubcategory,
-  } = useFieldArray({
-    control,
-    name: "subcategories",
-  });
   const token = useAppSelector(selectCurrentToken);
   const [createCategory, { isLoading }] = useCreateCategoryMutation();
   const categoryName = watch("name");
@@ -93,11 +84,6 @@ const CreateCategory = () => {
           image: imageUrl,
           name: data.name,
           slug: data.slug,
-          subcategories: data.subcategories.map((sub) => ({
-            name: sub.name,
-            slug: sub.slug,
-            brands: sub.brands.map((b) => b.value).filter(Boolean),
-          })),
         },
       };
 
@@ -105,9 +91,12 @@ const CreateCategory = () => {
       if (result.success) {
         toast.success("Category created successfully");
         reset();
+        setValue("image", null);
       }
-      console.log(result);
-    } catch (error) {}
+    } catch (error) {
+      toast.error("Failed to create category");
+      console.log("Error creating category:", error);
+    }
   };
 
   /* ---------------- UI ---------------- */
@@ -149,48 +138,20 @@ const CreateCategory = () => {
             />
           </div>
 
-          {/* SUBCATEGORIES */}
-          {subcategoryFields.map((sub, index) => (
-            <SubCategoryFields
-              key={sub.id}
-              index={index}
-              watch={watch}
-              setValue={setValue}
-              control={control}
-              register={register}
-              errors={errors}
-              removeSubcategory={removeSubcategory}
-              canRemove={subcategoryFields.length > 1}
-            />
-          ))}
           <div className="dark:bg-dark bg-gray-3 p-6 rounded-xl mt-10">
             <h2 className="text-xl md:text-2xl border-b dark:border-gray-6 border-gray-5 pb-4">
               Product Images
             </h2>
-            <SingleImageUploadField setValue={setValue} />
+            <SingleImageUploadField control={control} setValue={setValue} />
           </div>
           <div className="flex justify-between items-center mt-10">
-            {/* ADD SUBCATEGORY */}
-            <button
-              className="bg-gray-6 text-white hover:bg-gray-7 duration-200 shadow-xl py-2 px-8 rounded-md"
-              type="button"
-              onClick={() =>
-                appendSubcategory({
-                  name: "",
-                  slug: "",
-                  brands: [{ value: "" }],
-                })
-              }
-            >
-              + Add Subcategory
-            </button>
-
             {/* SUBMIT */}
             <button
-              className="bg-pink text-white hover:bg-pink-light duration-200 shadow-xl py-2 px-8 rounded-md"
+              disabled={isLoading}
+              className="bg-pink text-white hover:bg-pink-light duration-200 shadow-xl py-2 px-8 rounded-md *:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50 "
               type="submit"
             >
-              Create Category
+              {isLoading ? "Creating..." : "Create Category"}
             </button>
           </div>
         </div>

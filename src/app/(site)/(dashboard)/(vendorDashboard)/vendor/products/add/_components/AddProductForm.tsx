@@ -278,7 +278,7 @@ export default function AddProductForm({
           <h2 className="text-xl md:text-2xl border-b dark:border-gray-6 border-gray-5 pb-4">
             Product Images
           </h2>
-          <ImageUploadField setValue={setValue} />
+          <ImageUploadField control={control} setValue={setValue} />
         </div>
 
         <button

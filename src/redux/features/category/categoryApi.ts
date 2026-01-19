@@ -51,6 +51,20 @@ const categoryApi = baseApi.injectEndpoints({
           "Content-Type": "application/json",
         },
       }),
+      invalidatesTags: ["category"],
+    }),
+    createSubCategory: builder.mutation({
+      query: ({ id, token, payload }) => ({
+        url: `/category/${id}/create-subcategory`,
+        method: "POST",
+        body: payload,
+        credentials: "include",
+        headers: {
+          Authorization: `${token}`,
+          "Content-Type": "application/json",
+        },
+      }),
+      invalidatesTags: ["category"],
     }),
   }),
 });
@@ -59,4 +73,5 @@ export const {
   useGetAllCategoryQuery,
   useToggleCategoryPublishedMutation,
   useCreateCategoryMutation,
+  useCreateSubCategoryMutation,
 } = categoryApi;

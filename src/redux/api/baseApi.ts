@@ -1,4 +1,5 @@
 import config from "@/config";
+import Cookies from "js-cookie";
 import {
   BaseQueryApi,
   BaseQueryFn,
@@ -18,7 +19,7 @@ const baseQuery = fetchBaseQuery({
   prepareHeaders: (headers, { getState }) => {
     const token = (getState() as RootState).auth.token;
 
-    if (token) headers.set("Authorization", `${token}`);
+    if (token) headers.set("authorization", `${token}`);
 
     return headers;
   },
@@ -30,7 +31,7 @@ const baseQueryWithRefreshToken: BaseQueryFn<
   DefinitionType
 > = async (args, api, extraOptions): Promise<any> => {
   let result = await baseQuery(args, api, extraOptions);
-
+  console.log("this is result from redux====", result);
   if (result?.error?.status === 400) {
     const errorData = result.error.data as { message?: string };
 
@@ -38,7 +39,7 @@ const baseQueryWithRefreshToken: BaseQueryFn<
       toast.error(errorData.message);
     }
   }
-  if (result.error?.status === 401) {
+  if (result.error?.status === 401 || result.error?.status === 500) {
     //* Send Refresh Token
 
     const res = await fetch(`${baseUrl}/auth/refresh-token`, {
@@ -46,10 +47,11 @@ const baseQueryWithRefreshToken: BaseQueryFn<
       credentials: "include",
     });
     const { data } = await res.json();
-
+    console.log("this token from redux", data.accessToken);
     if (data?.accessToken) {
       const user = (api.getState() as RootState).auth.user;
       api.dispatch(setUser({ user, token: data?.accessToken }));
+      Cookies.set("accessToken", data?.accessToken);
 
       result = await baseQuery(args, api, extraOptions);
     } else {

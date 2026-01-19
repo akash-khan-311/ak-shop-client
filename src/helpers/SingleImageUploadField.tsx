@@ -2,18 +2,32 @@
 
 import { Upload } from "lucide-react";
 import Image from "next/image";
-import React, { useRef, useState } from "react";
-import { UseFormSetValue } from "react-hook-form";
+import React, { useEffect, useRef, useState } from "react";
+import { Control, UseFormSetValue, useWatch } from "react-hook-form";
 
 type ImageUploadProps = {
-  setValue: UseFormSetValue<any>; // or UseFormSetValue<CategoryFormData>
+  setValue: UseFormSetValue<any>;
+  control: Control<any>;
 };
-
-export default function SingleImageUploadField({ setValue }: ImageUploadProps) {
+export default function SingleImageUploadField({
+  setValue,
+  control,
+}: ImageUploadProps) {
   const [image, setImage] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const watchedImage = useWatch({
+    control,
+    name: "image",
+  });
+
+  useEffect(() => {
+    if (!watchedImage) {
+      setImage(null);
+      setPreview(null);
+    }
+  }, [watchedImage]);
   const handleFileChange = (file: File | null) => {
     if (!file) return;
 

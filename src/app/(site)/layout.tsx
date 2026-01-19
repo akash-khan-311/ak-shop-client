@@ -19,6 +19,7 @@ import { Provider } from "react-redux";
 import { persistor, store } from "@/redux/store";
 import { PersistGate } from "redux-persist/integration/react";
 import { SidebarProvider } from "../context/SidebarContext";
+import { Toaster } from "react-hot-toast";
 
 export default function RootLayout({
   children,
@@ -66,6 +67,7 @@ export default function RootLayout({
                     <ModalProvider>
                       <PreviewSliderProvider>
                         <Header />
+                        <Toaster position="bottom-right" reverseOrder={false} />
                         {children}
                         {/* <QuickViewModal /> */}
                         <CartSidebarModal />
