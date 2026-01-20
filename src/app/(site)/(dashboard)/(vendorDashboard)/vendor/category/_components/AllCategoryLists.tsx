@@ -4,6 +4,8 @@ import DashboardPageHeader from "@/components/Dashboard/DashboardPageHeader";
 import DataTableActions from "@/components/data-table/DataTableActions";
 import DataTableFilters from "@/components/data-table/DataTableFilters";
 import DataTablePagination from "@/components/data-table/DataTablePagination";
+import { ConfirmationModal } from "@/components/ui/confirmationToast";
+
 import {
   Table,
   TableBody,
@@ -15,21 +17,35 @@ import {
 
 import { selectCurrentToken } from "@/redux/features/auth/authSlice";
 import {
+  useDeleteCategoryMutation,
   useGetAllCategoryQuery,
+  useGetSingleCategoryQuery,
   useToggleCategoryPublishedMutation,
 } from "@/redux/features/category/categoryApi";
 
 import { useAppSelector } from "@/redux/hook";
 import { TCategory } from "@/types/category";
-import { SquarePen, Trash2, ZoomIn } from "lucide-react";
+import { Plus, SquarePen, Trash2, ZoomIn } from "lucide-react";
 import Image from "next/image";
 import { useMemo, useState } from "react";
+import toast from "react-hot-toast";
+import EditCategoryDrawer from "./EditCategoryDrwarer";
 
 export default function AllCategoryLists() {
-  const [
-    toggleCategoryPublished,
-    { isLoading, isError, isSuccess, data: result },
-  ] = useToggleCategoryPublishedMutation();
+  const [isOpen, setIsOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(
+    null,
+  );
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const { data: category } = useGetSingleCategoryQuery(selectedCategoryId, {
+    skip: !selectedCategoryId,
+  });
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [toggleCategoryPublished, { isLoading }] =
+    useToggleCategoryPublishedMutation();
+  const [deleteCategory, { isLoading: isDeleting }] =
+    useDeleteCategoryMutation();
   const token = useAppSelector(selectCurrentToken);
   const { data } = useGetAllCategoryQuery(token, {
     skip: !token,
@@ -104,13 +120,20 @@ export default function AllCategoryLists() {
     }
   };
 
-  const handlePublished = (id: string) => {
-    const data = {
-      id: id,
-      token: token,
-    };
+  const handlePublished = async (id: string) => {
+    try {
+      const data = {
+        id: id,
+        token: token,
+      };
 
-    toggleCategoryPublished(data);
+      const result = await toggleCategoryPublished(data).unwrap();
+
+      if (result?.success) toast.success(result?.message);
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to toggle published status");
+    }
   };
 
   const toggleSelect = (id: string) => {
@@ -118,7 +141,27 @@ export default function AllCategoryLists() {
       prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id],
     );
   };
-  console.log(categories);
+  const handleDelete = async (id: string) => {
+    // simulate API call
+    try {
+      const result = await deleteCategory({ id, token }).unwrap();
+      console.log(result);
+      if (result?.success) {
+        setModalOpen(false);
+        toast.success("Category deleted successfully!");
+      }
+    } catch (error) {}
+  };
+  const handleEditClick = (id: string) => {
+    setSelectedCategoryId(id);
+    setIsOpen(true);
+  };
+  const handleUpdated = (updatedCategory: any) => {
+    // update the category list after editing
+    // setCategories((prev) =>
+    //   prev.map((cat) => (cat._id === updatedCategory._id ? updatedCategory : cat))
+    // );
+  };
   return (
     <div className="">
       <div className="">
@@ -190,7 +233,7 @@ export default function AllCategoryLists() {
                         />
                         <div className="flex  items-center gap-x-2 rounded-full">
                           <Image
-                            src={category?.image}
+                            src={category?.image?.url}
                             width={50}
                             height={50}
                             alt={category.name}
@@ -217,10 +260,16 @@ export default function AllCategoryLists() {
 
                     <TableCell>
                       <div className="flex justify-start items-center gap-x-5">
-                        <button>
+                        <button onClick={() => handleEditClick(category._id)}>
                           <SquarePen size={20} />
                         </button>
-                        <button>
+
+                        <button
+                          onClick={() => {
+                            setSelectedCategory(category._id);
+                            setModalOpen(true);
+                          }}
+                        >
                           <Trash2 size={20} />
                         </button>
                       </div>
@@ -240,6 +289,21 @@ export default function AllCategoryLists() {
           />
         </div>
       </div>
+      {selectedCategoryId && (
+        <EditCategoryDrawer
+          categoryId={selectedCategoryId}
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+        />
+      )}
+      {modalOpen && (
+        <ConfirmationModal
+          title={`Delete ${categories.find((c) => c.id === selectedCategory)?.name}?`}
+          message="This action cannot be undone. This will permanently delete the category and its associated data from the database."
+          onCancel={() => setModalOpen(false)}
+          onConfirm={() => handleDelete(selectedCategory)}
+        />
+      )}
     </div>
   );
 }

@@ -5,49 +5,41 @@ import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
 import { Control, UseFormSetValue, useWatch } from "react-hook-form";
 
-type ImageUploadProps = {
-  setValue: UseFormSetValue<any>;
-  control: Control<any>;
+type Props = {
+  setValue: any;
+  resetTrigger: boolean;
+  existingImage?: string;
 };
 export default function SingleImageUploadField({
   setValue,
-  control,
-}: ImageUploadProps) {
-  const [image, setImage] = useState<File | null>(null);
+  resetTrigger,
+  existingImage,
+}: Props) {
   const [preview, setPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const watchedImage = useWatch({
-    control,
-    name: "image",
-  });
+  useEffect(() => {
+    if (existingImage) {
+      setPreview(existingImage);
+    }
+  }, [existingImage]);
 
   useEffect(() => {
-    if (!watchedImage) {
-      setImage(null);
-      setPreview(null);
+    if (resetTrigger) {
+      setPreview(existingImage || null);
+      setValue("image", null);
     }
-  }, [watchedImage]);
-  const handleFileChange = (file: File | null) => {
+  }, [resetTrigger, setValue, existingImage]);
+
+  const handleFile = (file: File | null) => {
     if (!file) return;
-
-    setImage(file);
     setPreview(URL.createObjectURL(file));
-
-    // ✅ RHF value update (single image)
     setValue("image", file, { shouldValidate: true });
-  };
-
-  const handleRemove = () => {
-    setImage(null);
-    setPreview(null);
-    setValue("image", undefined as any);
   };
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
-    const file = e.dataTransfer.files?.[0];
-    handleFileChange(file);
+    handleFile(e.dataTransfer.files?.[0] || null);
   };
 
   return (
@@ -69,7 +61,7 @@ export default function SingleImageUploadField({
           type="file"
           accept="image/png, image/jpeg, image/webp"
           className="hidden"
-          onChange={(e) => handleFileChange(e.target.files?.[0] || null)}
+          onChange={(e) => handleFile(e.target.files?.[0] || null)}
         />
       </div>
 
@@ -81,13 +73,6 @@ export default function SingleImageUploadField({
             fill
             className="object-cover"
           />
-          <button
-            type="button"
-            onClick={handleRemove}
-            className="absolute -top-2 -right-2 bg-red-500 text-white w-6 h-6 rounded-full"
-          >
-            ×
-          </button>
         </div>
       )}
     </div>

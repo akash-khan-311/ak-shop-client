@@ -86,8 +86,8 @@ export const vendorMenuItems = [
     icon: ListChecks,
     subItems: [
       { name: "All Category", path: "/vendor/category" },
-      { name: "Add Subcategory", path: "/vendor/category/add-subcategory" },
       { name: "Add Category", path: "/vendor/category/add" },
+      { name: "Add Subcategory", path: "/vendor/category/add-subcategory" },
     ],
   },
 

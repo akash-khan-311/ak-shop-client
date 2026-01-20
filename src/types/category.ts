@@ -1,5 +1,8 @@
 export type Brands = string;
-
+export type CategoryImage = {
+  url: string;
+  public_id: string;
+};
 export type TSubCategory = {
   _id: string;
   name: string;
@@ -10,12 +13,12 @@ export type TSubCategory = {
 export type TCategory = {
   _id?: string;
   name: string;
-  image: string;
+  image: CategoryImage;
   slug: string;
-  subCategories: TSubCategory[];
+  subCategories?: TSubCategory[];
   isDeleted: boolean;
   published: boolean;
   __v?: number;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
 };

@@ -14,6 +14,14 @@ const categoryApi = baseApi.injectEndpoints({
       }),
       providesTags: ["category"],
     }),
+    getSingleCategory: builder.query({
+      query: (id) => {
+        return {
+          url: `/category/${id}`,
+          method: "GET",
+        };
+      },
+    }),
     updateCategory: builder.mutation({
       query: ({ token, data, id }) => ({
         url: `/category/${id}`,
@@ -22,7 +30,6 @@ const categoryApi = baseApi.injectEndpoints({
         credentials: "include",
         headers: {
           Authorization: `${token}`,
-          "Content-Type": "application/json",
         },
       }),
       invalidatesTags: ["category"],
@@ -41,14 +48,13 @@ const categoryApi = baseApi.injectEndpoints({
       invalidatesTags: ["category"],
     }),
     createCategory: builder.mutation({
-      query: ({ token, categoryData }) => ({
+      query: ({ token, formData }) => ({
         url: "/category/create",
         method: "POST",
-        body: categoryData,
+        body: formData,
         credentials: "include",
         headers: {
           Authorization: `${token}`,
-          "Content-Type": "application/json",
         },
       }),
       invalidatesTags: ["category"],
@@ -66,6 +72,19 @@ const categoryApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["category"],
     }),
+    deleteCategory: builder.mutation({
+      query: ({ id, token }) => {
+        return {
+          url: `/category/delete/${id}`,
+          method: "DELETE",
+          credentials: "include",
+          headers: {
+            Authorization: `${token}`,
+          },
+        };
+      },
+      invalidatesTags: ["category"],
+    }),
   }),
 });
 
@@ -74,4 +93,7 @@ export const {
   useToggleCategoryPublishedMutation,
   useCreateCategoryMutation,
   useCreateSubCategoryMutation,
+  useDeleteCategoryMutation,
+  useGetSingleCategoryQuery,
+  useUpdateCategoryMutation,
 } = categoryApi;

@@ -1,7 +1,7 @@
 "use client";
 
 import FormField from "@/components/ui/FormField";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import DashboardPageHeader from "@/components/Dashboard/DashboardPageHeader";
 import { slugify } from "@/app/(site)/(dashboard)/utils/slugify";
@@ -47,18 +47,13 @@ const CreateCategory = () => {
     defaultValues: {
       name: "",
       slug: "",
-      subcategories: [
-        {
-          name: "",
-          slug: "",
-          brands: [{ value: "" }],
-        },
-      ],
+      image: null,
     },
   });
 
   const token = useAppSelector(selectCurrentToken);
   const [createCategory, { isLoading }] = useCreateCategoryMutation();
+  const [resetImage, setResetImage] = useState(false);
   const categoryName = watch("name");
   useEffect(() => {
     if (categoryName) {
@@ -72,26 +67,17 @@ const CreateCategory = () => {
 
   const onSubmit = async (data: CategoryFormData) => {
     try {
-      let imageUrl = "";
+      const formData = new FormData();
+      formData.append("name", data.name);
+      formData.append("slug", data.slug);
 
-      if (data.image) {
-        imageUrl = await uploadImageToCloudinary(data.image);
-      }
+      if (data.image) formData.append("image", data.image);
 
-      const formattedData = {
-        token,
-        categoryData: {
-          image: imageUrl,
-          name: data.name,
-          slug: data.slug,
-        },
-      };
-
-      const result = await createCategory(formattedData).unwrap();
+      const result = await createCategory({ token, formData }).unwrap();
       if (result.success) {
         toast.success("Category created successfully");
         reset();
-        setValue("image", null);
+        setResetImage(true);
       }
     } catch (error) {
       toast.error("Failed to create category");
@@ -142,7 +128,10 @@ const CreateCategory = () => {
             <h2 className="text-xl md:text-2xl border-b dark:border-gray-6 border-gray-5 pb-4">
               Product Images
             </h2>
-            <SingleImageUploadField control={control} setValue={setValue} />
+            <SingleImageUploadField
+              resetTrigger={resetImage}
+              setValue={setValue}
+            />
           </div>
           <div className="flex justify-between items-center mt-10">
             {/* SUBMIT */}
