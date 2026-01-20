@@ -73,11 +73,12 @@ const categoryApi = baseApi.injectEndpoints({
       invalidatesTags: ["category"],
     }),
     deleteCategory: builder.mutation({
-      query: ({ id, token }) => {
+      query: ({ ids, token }) => {
         return {
-          url: `/category/delete/${id}`,
+          url: `/category/delete`,
           method: "DELETE",
           credentials: "include",
+          body: { ids },
           headers: {
             Authorization: `${token}`,
           },

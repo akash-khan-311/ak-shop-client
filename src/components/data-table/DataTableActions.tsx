@@ -25,25 +25,10 @@ export default function DataTableActions({
           <Download size={16} />
           Export JSON
         </button>
-        <button
-          onClick={bulkDelete}
-          disabled={selectedProducts.length === 0}
-          className="px-4 py-2 dark:bg-gray-7 bg-gray-3 hover:bg-gray-4 dark:hover:bg-gray-6 rounded flex items-center gap-2 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          <Trash2 size={16} />
-          Bulk Action
-        </button>
       </div>
       <div className="flex gap-2">
         <button
-          onClick={bulkDelete}
-          disabled={selectedProducts.length === 0}
-          className="px-4 py-2 dark:bg-gray-7 bg-gray-3 hover:bg-gray-4 dark:hover:bg-gray-6 rounded flex items-center gap-2 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          <Trash2 size={16} />
-          Bulk Action
-        </button>
-        <button
+          onClick={() => bulkDelete(selectedProducts)}
           disabled={selectedProducts.length === 0}
           className="px-4 text-white py-2 bg-red hover:bg-red rounded flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
         >

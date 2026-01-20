@@ -34,6 +34,7 @@ import EditCategoryDrawer from "./EditCategoryDrwarer";
 export default function AllCategoryLists() {
   const [isOpen, setIsOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const [idsToDelete, setIdsToDelete] = useState<string[]>([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(
     null,
   );
@@ -108,10 +109,6 @@ export default function AllCategoryLists() {
     a.click();
   };
 
-  const bulkDelete = () => {
-    console.log("bulk deleted");
-  };
-
   const toggleSelectAll = () => {
     if (selectedCategories.length === categories.length) {
       setSelectedCategories([]);
@@ -141,14 +138,32 @@ export default function AllCategoryLists() {
       prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id],
     );
   };
-  const handleDelete = async (id: string) => {
+
+  const confirmDelete = (ids: string[]) => {
+    setIdsToDelete(ids);
+    setModalOpen(true);
+  };
+
+  const handleDeleteConfirmed = async () => {
+    try {
+      const result = await deleteCategory({ ids: idsToDelete, token }).unwrap();
+      toast.success(result.message);
+      setSelectedCategories([]); // bulk clear
+    } catch (err: any) {
+      toast.error(err?.data?.message || "Delete failed");
+    } finally {
+      setModalOpen(false);
+      setIdsToDelete([]);
+    }
+  };
+  const handleDelete = async (ids: string) => {
     // simulate API call
     try {
-      const result = await deleteCategory({ id, token }).unwrap();
+      const result = await deleteCategory({ ids, token }).unwrap();
       console.log(result);
       if (result?.success) {
         setModalOpen(false);
-        toast.success("Category deleted successfully!");
+        toast.success(result?.message);
       }
     } catch (error) {}
   };
@@ -156,12 +171,7 @@ export default function AllCategoryLists() {
     setSelectedCategoryId(id);
     setIsOpen(true);
   };
-  const handleUpdated = (updatedCategory: any) => {
-    // update the category list after editing
-    // setCategories((prev) =>
-    //   prev.map((cat) => (cat._id === updatedCategory._id ? updatedCategory : cat))
-    // );
-  };
+
   return (
     <div className="">
       <div className="">
@@ -173,9 +183,9 @@ export default function AllCategoryLists() {
 
         {/* Action Bar */}
         <DataTableActions
+          bulkDelete={confirmDelete}
           exportCSV={exportCSV}
           exportJSON={exportJSON}
-          bulkDelete={bulkDelete}
           selectedProducts={selectedCategories}
         />
 
@@ -203,6 +213,9 @@ export default function AllCategoryLists() {
                         <div className="flex items-center gap-x-5">
                           <input
                             onChange={toggleSelectAll}
+                            checked={
+                              selectedCategories.length === categories.length
+                            }
                             type="checkbox"
                             className="w-4 h-4"
                           />
@@ -264,12 +277,7 @@ export default function AllCategoryLists() {
                           <SquarePen size={20} />
                         </button>
 
-                        <button
-                          onClick={() => {
-                            setSelectedCategory(category._id);
-                            setModalOpen(true);
-                          }}
-                        >
+                        <button onClick={() => confirmDelete([category._id])}>
                           <Trash2 size={20} />
                         </button>
                       </div>
@@ -298,10 +306,10 @@ export default function AllCategoryLists() {
       )}
       {modalOpen && (
         <ConfirmationModal
-          title={`Delete ${categories.find((c) => c.id === selectedCategory)?.name}?`}
+          title={`Are You Sure?`}
           message="This action cannot be undone. This will permanently delete the category and its associated data from the database."
           onCancel={() => setModalOpen(false)}
-          onConfirm={() => handleDelete(selectedCategory)}
+          onConfirm={handleDeleteConfirmed}
         />
       )}
     </div>

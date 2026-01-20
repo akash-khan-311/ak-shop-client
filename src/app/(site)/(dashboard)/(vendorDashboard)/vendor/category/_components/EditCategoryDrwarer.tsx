@@ -99,7 +99,7 @@ export default function EditCategoryDrawer({
       {/* Drawer */}
       <div
         className={`fixed top-0 right-0 bottom-0 z-999999 bg-gray-3 dark:bg-dark overflow-hidden  p-6  w-[90%]
-      md:w-[70%] lg:w-[600px] xl:w-[800px] transition-transform transform duration-500 ${isOpen ? "translate-x-0" : "translate-x-full"}`}
+      md:w-[70%] lg:w-[600px] xl:w-[800px] transition-all transform duration-500 ${isOpen ? "translate-x-0" : "translate-x-full"}`}
       >
         <button
           onClick={() => setIsOpen(false)}
@@ -107,7 +107,9 @@ export default function EditCategoryDrawer({
         >
           <X className="" size={35} />
         </button>
-        <h1 className="text-3xl font-semibold">Edit </h1>
+        <h1 className="text-3xl font-semibold border-b border-gray-6 pb-4 mb-8">
+          Edit Category
+        </h1>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="">
             <FormField
@@ -136,8 +138,9 @@ export default function EditCategoryDrawer({
           </div>
           <div>
             <button
-              className="p-2 px-8 bg-pink rounded-md w-full flex justify-center items-center"
+              className="p-2 px-8 bg-pink rounded-md w-full flex justify-center items-center *:hover:bg-pink-dark mt-10 text-white disabled:opacity-50"
               type="submit"
+              disabled={isLoading}
             >
               {isLoading ? "Updating..." : "Update Category"}
             </button>

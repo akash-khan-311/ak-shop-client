@@ -32,14 +32,18 @@ export const ConfirmationModal: FC<ConfirmationModalProps> = ({
 
   return (
     <div className="fixed inset-0  flex items-center justify-center backdrop-blur-md bg-[#000]/30 z-999999">
-      <div className="bg-white dark:bg-dark border border-gray-6 rounded-lg p-6 w-full max-w-lg shadow-lg">
-        {title && <h2 className="text-xl font-semibold mb-4">{title}</h2>}
+      <div className="bg-white dark:bg-dark border border-gray-6 rounded-lg p-6 w-full max-w-lg shadow-lg flex flex-col items-center justify-center">
+        {title && (
+          <h2 className="text-xl md:text-2xl lg:text-3xl text-red font-semibold mb-4 text-center">
+            {title}
+          </h2>
+        )}
         {children}
-        <p className="text-gray-700 dark:text-gray-300 mb-4">{message}</p>
+        <p className="text-center mb-4">{message}</p>
         <div className="flex justify-end gap-3">
           <button
             onClick={onCancel}
-            className="px-4 py-2 bg-dark-2 border border-gray-6 hover:bg-dark-3 duration-150 rounded "
+            className="px-4 py-2 bg-dark-2 border border-gray-6 hover:bg-dark-3 duration-150 rounded text-center"
           >
             {cancelText}
           </button>
