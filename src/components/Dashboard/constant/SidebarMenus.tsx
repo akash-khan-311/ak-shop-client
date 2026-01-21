@@ -87,7 +87,7 @@ export const vendorMenuItems = [
     subItems: [
       { name: "All Category", path: "/vendor/category" },
       { name: "Add Category", path: "/vendor/category/add" },
-      { name: "Add Subcategory", path: "/vendor/category/add-subcategory" },
+      { name: "Sub Category", path: "/vendor/category/subcategory" },
     ],
   },
 

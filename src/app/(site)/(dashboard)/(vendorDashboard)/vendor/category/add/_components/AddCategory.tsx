@@ -80,8 +80,11 @@ const CreateCategory = () => {
         setResetImage(true);
       }
     } catch (error) {
-      toast.error("Failed to create category");
-      console.log("Error creating category:", error);
+      if (error.status === 409) {
+        toast.error(error.data.message);
+      } else {
+        toast.error("Failed to create category");
+      }
     }
   };
 

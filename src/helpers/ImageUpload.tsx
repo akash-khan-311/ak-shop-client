@@ -86,7 +86,7 @@ export default function ImageUploadField({
         />
       </div>
 
-      {previews.length > 0 && (
+      {previews?.length > 0 && (
         <div className="flex flex-wrap mt-4 gap-3">
           {previews.map((src, index) => (
             <div

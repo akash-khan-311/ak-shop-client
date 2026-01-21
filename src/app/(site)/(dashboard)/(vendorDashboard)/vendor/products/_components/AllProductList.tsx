@@ -21,11 +21,17 @@ import {
   TableCell,
   TableCaption,
 } from "@/components/ui/table";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import DashboardPageHeader from "@/components/Dashboard/DashboardPageHeader";
 import Link from "next/link";
 import DataTableActions from "@/components/data-table/DataTableActions";
 import DataTableFilters from "@/components/data-table/DataTableFilters";
 import DataTablePagination from "@/components/data-table/DataTablePagination";
+import { TooltipProvider } from "@radix-ui/react-tooltip";
 const initialProducts = [
   {
     id: 1,
@@ -159,6 +165,12 @@ export default function AllProductsList() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
+  const [filters, setFilters] = useState({
+    search: "",
+    category: "All Categories",
+    sort: "No Sort",
+  });
+
   const categories = [
     "All Categories",
     ...Array.from(new Set(products.map((p) => p.category))),
@@ -169,31 +181,33 @@ export default function AllProductsList() {
     let filtered = products.filter((product) => {
       const matchesSearch = product.name
         .toLowerCase()
-        .includes(searchTerm.toLowerCase());
+        .includes(filters.search.toLowerCase());
+
       const matchesCategory =
-        categoryFilter === "All Categories" ||
-        product.category === categoryFilter;
+        filters.category === "All Categories" ||
+        product.category === filters.category;
+
       return matchesSearch && matchesCategory;
     });
 
-    if (sortBy === "Price: Low to High") {
+    if (filters.sort === "Price: Low to High") {
       filtered.sort((a, b) => a.price - b.price);
-    } else if (sortBy === "Price: High to Low") {
+    } else if (filters.sort === "Price: High to Low") {
       filtered.sort((a, b) => b.price - a.price);
-    } else if (sortBy === "Name: A-Z") {
+    } else if (filters.sort === "Name: A-Z") {
       filtered.sort((a, b) => a.name.localeCompare(b.name));
-    } else if (sortBy === "Stock: Low to High") {
+    } else if (filters.sort === "Stock: Low to High") {
       filtered.sort((a, b) => a.stock - b.stock);
     }
 
     return filtered;
-  }, [products, searchTerm, categoryFilter, sortBy]);
+  }, [products, filters]);
 
   // Pagination
 
   const paginatedProducts = filteredProducts.slice(
     (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
+    currentPage * itemsPerPage,
   );
 
   // Export CSV
@@ -210,7 +224,7 @@ export default function AllProductsList() {
           p.stock,
           `"${p.stock > 0 ? "Selling" : "Out of Stock"}"`,
           p.published,
-        ].join(",")
+        ].join(","),
       ),
     ].join("\n");
 
@@ -245,7 +259,7 @@ export default function AllProductsList() {
   // Toggle individual selection
   const toggleSelect = (id) => {
     setSelectedProducts((prev) =>
-      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id],
     );
   };
 
@@ -262,7 +276,7 @@ export default function AllProductsList() {
       confirm(`Delete ${selectedProducts.length} products?`)
     ) {
       setProducts((prev) =>
-        prev.filter((p) => !selectedProducts.includes(p.id))
+        prev.filter((p) => !selectedProducts.includes(p.id)),
       );
       setSelectedProducts([]);
     }
@@ -271,7 +285,7 @@ export default function AllProductsList() {
   // Toggle published status
   const togglePublished = (id) => {
     setProducts((prev) =>
-      prev.map((p) => (p.id === id ? { ...p, published: !p.published } : p))
+      prev.map((p) => (p.id === id ? { ...p, published: !p.published } : p)),
     );
   };
 
@@ -294,17 +308,38 @@ export default function AllProductsList() {
 
         {/* Filters */}
         <DataTableFilters
-          isProducts={true}
-          isCategory={false}
-          isOrders={false}
-          products={products}
-          searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
-          categoryFilter={categoryFilter}
-          setCategoryFilter={setCategoryFilter}
-          sortBy={sortBy}
-          setSortBy={setSortBy}
-          setCurrentPage={setCurrentPage}
+          filters={[
+            {
+              key: "search",
+              type: "search",
+              placeholder: "Search products...",
+            },
+            {
+              key: "category",
+              type: "select",
+              options: categories,
+            },
+            {
+              key: "sort",
+              type: "sort",
+              options: [
+                "No Sort",
+                "Price: Low to High",
+                "Price: High to Low",
+                "Name: A-Z",
+                "Stock: Low to High",
+              ],
+            },
+          ]}
+          values={filters}
+          setValues={setFilters}
+          onReset={() =>
+            setFilters({
+              search: "",
+              category: "All Categories",
+              sort: "No Sort",
+            })
+          }
         />
 
         {/* Table */}
@@ -396,15 +431,32 @@ export default function AllProductsList() {
                         <span className="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full z-10 transition-all duration-100 peer-checked:translate-x-4" />
                       </label>
                     </TableCell>
-
                     <TableCell>
                       <div className="flex justify-start items-center gap-x-5">
-                        <button>
-                          <SquarePen size={20} />
-                        </button>
-                        <button>
-                          <Trash2 size={20} />
-                        </button>
+                        <TooltipProvider delayDuration={1}>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <button>
+                                <SquarePen size={20} />
+                              </button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Edit Product</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                        <TooltipProvider delayDuration={1}>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <button>
+                                <Trash2 size={20} />
+                              </button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Delete Product</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
                       </div>
                     </TableCell>
                   </TableRow>

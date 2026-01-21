@@ -14,6 +14,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 import { selectCurrentToken } from "@/redux/features/auth/authSlice";
 import {
@@ -60,18 +66,41 @@ export default function AllCategoryLists() {
 
   const tableHeading = ["Category Name", "Published", "Actions"];
 
+  const [filters, setFilters] = useState({
+    search: "",
+    category: "All Categories",
+    sort: "No Sort",
+  });
   // Filter and sort products
   const filteredCategories = useMemo(() => {
     let filtered = categories?.filter((category: TCategory) => {
+      // 🔍 Search filter
       const matchesSearch = category.name
         .toLowerCase()
-        .includes(searchTerm.toLowerCase());
+        .includes(filters.search.toLowerCase());
 
-      return matchesSearch;
+      // 📂 Category filter
+      const matchesCategory =
+        filters.category === "All Categories" ||
+        category.name === filters.category;
+
+      return matchesSearch && matchesCategory;
     });
 
+    // ✅ Published / Unpublished filter (from sort select)
+    if (filters.sort === "Published") {
+      filtered = filtered.filter((category: TCategory) => category.published);
+    } else if (filters.sort === "Unpublished") {
+      filtered = filtered.filter((category: TCategory) => !category.published);
+    }
+
+    // 🅰️ Name sorting
+    if (filters.sort === "Name: A-Z") {
+      filtered.sort((a, b) => a.name.localeCompare(b.name));
+    }
+
     return filtered;
-  }, [categories, searchTerm]);
+  }, [categories, filters]);
 
   // const result = filteredCategories();
   // Pagination
@@ -80,7 +109,6 @@ export default function AllCategoryLists() {
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage,
   );
-
   // Export CSV
   const exportCSV = () => {
     const csv = [
@@ -156,21 +184,29 @@ export default function AllCategoryLists() {
       setIdsToDelete([]);
     }
   };
-  const handleDelete = async (ids: string) => {
-    // simulate API call
-    try {
-      const result = await deleteCategory({ ids, token }).unwrap();
-      console.log(result);
-      if (result?.success) {
-        setModalOpen(false);
-        toast.success(result?.message);
-      }
-    } catch (error) {}
-  };
+
   const handleEditClick = (id: string) => {
     setSelectedCategoryId(id);
     setIsOpen(true);
   };
+
+  const filterKeys = [
+    {
+      key: "search",
+      type: "search" as "search",
+      placeholder: "Search Category...",
+    },
+    {
+      key: "category",
+      type: "select" as "select",
+      options: ["All Categories", ...categories.map((cat) => cat.name)],
+    },
+    {
+      key: "sort",
+      type: "sort" as "sort",
+      options: ["No Sort", "Published", "Unpublished", "Name: A-Z"],
+    },
+  ];
 
   return (
     <div className="">
@@ -191,13 +227,16 @@ export default function AllCategoryLists() {
 
         {/* Filters */}
         <DataTableFilters
-          isProducts={false}
-          isCategory={true}
-          isOrders={false}
-          products={categories}
-          searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
-          setCurrentPage={setCurrentPage}
+          filters={filterKeys}
+          values={filters}
+          setValues={setFilters}
+          onReset={() =>
+            setFilters({
+              search: "",
+              category: "All Categories",
+              sort: "No Sort",
+            })
+          }
         />
 
         {/* Table */}
@@ -273,13 +312,34 @@ export default function AllCategoryLists() {
 
                     <TableCell>
                       <div className="flex justify-start items-center gap-x-5">
-                        <button onClick={() => handleEditClick(category._id)}>
-                          <SquarePen size={20} />
-                        </button>
-
-                        <button onClick={() => confirmDelete([category._id])}>
-                          <Trash2 size={20} />
-                        </button>
+                        <TooltipProvider delayDuration={1}>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <button
+                                onClick={() => handleEditClick(category._id)}
+                              >
+                                <SquarePen size={20} />
+                              </button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Edit Category</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                        <TooltipProvider delayDuration={1}>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <button
+                                onClick={() => confirmDelete([category._id])}
+                              >
+                                <Trash2 size={20} />
+                              </button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Delete Category</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
                       </div>
                     </TableCell>
                   </TableRow>
