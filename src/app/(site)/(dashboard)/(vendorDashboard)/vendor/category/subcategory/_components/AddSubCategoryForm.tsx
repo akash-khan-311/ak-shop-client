@@ -1,7 +1,9 @@
 "use client";
 
+import { slugify } from "@/app/(site)/(dashboard)/utils/slugify";
 import DashboardPageHeader from "@/components/Dashboard/DashboardPageHeader";
 import FormField from "@/components/ui/FormField";
+import SingleImageUploadField from "@/helpers/SingleImageUploadField";
 import { selectCurrentToken } from "@/redux/features/auth/authSlice";
 import {
   useCreateSubCategoryMutation,
@@ -9,7 +11,7 @@ import {
 } from "@/redux/features/category/categoryApi";
 import { useAppSelector } from "@/redux/hook";
 import { X } from "lucide-react";
-import React, { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import toast from "react-hot-toast";
 
@@ -20,11 +22,15 @@ export default function AddSubCategoryForm() {
     handleSubmit,
     formState: { errors },
     reset,
+    watch,
+    setValue,
     control,
   } = useForm({
     defaultValues: {
       categoryId: "",
       name: "",
+      image: null,
+      slug: '',
       brands: [{ value: "" }],
     },
   });
@@ -41,34 +47,50 @@ export default function AddSubCategoryForm() {
   const {
     fields: brandFields,
     append,
+
     remove,
   } = useFieldArray({
     control,
     name: "brands",
   });
+  const [resetImage, setResetImage] = useState(false);
+  const subCategoryName = watch("name");
+  useEffect(() => {
+    if (subCategoryName) {
+      setValue("slug", slugify(subCategoryName), {
+        shouldValidate: true,
+      });
+    }
+  }, [subCategoryName, setValue]);
 
-  const onSubmit = async (formData: any) => {
-    const slug = formData.name.toLowerCase().replace(/\s+/g, "-");
-    const payload = {
-      name: formData.name,
-      slug,
-      brands: formData.brands
-        .map((b: { value: string }) => b.value.trim())
-        .filter(Boolean),
-    };
+  const onSubmit = async (data: any) => {
+    const formData = new FormData();
+    formData.append("name", data.name);
+    formData.append("slug", data.slug);
+    formData.append('categoryId', data.categoryId)
+    data.brands
+      .map((b: any) => b.value.trim())
+      .filter(Boolean)
+      .forEach((brand: string) => {
+        formData.append("brands", brand);
+      });
 
-    console.log(payload);
-
+    if (data.image) {
+      formData.append("image", data.image);
+    }
     try {
       const result = await createSubCategory({
-        id: formData.categoryId,
+        id: data.categoryId,
         token,
-        payload,
+        formData,
       }).unwrap();
+
+
 
       if (result.success) {
         toast.success("Subcategory created successfully");
         reset();
+        setResetImage(true)
       }
 
       // reset();
@@ -122,7 +144,11 @@ export default function AddSubCategoryForm() {
             errors={errors}
             required
           />
-
+          {/* Image upload */}
+          <SingleImageUploadField
+            resetTrigger={resetImage}
+            setValue={setValue}
+          />
           {/* 🔥 Brands Array */}
           <div>
             <label className="block mb-2 text-sm font-medium">Brands</label>

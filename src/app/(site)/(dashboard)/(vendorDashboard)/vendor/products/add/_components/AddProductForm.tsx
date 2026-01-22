@@ -1,14 +1,25 @@
 "use client";
 import DashboardPageHeader from "@/components/Dashboard/DashboardPageHeader";
 import FormField from "@/components/ui/FormField";
-import { productColors, productSpecifications } from "@/data";
+import { productColors } from "@/data";
 import ImageUploadField from "@/helpers/ImageUpload";
-import { selectCurrentToken } from "@/redux/features/auth/authSlice";
+import { selectCurrentToken, selectCurrentUser } from "@/redux/features/auth/authSlice";
 import { useGetAllCategoryQuery } from "@/redux/features/category/categoryApi";
+import { useGetEffectiveTemplateQuery } from "@/redux/features/specTemplate/specTemplate";
 import { useAppSelector } from "@/redux/hook";
 import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
+type TSpecFieldType = "text" | "number" | "date" | "combobox" | "boolean" | "multi-select";
 
+type TSpecField = {
+  label: string;
+  name: string;
+  type: TSpecFieldType;
+  options?: string[];
+  optional?: boolean;
+  unit?: string;
+  order?: number;
+};
 export default function AddProductForm({
   mode = "add",
   defaultValues,
@@ -34,30 +45,43 @@ export default function AddProductForm({
   const selectedCategory = watch("category");
   const selectedSubCategory = watch("subcategory");
 
+  // ✅ selected objects
+  const selectedCatObj = useMemo(() => {
+    if (!selectedCategory) return null;
+    return categories.find((cat: any) => cat.name === selectedCategory) || null;
+  }, [categories, selectedCategory]);
+
+  const selectedSubObj = useMemo(() => {
+    if (!selectedCatObj || !selectedSubCategory) return null;
+    return (
+      selectedCatObj.subcategories?.find((sub: any) => sub.name === selectedSubCategory) || null
+    );
+  }, [selectedCatObj, selectedSubCategory]);
+
+  // ✅ slugs (recommended for backend)
+  const categorySlug = selectedCatObj?.slug;
+  const subcategorySlug = selectedSubObj?.slug;
+
   // Subcategory options from DB
-  const subCategoryOptions = selectedCategory
-    ? categories
-        .find((cat: any) => cat.name === selectedCategory)
-        ?.subcategories.map((sub: any) => sub.name) || []
-    : [];
+  const subCategoryOptions = selectedCatObj?.subcategories?.map((sub: any) => sub.name) || [];
 
   // Brand options from DB
-  const brandOptions =
-    selectedCategory && selectedSubCategory
-      ? categories
-          .find((cat: any) => cat.name === selectedCategory)
-          ?.subcategories.find((sub: any) => sub.name === selectedSubCategory)
-          ?.brands || []
-      : [];
+  const brandOptions = selectedSubObj?.brands || [];
 
-  // Specs from static data (optional, can also make dynamic in future)
-  const specsFields =
-    selectedCategory &&
-    selectedSubCategory &&
-    productSpecifications[selectedCategory]?.[selectedSubCategory]
-      ? productSpecifications[selectedCategory][selectedSubCategory]
-      : [];
 
+  const user = useAppSelector(selectCurrentUser)
+  const vendorId = user?.userId
+
+
+  // ✅ fetch dynamic spec template
+  const { data: tplRes, isLoading: tplLoading } = useGetEffectiveTemplateQuery(
+    { subcategorySlug, vendorId },
+    { skip: !subcategorySlug }
+  );
+
+  console.log('this is specifications data', tplRes)
+
+  const specsFields: TSpecField[] = (tplRes?.data?.fields || []) as TSpecField[];
   // Reset subcategory & brand when category changes
   useEffect(() => {
     setValue("subcategory", "");
@@ -69,6 +93,23 @@ export default function AddProductForm({
     setValue("brand", "");
   }, [selectedSubCategory, setValue]);
 
+  // ✅ Reset specifications when subcategory changes (important)
+  useEffect(() => {
+    setValue("specifications", {});
+  }, [subcategorySlug, setValue]);
+
+  // ✅ Wrap submit to ensure slugs + nested specs are included
+  const handleFinalSubmit = (formData: any) => {
+    const payload = {
+      ...formData,
+      categorySlug,
+      subcategorySlug,
+      // specifications already nested because we used "specifications.<key>" names
+      specifications: formData?.specifications || {},
+    };
+    console.log(payload)
+  };
+
   return (
     <div>
       <DashboardPageHeader
@@ -76,16 +117,15 @@ export default function AddProductForm({
         description="Add Product Section"
         title="Add Product"
       />
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(handleFinalSubmit)}>
         {/* Product Details */}
         <div className="dark:bg-dark bg-gray-3 p-6 rounded-xl">
           <h2 className="text-xl md:text-2xl border-b dark:border-gray-6 border-gray-5 pb-4">
             Product Details
           </h2>
           <div
-            className={`grid grid-cols-1 ${
-              selectedCategory ? "md:grid-cols-3" : "md:grid-cols-2"
-            } mt-6 gap-4 justify-center items-center`}
+            className={`grid grid-cols-1 ${selectedCategory ? "md:grid-cols-3" : "md:grid-cols-2"
+              } mt-6 gap-4 justify-center items-center`}
           >
             {/* Product Name */}
             <FormField
@@ -247,29 +287,38 @@ export default function AddProductForm({
         </div>
 
         {/* Product Specifications */}
-        {specsFields.length > 0 && (
+        {subcategorySlug && (
           <div className="dark:bg-dark bg-gray-3 p-6 rounded-xl mt-10">
             <h2 className="text-xl md:text-2xl border-b dark:border-gray-6 border-gray-5 pb-4">
               Product Specifications
             </h2>
-            <div className="mt-6 grid grid-cols-3 gap-5">
-              {specsFields.map((field) => (
-                <FormField
-                  className="dark:bg-dark-2 bg-white"
-                  key={field.name}
-                  label={field.label}
-                  name={field.name}
-                  type={field.type as any}
-                  options={field?.options}
-                  register={register}
-                  control={control}
-                  errors={errors}
-                  placeholder={field.label}
-                  required={!field.optional}
-                  errorMessage={`${field.label} is required`}
-                />
-              ))}
-            </div>
+
+            {tplLoading ? (
+              <p className="mt-6 text-sm text-gray-500">Loading specifications...</p>
+            ) : specsFields.length === 0 ? (
+              <p className="mt-6 text-sm text-gray-500">
+                No specification template found for this subcategory.
+              </p>
+            ) : (
+              <div className="mt-6 grid grid-cols-3 gap-5">
+                {specsFields.map((field) => (
+                  <FormField
+                    className="dark:bg-dark-2 bg-white"
+                    key={field.name}
+                    label={field.label}
+                    name={`specifications.${field.name}`} // ✅ nested object
+                    type={field.type as any}
+                    options={field.options}
+                    register={register}
+                    control={control}
+                    errors={errors}
+                    placeholder={field.label}
+                    required={!field.optional}
+                    errorMessage={`${field.label} is required`}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         )}
 

@@ -3,10 +3,16 @@ export type CategoryImage = {
   url: string;
   public_id: string;
 };
+export type SubCategoryImage = {
+  url: string;
+  public_id: string;
+}
 export type TSubCategory = {
+  categoryName: any;
   _id: string;
   name: string;
   slug: string;
+  image: SubCategoryImage;
   brands: Brands[];
 };
 

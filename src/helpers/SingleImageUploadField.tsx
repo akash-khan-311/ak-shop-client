@@ -17,7 +17,7 @@ export default function SingleImageUploadField({
 }: Props) {
   const [preview, setPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-
+  console.log(existingImage)
   useEffect(() => {
     if (existingImage) {
       setPreview(existingImage);

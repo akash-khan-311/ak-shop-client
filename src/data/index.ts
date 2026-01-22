@@ -357,7 +357,7 @@ export const categories = [
     name: "Electronics",
     slug: "electronics",
     subcategories: [
-      "Mobiles",
+      "Smartphones",
       "Mobile Accessories",
       "Laptops",
       "Desktops",
@@ -538,7 +538,7 @@ export const categories = [
 
 export const categoryBrandMap: Record<string, Record<string, string[]>> = {
   Electronics: {
-    Mobiles: [
+    Smartphones: [
       "Samsung",
       "Apple",
       "Xiaomi",
@@ -725,7 +725,7 @@ export const productSpecifications: Record<
   >
 > = {
   Electronics: {
-    Mobiles: [
+    Smartphones: [
       { label: "Model", name: "model", type: "text" },
       { label: "Processor", name: "processor", type: "text" },
       { label: "Release Date", name: "release", type: "date" },

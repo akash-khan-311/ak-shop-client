@@ -60,17 +60,17 @@ const categoryApi = baseApi.injectEndpoints({
       invalidatesTags: ["category"],
     }),
     createSubCategory: builder.mutation({
-      query: ({ id, token, payload }) => ({
+      query: ({ id, token, formData }) => ({
         url: `/category/${id}/create-subcategory`,
         method: "POST",
-        body: payload,
+        body: formData,
         credentials: "include",
         headers: {
           Authorization: `${token}`,
-          "Content-Type": "application/json",
+          
         },
       }),
-      invalidatesTags: ["category"],
+      invalidatesTags: ["subcategory"],
     }),
     deleteCategory: builder.mutation({
       query: ({ ids, token }) => {
@@ -97,8 +97,43 @@ const categoryApi = baseApi.injectEndpoints({
           },
         };
       },
-      providesTags: ["category"],
+      providesTags: ["subcategory"],
     }),
+    getSingleSubCategory: builder.query({
+      query: (id) => {
+        return {
+          url: `/category/subcategory/${id}`,
+          method: "GET",
+        };
+      },
+    }),
+    
+    updateSubCategory: builder.mutation({
+      query: ({id, token, data}) => ({
+        url: `/category/subcategory/${id}`,
+        method: "PATCH",
+        body: data,
+        credentials: "include",
+        headers: {
+          Authorization: `${token}`,
+        },
+      }),
+      invalidatesTags: ["subcategory"],
+    }),
+    deleteSubCategory: builder.mutation({
+      query: ({ids,token })=> {
+        return {
+          url: `/category/subcategory/delete`,
+          method: 'DELETE',
+          body: {ids},
+          headers: {
+            Authorization: `${token}`
+          }
+        }
+        
+      },
+      invalidatesTags: ['subcategory']
+    })
   }),
 });
 
@@ -111,4 +146,8 @@ export const {
   useGetSingleCategoryQuery,
   useUpdateCategoryMutation,
   useGetSubCategoryQuery,
+  useUpdateSubCategoryMutation,
+  useGetSingleSubCategoryQuery,
+  useDeleteSubCategoryMutation
+  
 } = categoryApi;

@@ -1,7 +1,7 @@
 "use client";
 
 import { selectCurrentToken } from "@/redux/features/auth/authSlice";
-import { useGetSubCategoryQuery } from "@/redux/features/category/categoryApi";
+import { useDeleteSubCategoryMutation, useGetAllCategoryQuery, useGetSubCategoryQuery } from "@/redux/features/category/categoryApi";
 import { useAppSelector } from "@/redux/hook";
 import {
   Table,
@@ -25,21 +25,31 @@ import DashboardPageHeader from "@/components/Dashboard/DashboardPageHeader";
 import DataTableActions from "@/components/data-table/DataTableActions";
 import DataTableFilters from "@/components/data-table/DataTableFilters";
 import toast from "react-hot-toast";
+import { ConfirmationModal } from "@/components/ui/confirmationToast";
+import EditDrawer from "../../_components/EditDrawer";
+import Image from "next/image";
 const tableHeading = ["Sub Category Name", "Category", "Published", "Actions"];
 export default function SubCategoryLists() {
   const token = useAppSelector(selectCurrentToken);
-  const { data, isLoading, isSuccess, isError, error } =
+  const { data } =
     useGetSubCategoryQuery(token);
+  const { data: categoryData } = useGetAllCategoryQuery(token);
+  const [deleteSubCategory] =
+    useDeleteSubCategoryMutation();
+  const allCategories = categoryData?.data
   const subCategories = useMemo(() => data?.data || [], [data]);
-  console.log(subCategories);
   const itemsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
-  const [isOpen, setIsOpen] = useState(false);
+
   const [modalOpen, setModalOpen] = useState(false);
   const [idsToDelete, setIdsToDelete] = useState<string[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedSubCategoryId, setSelectedSubCategoryId] = useState<string | null>(
+    null,
+  );
 
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const [filters, setFilters] = useState({
     search: "",
     category: "All Categories",
@@ -116,7 +126,7 @@ export default function SubCategoryLists() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "categories.csv";
+    a.download = "subCategory.csv";
     a.click();
   };
 
@@ -127,7 +137,7 @@ export default function SubCategoryLists() {
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "products.json";
+    a.download = "subCategory.json";
     a.click();
   };
 
@@ -157,21 +167,7 @@ export default function SubCategoryLists() {
     },
   ];
 
-  // const handlePublished = async (id: string) => {
-  //   try {
-  //     const data = {
-  //       id: id,
-  //       token: token,
-  //     };
 
-  //     const result = await toggleCategoryPublished(data).unwrap();
-
-  //     if (result?.success) toast.success(result?.message);
-  //   } catch (error) {
-  //     console.log(error);
-  //     toast.error("Failed to toggle published status");
-  //   }
-  // };
 
   const toggleSelect = (id: string) => {
     setSelectedCategories((prev) =>
@@ -184,18 +180,29 @@ export default function SubCategoryLists() {
     setModalOpen(true);
   };
 
-  // const handleDeleteConfirmed = async () => {
-  //   try {
-  //     const result = await deleteCategory({ ids: idsToDelete, token }).unwrap();
-  //     toast.success(result.message);
-  //     setSelectedCategories([]); // bulk clear
-  //   } catch (err: any) {
-  //     toast.error(err?.data?.message || "Delete failed");
-  //   } finally {
-  //     setModalOpen(false);
-  //     setIdsToDelete([]);
-  //   }
-  // };
+
+
+  const handleDeleteConfirmed = async () => {
+    try {
+      const result = await deleteSubCategory({ ids: idsToDelete, token }).unwrap();
+      console.log(result)
+      if (result.success) {
+        toast.success(result.message);
+        setSelectedCategories([]); // bulk clear
+
+      }
+    } catch (err: any) {
+      toast.error(err?.data?.message || "Delete failed");
+    } finally {
+      setModalOpen(false);
+      setIdsToDelete([]);
+    }
+  };
+
+  const handleEditClick = (id: string) => {
+    setSelectedSubCategoryId(id);
+    setDrawerOpen(true);
+  };
   return (
     <div className="mt-10">
       <DashboardPageHeader
@@ -270,7 +277,12 @@ export default function SubCategoryLists() {
                           onChange={() => toggleSelect(subCategory._id)}
                           className="w-4 h-4 cursor-pointer"
                         />
-                        <h2 className="text-base">{subCategory.name}</h2>
+                        <div className="flex items-center gap-3">
+                          <div className="p-2 h-12 w-12 rounded-full bg-gray-4">
+                            <Image className="w-full h-full rounded-full" src={subCategory?.image?.url} width={50} height={50} alt={subCategory.name} />
+                          </div>
+                          <h2 className="text-base">{subCategory.name}</h2>
+                        </div>
                       </div>
                     </div>
                   </TableCell>
@@ -300,7 +312,7 @@ export default function SubCategoryLists() {
                       <TooltipProvider delayDuration={1}>
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <button>
+                            <button onClick={() => handleEditClick(subCategory._id)}>
                               <SquarePen size={20} />
                             </button>
                           </TooltipTrigger>
@@ -312,7 +324,7 @@ export default function SubCategoryLists() {
                       <TooltipProvider delayDuration={1}>
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <button>
+                            <button onClick={() => confirmDelete([subCategory._id])}>
                               <Trash2 size={20} />
                             </button>
                           </TooltipTrigger>
@@ -336,7 +348,26 @@ export default function SubCategoryLists() {
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
         />
+        {modalOpen && (
+          <ConfirmationModal
+            title={`Are You Sure?`}
+            message="This action cannot be undone. This will permanently delete the category and its associated data from the database."
+            onCancel={() => setModalOpen(false)}
+            onConfirm={handleDeleteConfirmed}
+          />
+        )}
       </div>
+      {selectedSubCategoryId && (
+        <EditDrawer
+          type="subcategory"
+          itemId={selectedSubCategoryId}
+          isOpen={drawerOpen}
+          setIsOpen={setDrawerOpen}
+          title="Edit Sub Category"
+          categories={allCategories}
+        />
+      )}
+
     </div>
   );
 }

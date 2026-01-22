@@ -74,16 +74,15 @@ const AppSidebar: React.FC = () => {
 
   return (
     <aside
-      className={`fixed mt-16 flex flex-col lg:mt-0 top-0 z-50 px-5 left-0 
+      className={`fixed mt-16 flex flex-col lg:mt-0 top-0 z-10 px-5 left-0 
         bg-white dark:bg-dark 
         h-screen transition-all duration-300 ease-in-out 
         border-r border-gray-6
-        ${
-          isExpanded || isMobileOpen
+        ${isExpanded || isMobileOpen
+          ? "w-[290px]"
+          : isHovered
             ? "w-[290px]"
-            : isHovered
-              ? "w-[290px]"
-              : "w-[90px]"
+            : "w-[90px]"
         }
         ${isMobileOpen ? "translate-x-0" : "-translate-x-full"}
         lg:translate-x-0`}
@@ -92,9 +91,8 @@ const AppSidebar: React.FC = () => {
     >
       {/* LOGO */}
       <div
-        className={`py-8 flex ${
-          !isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
-        }`}
+        className={`py-8 flex ${!isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
+          }`}
       >
         <Link className="w-full flex justify-center" href="/">
           <Logo />
@@ -105,9 +103,8 @@ const AppSidebar: React.FC = () => {
       <div className="flex flex-col overflow-y-auto no-scrollbar">
         <nav className="mb-6">
           <h2
-            className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
-              !isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
-            }`}
+            className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${!isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
+              }`}
           >
             {isExpanded || isHovered || (isMobileOpen && "Menu")}
           </h2>

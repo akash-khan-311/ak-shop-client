@@ -35,7 +35,8 @@ import { Plus, SquarePen, Trash2, ZoomIn } from "lucide-react";
 import Image from "next/image";
 import { useMemo, useState } from "react";
 import toast from "react-hot-toast";
-import EditCategoryDrawer from "./EditCategoryDrwarer";
+import EditDrawer from "./EditDrawer";
+
 
 export default function AllCategoryLists() {
   const [isOpen, setIsOpen] = useState(false);
@@ -44,14 +45,11 @@ export default function AllCategoryLists() {
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(
     null,
   );
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const { data: category } = useGetSingleCategoryQuery(selectedCategoryId, {
-    skip: !selectedCategoryId,
-  });
+
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [toggleCategoryPublished, { isLoading }] =
+  const [toggleCategoryPublished] =
     useToggleCategoryPublishedMutation();
-  const [deleteCategory, { isLoading: isDeleting }] =
+  const [deleteCategory] =
     useDeleteCategoryMutation();
   const token = useAppSelector(selectCurrentToken);
   const { data } = useGetAllCategoryQuery(token, {
@@ -60,7 +58,6 @@ export default function AllCategoryLists() {
   const categories = useMemo(() => data?.data || [], [data]);
 
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [searchTerm, setSearchTerm] = useState("");
   const itemsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -187,7 +184,7 @@ export default function AllCategoryLists() {
 
   const handleEditClick = (id: string) => {
     setSelectedCategoryId(id);
-    setIsOpen(true);
+    setDrawerOpen(true);
   };
 
   const filterKeys = [
@@ -241,7 +238,7 @@ export default function AllCategoryLists() {
 
         {/* Table */}
         <div className="bg-gray-800 rounded-lg overflow-hidden">
-          <div className="overflow-x-auto">
+          <div className="relative w-full border overflow-x-auto scrollbar-thin scrollbar-thumb-gray-3">
             <Table>
               {/* Table Header */}
               <TableHeader>
@@ -358,10 +355,12 @@ export default function AllCategoryLists() {
         </div>
       </div>
       {selectedCategoryId && (
-        <EditCategoryDrawer
-          categoryId={selectedCategoryId}
-          isOpen={isOpen}
-          setIsOpen={setIsOpen}
+        <EditDrawer
+          type="category"
+          itemId={selectedCategoryId}
+          isOpen={drawerOpen}
+          setIsOpen={setDrawerOpen}
+          title="Edit Category"
         />
       )}
       {modalOpen && (
