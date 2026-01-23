@@ -93,22 +93,62 @@ export default function AddProductForm({
     setValue("brand", "");
   }, [selectedSubCategory, setValue]);
 
-  // ✅ Reset specifications when subcategory changes (important)
+  //  Reset specifications when subcategory changes (important)
   useEffect(() => {
     setValue("specifications", {});
   }, [subcategorySlug, setValue]);
 
-  // ✅ Wrap submit to ensure slugs + nested specs are included
-  const handleFinalSubmit = (formData: any) => {
+
+  const handleFinalSubmit = async (formData: any) => {
+
     const payload = {
       ...formData,
       categorySlug,
       subcategorySlug,
-      // specifications already nested because we used "specifications.<key>" names
       specifications: formData?.specifications || {},
     };
-    console.log(payload)
+
+    const fd = new FormData();
+
+
+    fd.append("productName", payload.productName || "");
+    fd.append("category", payload.category || "");
+    fd.append("subcategory", payload.subcategory || "");
+    fd.append("categorySlug", payload.categorySlug || "");
+    fd.append("subcategorySlug", payload.subcategorySlug || "");
+
+    fd.append("brand", payload.brand || "");
+    fd.append("color", payload.color || "");
+
+    if (payload.weight !== undefined && payload.weight !== "")
+      fd.append("weight", String(payload.weight));
+    if (payload.length !== undefined && payload.length !== "")
+      fd.append("length", String(payload.length));
+    if (payload.width !== undefined && payload.width !== "")
+      fd.append("width", String(payload.width));
+
+    fd.append("description", payload.description || "");
+
+    fd.append("quantity", String(payload.quantity || 0));
+    fd.append("availability", payload.availability || "In Stock");
+
+
+    fd.append("vendorId", payload.vendorId || "");
+
+    fd.append("specifications", JSON.stringify(payload.specifications || {}));
+
+
+    const images: File[] = formData?.images || [];
+    images.forEach((file) => fd.append("images", file));
+
+    // call API
+
+    return onSubmit(fd);
+
+
+    // await createProduct({ token, body: fd }).unwrap();
   };
+
 
   return (
     <div>

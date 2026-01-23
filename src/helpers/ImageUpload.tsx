@@ -17,17 +17,17 @@ export default function ImageUploadField({
   const [images, setImages] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const watchedImage = useWatch({
+  const watchedImages = useWatch({
     control,
-    name: "image",
+    name: "images",
   });
 
   useEffect(() => {
-    if (!watchedImage) {
-      setImages(null);
-      setPreviews(null);
+    if (!watchedImages || watchedImages.length === 0) {
+      setImages([]);
+      setPreviews([]);
     }
-  }, [watchedImage]);
+  }, [watchedImages]);
   const handleFilesChange = (files: FileList | null) => {
     if (!files) return;
     const filesArray = Array.from(files);

@@ -1,10 +1,15 @@
 "use client";
 import React, { useState } from "react";
 import {
-  Printer,
-  Search,
-  ChevronDown,
-  Check,
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import {
+
   ChevronRight,
   ChevronLeft,
 } from "lucide-react";
@@ -163,11 +168,10 @@ const RecentOrders = () => {
                 <button
                   key={i + 1}
                   onClick={() => setCurrentPage(i + 1)}
-                  className={`w-8 h-8 rounded flex items-center justify-center ${
-                    currentPage === i + 1
-                      ? " dark:bg-white/20 bg-gray-5/30"
-                      : "text-gray-400 dark:hover:bg-white/20 hover:bg-gray-5/30 "
-                  }`}
+                  className={`w-8 h-8 rounded flex items-center justify-center ${currentPage === i + 1
+                    ? " dark:bg-white/20 bg-gray-5/30"
+                    : "text-gray-400 dark:hover:bg-white/20 hover:bg-gray-5/30 "
+                    }`}
                 >
                   {i + 1}
                 </button>

@@ -1,5 +1,12 @@
 import { Printer, Search } from "lucide-react";
-import { StatusDropdown } from "../StatusDropDown";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import {
   Tooltip,
   TooltipContent,
@@ -66,24 +73,34 @@ export default function Table({
                   </span>
                 </TableCell>
                 <TableCell>
-                  <select
-                    className="bg-transparent px-3 py-2 rounded-md border 
-              focus:outline-none dark:border-gray-600"
+
+                  <Select
                     value={order.status}
-                    onChange={(e) =>
-                      handleStatusChange(order.id, e.target.value)
+                    onValueChange={(value) =>
+                      handleStatusChange(order.id, value)
                     }
                   >
-                    {statuses.map((status) => (
-                      <option
-                        key={status}
-                        value={status}
-                        className="dark:bg-dark bg-white"
-                      >
-                        {status}
-                      </option>
-                    ))}
-                  </select>
+                    <SelectTrigger
+                      className="bg-transparent text-base p-4 rounded-md  
+               focus:outline-green  "
+                    >
+                      <SelectValue placeholder="Select status" />
+                    </SelectTrigger>
+
+                    <SelectContent className="">
+                      <SelectGroup>
+                        {statuses.map((status) => (
+                          <SelectItem
+                            className="text-base"
+                            key={status}
+                            value={status}
+                          >
+                            {status}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center gap-5">
