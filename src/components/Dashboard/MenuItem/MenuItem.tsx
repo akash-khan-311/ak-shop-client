@@ -39,9 +39,7 @@ export default function MenuItem({
   const isActive =
     path === pathname || subItems?.some((item) => item.path === pathname);
 
-  /* =========================
-     CASE 1: HAS SUB MENU
-  ========================== */
+
   if (subItems?.length) {
     return (
       <motion.div layout>

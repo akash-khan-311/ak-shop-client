@@ -70,16 +70,14 @@ export default function AddProductForm({
 
 
   const user = useAppSelector(selectCurrentUser)
-  const vendorId = user?.userId
+  const userId = user?.userId
 
 
   // ✅ fetch dynamic spec template
   const { data: tplRes, isLoading: tplLoading } = useGetEffectiveTemplateQuery(
-    { subcategorySlug, vendorId },
+    { subcategorySlug, userId },
     { skip: !subcategorySlug }
   );
-
-  console.log('this is specifications data', tplRes)
 
   const specsFields: TSpecField[] = (tplRes?.data?.fields || []) as TSpecField[];
   // Reset subcategory & brand when category changes
@@ -143,7 +141,7 @@ export default function AddProductForm({
 
     // call API
 
-    return onSubmit(fd);
+    console.log(fd.entries())
 
 
     // await createProduct({ token, body: fd }).unwrap();

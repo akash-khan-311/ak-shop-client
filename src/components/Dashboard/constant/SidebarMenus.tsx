@@ -27,6 +27,7 @@ import {
   Settings2,
   Ticket,
   ListChecks,
+  Blocks,
 } from "lucide-react";
 
 export const userMenuItems = [
@@ -88,6 +89,14 @@ export const vendorMenuItems = [
       { name: "All Category", path: "/vendor/category" },
       { name: "Add Category", path: "/vendor/category/add" },
       { name: "Sub Category", path: "/vendor/category/subcategory" },
+    ],
+  },
+  {
+    name: "Specifications",
+    icon: Blocks,
+    subItems: [
+      { name: "All Specifications", path: "/vendor/specifications" },
+      { name: "Add Specification", path: "/vendor/specifications/add" },
     ],
   },
 
