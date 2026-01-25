@@ -37,7 +37,6 @@ import { useMemo, useState } from "react";
 import toast from "react-hot-toast";
 import EditDrawer from "./EditDrawer";
 
-
 export default function AllCategoryLists() {
   const [isOpen, setIsOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
@@ -47,12 +46,10 @@ export default function AllCategoryLists() {
   );
 
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [toggleCategoryPublished] =
-    useToggleCategoryPublishedMutation();
-  const [deleteCategory] =
-    useDeleteCategoryMutation();
+  const [toggleCategoryPublished] = useToggleCategoryPublishedMutation();
+  const [deleteCategory] = useDeleteCategoryMutation();
   const token = useAppSelector(selectCurrentToken);
-  const { data } = useGetAllCategoryQuery(token, {
+  const { data, isLoading } = useGetAllCategoryQuery(token, {
     skip: !token,
   });
   const categories = useMemo(() => data?.data || [], [data]);
@@ -84,7 +81,7 @@ export default function AllCategoryLists() {
       return matchesSearch && matchesCategory;
     });
 
-    // ✅ Published / Unpublished filter (from sort select)
+    // Published / Unpublished filter (from sort select)
     if (filters.sort === "Published") {
       filtered = filtered.filter((category: TCategory) => category.published);
     } else if (filters.sort === "Unpublished") {
@@ -267,80 +264,100 @@ export default function AllCategoryLists() {
 
               {/* Table Body */}
               <TableBody className="dark:bg-[#000] bg-gray-2">
-                {paginatedCategory?.map((category: TCategory) => (
-                  <TableRow
-                    className={`hover:bg-muted/50 ${selectedCategories.includes(category._id) && "bg-muted/50"}`}
-                    key={category._id}
-                  >
-                    <TableCell>
-                      <div className="flex items-center gap-x-5">
-                        <input
-                          type="checkbox"
-                          checked={selectedCategories.includes(category._id)}
-                          onChange={() => toggleSelect(category._id)}
-                          className="w-4 h-4 cursor-pointer"
-                        />
-                        <div className="flex  items-center gap-x-2 rounded-full">
-                          <Image
-                            src={category?.image?.url}
-                            width={50}
-                            height={50}
-                            alt={category.name}
-                            className="rounded-full w-10 h-10 object-cover"
-                          />
-
-                          <h2 className="text-base">{category.name}</h2>
-                        </div>
-                      </div>
-                    </TableCell>
-                    {/* <TableCell className="">{category.category}</TableCell> */}
-                    <TableCell>
-                      <label className="relative inline-block">
-                        <input
-                          onChange={() => handlePublished(category._id)}
-                          checked={category.published}
-                          type="checkbox"
-                          className="peer invisible"
-                        />
-                        <span className="absolute top-0 left-0 w-9 h-5 cursor-pointer rounded-full bg-red border border-slate-300 transition-all duration-100 peer-checked:bg-green" />
-                        <span className="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full z-10 transition-all duration-100 peer-checked:translate-x-4" />
-                      </label>
-                    </TableCell>
-
-                    <TableCell>
-                      <div className="flex justify-start items-center gap-x-5">
-                        <TooltipProvider delayDuration={1}>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <button
-                                onClick={() => handleEditClick(category._id)}
-                              >
-                                <SquarePen size={20} />
-                              </button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>Edit Category</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                        <TooltipProvider delayDuration={1}>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <button
-                                onClick={() => confirmDelete([category._id])}
-                              >
-                                <Trash2 size={20} />
-                              </button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                              <p>Delete Category</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
-                      </div>
+                {isLoading ? (
+                  <TableRow>
+                    <TableCell
+                      colSpan={3}
+                      className="h-24 text-center text-base"
+                    >
+                      Loading...
                     </TableCell>
                   </TableRow>
-                ))}
+                ) : paginatedCategory.length === 0 ? (
+                  <TableRow>
+                    <TableCell
+                      colSpan={3}
+                      className="h-24 text-center text-base"
+                    >
+                      No categories found.
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  paginatedCategory?.map((category: TCategory) => (
+                    <TableRow
+                      className={`hover:bg-muted/50 ${selectedCategories.includes(category._id) && "bg-muted/50"}`}
+                      key={category._id}
+                    >
+                      <TableCell>
+                        <div className="flex items-center gap-x-5">
+                          <input
+                            type="checkbox"
+                            checked={selectedCategories.includes(category._id)}
+                            onChange={() => toggleSelect(category._id)}
+                            className="w-4 h-4 cursor-pointer"
+                          />
+                          <div className="flex  items-center gap-x-2 rounded-full">
+                            <Image
+                              src={category?.image?.url}
+                              width={50}
+                              height={50}
+                              alt={category.name}
+                              className="rounded-full w-10 h-10 object-cover"
+                            />
+
+                            <h2 className="text-base">{category.name}</h2>
+                          </div>
+                        </div>
+                      </TableCell>
+                      {/* <TableCell className="">{category.category}</TableCell> */}
+                      <TableCell>
+                        <label className="relative inline-block">
+                          <input
+                            onChange={() => handlePublished(category._id)}
+                            checked={category.published}
+                            type="checkbox"
+                            className="peer invisible"
+                          />
+                          <span className="absolute top-0 left-0 w-9 h-5 cursor-pointer rounded-full bg-red border border-slate-300 transition-all duration-100 peer-checked:bg-green" />
+                          <span className="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full z-10 transition-all duration-100 peer-checked:translate-x-4" />
+                        </label>
+                      </TableCell>
+
+                      <TableCell>
+                        <div className="flex justify-start items-center gap-x-5">
+                          <TooltipProvider delayDuration={1}>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <button
+                                  onClick={() => handleEditClick(category._id)}
+                                >
+                                  <SquarePen size={20} />
+                                </button>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Edit Category</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                          <TooltipProvider delayDuration={1}>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <button
+                                  onClick={() => confirmDelete([category._id])}
+                                >
+                                  <Trash2 size={20} />
+                                </button>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Delete Category</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
               </TableBody>
             </Table>
           </div>

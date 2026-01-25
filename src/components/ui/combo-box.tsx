@@ -3,14 +3,17 @@
 import { useState, useRef, useEffect } from "react";
 
 interface ComboBoxProps {
+   value?: string;
   options: string[];
   placeholder?: string;
   className?: string;
   onSelect?: (option: string | null) => void;
+
 }
 
 const ComboBox = ({
   options = [],
+  value,
   placeholder = "Select an option...",
   onSelect,
   className,

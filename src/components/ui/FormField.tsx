@@ -39,7 +39,7 @@ type FormFieldType =
   | "password"
   | "combobox"
   | "radio"
-  | "multi-select"; 
+  | "multi-select";
 
 type FormFieldProps = {
   label: string;
@@ -56,6 +56,7 @@ type FormFieldProps = {
   rules?: RegisterOptions;
   isArray?: boolean;
   fields?: { id: string }[];
+  readOnly?: boolean;
   append?: () => void;
 };
 
@@ -74,17 +75,16 @@ const FormField: React.FC<FormFieldProps> = ({
   rules,
   control,
   className,
+  readOnly,
   append,
 }) => {
   const [showPassword, setShowPassword] = useState(false);
-
 
   const error = useMemo(() => {
     if (!errors) return undefined;
     return name.split(".").reduce<any>((acc, key) => acc?.[key], errors);
   }, [errors, name]);
 
- 
   if (isArray && fields.length > 0) {
     return (
       <div className="w-full">
@@ -92,6 +92,7 @@ const FormField: React.FC<FormFieldProps> = ({
         {fields.map((field, index) => (
           <div key={field.id} className="flex gap-2 mb-2">
             <input
+            readOnly={readOnly}
               {...register(`${name}.${index}.value`, {
                 required: required ? errorMessage : false,
                 ...rules,
@@ -127,6 +128,7 @@ const FormField: React.FC<FormFieldProps> = ({
       {/* FILE */}
       {type === "file" ? (
         <Input
+         readOnly={readOnly}
           id={name}
           {...register(name, {
             required: required ? errorMessage : false,
@@ -150,7 +152,10 @@ const FormField: React.FC<FormFieldProps> = ({
               return (
                 <Popover>
                   <PopoverTrigger asChild>
-                    <Button variant="outline" className="w-full justify-between">
+                    <Button
+                      variant="outline"
+                      className="w-full justify-between"
+                    >
                       {selectedDate
                         ? selectedDate.toLocaleDateString()
                         : "Select date"}
@@ -180,11 +185,12 @@ const FormField: React.FC<FormFieldProps> = ({
             rules={{ required: required ? errorMessage : false }}
             render={({ field }) => (
               <ComboBox
+              
+                value={field.value}
                 options={options || []}
                 placeholder={placeholder}
                 onSelect={(value) => field.onChange(value)}
                 className={`${className} border-gray-6 rounded-lg focus:ring-1 focus:ring-pink focus:border-pink outline-none transition-all`}
-                
               />
             )}
           />
@@ -205,6 +211,7 @@ const FormField: React.FC<FormFieldProps> = ({
               return (
                 <>
                   <Select
+                  
                     onValueChange={(val) => {
                       if (!val) return;
                       if (selected.includes(val)) return;
@@ -257,6 +264,7 @@ const FormField: React.FC<FormFieldProps> = ({
             required: required ? errorMessage : false,
             ...rules,
           })}
+           readOnly={readOnly}
           id={name}
           placeholder={placeholder}
           className={`w-full px-4 py-2 border border-gray-6 rounded-lg focus:ring-1 focus:ring-pink focus:border-pink outline-none transition-all ${className}`}
@@ -272,6 +280,7 @@ const FormField: React.FC<FormFieldProps> = ({
               className="flex items-center gap-2 text-white"
             >
               <Input
+               readOnly={readOnly}
                 id={opt}
                 type="radio"
                 value={opt}
@@ -284,16 +293,55 @@ const FormField: React.FC<FormFieldProps> = ({
             </label>
           ))}
         </div>
+      ) : type === "select" ? (
+        <>
+          <div className="space-y-1 w-full">
+            <Controller
+              name={name}
+              control={control}
+              rules={{ required: required ? errorMessage : false }}
+              render={({ field }) => (
+                <Select
+                  value={field.value ?? ""} // ✅ default show
+                  onValueChange={(val) => {
+                    field.onChange(val);
+                    // ✅ extra rules support (optional)
+                    if (rules?.onChange) {
+                      rules.onChange({ target: { value: val } } as any);
+                    }
+                  }}
+                >
+                  <SelectTrigger
+                    className={`w-full border py-6 border-gray-6 rounded-lg focus:ring-1 focus:ring-pink focus:border-pink outline-none transition-all ${className}`}
+                  >
+                    <SelectValue placeholder={placeholder || "Select"} />
+                  </SelectTrigger>
+
+                  <SelectContent>
+                    {(options || []).map((op) => (
+                      <SelectItem key={op} value={op}>
+                        {op}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            />
+          </div>{" "}
+        </>
       ) : (
         /* DEFAULT INPUT */
         <div className="relative">
           <input
             id={name}
+             readOnly={readOnly}
             {...register(name, {
               required: required ? errorMessage : false,
               ...rules,
             })}
-            type={type === "password" ? (showPassword ? "text" : "password") : type}
+            type={
+              type === "password" ? (showPassword ? "text" : "password") : type
+            }
             placeholder={placeholder}
             className={`w-full px-4 py-3 relative border border-gray-6 rounded-lg focus:ring-1 focus:ring-pink focus:border-pink outline-none transition-all dark:text-white ${className}`}
           />

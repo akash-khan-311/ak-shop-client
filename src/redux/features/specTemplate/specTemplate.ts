@@ -1,11 +1,11 @@
 import { baseApi } from "@/redux/api/baseApi";
-import { TEffectiveTemplateResponse } from "@/types/specTemplate";
+import { TTemplate } from "@/types/specTemplate";
 
 
 const specTemplateApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-      getEffectiveTemplate: builder.query<
-      { success: boolean; data: TEffectiveTemplateResponse },
+    getEffectiveTemplate: builder.query<
+      { success: boolean; data: TTemplate },
       { subcategorySlug: string; userId?: string }
     >({
       query: ({ subcategorySlug, userId }) => ({
@@ -29,7 +29,7 @@ const specTemplateApi = baseApi.injectEndpoints({
       },
       providesTags: ['SpecTemplate']
     }),
-  
+
     getTemplateById: builder.query({
       query: ({ token, id }) => {
         return {

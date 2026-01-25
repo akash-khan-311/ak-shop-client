@@ -20,6 +20,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { generateFieldKey } from "./utils";
 import toast from "react-hot-toast";
+import { TYPE_OPTIONS } from "@/data";
 type TSpecFieldType =
   | "text"
   | "number"
@@ -42,14 +43,7 @@ type TForm = {
   userId: string;
   isPublished: boolean;
 };
-const TYPE_OPTIONS: TSpecFieldType[] = [
-  "text",
-  "number",
-  "date",
-  "combobox",
-  "multi-select",
-  "boolean",
-];
+
 export default function AddSpecTemplateForm() {
   const token = useAppSelector(selectCurrentToken);
   const user = useAppSelector(selectCurrentUser);
@@ -137,7 +131,7 @@ export default function AddSpecTemplateForm() {
       return;
     }
 
-    // ✅ clean fields
+  
     const cleanedFields = fields
       .map((f, idx) => ({
         label: (f.label || "").trim(),

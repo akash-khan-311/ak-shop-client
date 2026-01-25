@@ -1,5 +1,14 @@
-export const COMMON_BRANDS = ["Non Brand / Other"];
+import { TSpecFieldType } from "@/types/specTemplate";
 
+export const COMMON_BRANDS = ["Non Brand / Other"];
+export const TYPE_OPTIONS: TSpecFieldType[] = [
+  "text",
+  "number",
+  "date",
+  "combobox",
+  "multi-select",
+  "boolean",
+];
 export const productColors = [
   "Black",
   "White",
