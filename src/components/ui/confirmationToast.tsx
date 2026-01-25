@@ -1,6 +1,7 @@
 import { FC, ReactNode, useState } from "react";
 
 interface ConfirmationModalProps {
+  isLoading?: boolean;
   title?: string;
   message: string;
   confirmText?: string;
@@ -18,15 +19,13 @@ export const ConfirmationModal: FC<ConfirmationModalProps> = ({
   onConfirm,
   onCancel,
   children,
+  isLoading,
 }) => {
-  const [loading, setLoading] = useState(false);
-
   const handleConfirm = async () => {
     try {
-      setLoading(true);
-      await onConfirm();
+      const result = await onConfirm();
+      console.log("this is confirm delete", result);
     } finally {
-      setLoading(false);
     }
   };
 
@@ -49,10 +48,10 @@ export const ConfirmationModal: FC<ConfirmationModalProps> = ({
           </button>
           <button
             onClick={handleConfirm}
-            disabled={loading}
+            disabled={isLoading}
             className="px-4 py-2 bg-red-light text-white rounded hover:bg-red-dark duration-150 disabled:opacity-50"
           >
-            {loading ? "Deleting..." : confirmText}
+            {isLoading ? "Deleting..." : confirmText}
           </button>
         </div>
       </div>

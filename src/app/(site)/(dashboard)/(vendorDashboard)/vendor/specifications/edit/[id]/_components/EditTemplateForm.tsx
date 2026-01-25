@@ -123,23 +123,6 @@ export default function EditTemplateForm({ id }: { id: string }) {
     });
   };
 
-  const removeOption = (fieldIndex: number, optIndex: number) => {
-    const opts = watchedFields?.[fieldIndex]?.options || [];
-    const next = opts.filter((_: any, i: number) => i !== optIndex);
-    setValue(`fields.${fieldIndex}.options`, next, { shouldDirty: true });
-  };
-
-  const changeOption = (
-    fieldIndex: number,
-    optIndex: number,
-    value: string,
-  ) => {
-    const opts = watchedFields?.[fieldIndex]?.options || [];
-    const next = [...opts];
-    next[optIndex] = value;
-    setValue(`fields.${fieldIndex}.options`, next, { shouldDirty: true });
-  };
-
   const onSubmit = async (values: TTemplate) => {
     try {
       const normalized = values.fields

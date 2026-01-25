@@ -131,7 +131,6 @@ export default function AddSpecTemplateForm() {
       return;
     }
 
-  
     const cleanedFields = fields
       .map((f, idx) => ({
         label: (f.label || "").trim(),
@@ -159,7 +158,6 @@ export default function AddSpecTemplateForm() {
       categorySlug,
       userId: user?.userId,
       fields: cleanedFields,
-      isPublished: form.isPublished,
     };
 
     try {
@@ -168,8 +166,8 @@ export default function AddSpecTemplateForm() {
       console.log("this is result from spec ", res);
       if (res?.success) {
         toast.success(res?.message || "Template created successfully ✅");
-      setFields([]);
-      reset()
+        setFields([]);
+        reset();
       }
     } catch (err: any) {
       alert(err?.data?.message || "Failed to save template ❌");

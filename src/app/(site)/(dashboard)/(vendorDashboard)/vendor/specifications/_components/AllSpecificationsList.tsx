@@ -4,6 +4,7 @@ import DashboardPageHeader from "@/components/Dashboard/DashboardPageHeader";
 import DataTableActions from "@/components/data-table/DataTableActions";
 import DataTableFilters from "@/components/data-table/DataTableFilters";
 import DataTablePagination from "@/components/data-table/DataTablePagination";
+import { ConfirmationModal } from "@/components/ui/confirmationToast";
 import {
   Table,
   TableBody,
@@ -23,7 +24,11 @@ import {
   selectCurrentUser,
 } from "@/redux/features/auth/authSlice";
 import { useGetAllCategoryQuery } from "@/redux/features/category/categoryApi";
-import { useGetTemplatesQuery } from "@/redux/features/specTemplate/specTemplate";
+import {
+  useDeleteSpecTemplateMutation,
+  useGetTemplatesQuery,
+  useToggleTemplatePublishedMutation,
+} from "@/redux/features/specTemplate/specTemplate";
 import { useGetUserByIdQuery } from "@/redux/features/users/usersApi";
 import { useAppSelector } from "@/redux/hook";
 import { TCategory } from "@/types/category";
@@ -31,6 +36,7 @@ import { TSpecField } from "@/types/specTemplate";
 import { Plus, SquarePen, Trash2, ZoomIn } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import toast from "react-hot-toast";
 const tableHeading = [
   "Category",
   "Subcategory",
@@ -42,6 +48,10 @@ const tableHeading = [
 export default function AllSpecificationsList() {
   const user = useAppSelector(selectCurrentUser);
   const token = useAppSelector(selectCurrentToken);
+  const [toggleTemplatePublished, { isLoading: isPublishedLoading }] =
+    useToggleTemplatePublishedMutation();
+  const [deleteTemplate, { isLoading: isDeleteLoading }] =
+    useDeleteSpecTemplateMutation();
   const { data: categoriesData } = useGetAllCategoryQuery(token);
   const categories = useMemo(
     () => categoriesData?.data || [],
@@ -95,13 +105,13 @@ export default function AllSpecificationsList() {
     }
 
     //Name sorting
- if (filters.sort === "Name: A-Z") {
-  filtered.sort((a, b) =>
-    `${a.categorySlug}/${a.subcategorySlug}`.localeCompare(
-      `${b.categorySlug}/${b.subcategorySlug}`
-    )
-  );
-}
+    if (filters.sort === "Name: A-Z") {
+      filtered.sort((a, b) =>
+        `${a.categorySlug}/${a.subcategorySlug}`.localeCompare(
+          `${b.categorySlug}/${b.subcategorySlug}`,
+        ),
+      );
+    }
     return filtered;
   }, [templates, filters]);
   const paginatedTemplates = filteredTemplates.slice(
@@ -157,8 +167,8 @@ export default function AllSpecificationsList() {
     );
   };
   useEffect(() => {
-  setCurrentPage(1);
-}, [filters]);
+    setCurrentPage(1);
+  }, [filters]);
   const filterKeys = [
     {
       key: "search",
@@ -182,6 +192,37 @@ export default function AllSpecificationsList() {
   const confirmDelete = (ids: string[]) => {
     setIdsToDelete(ids);
     setModalOpen(true);
+  };
+
+  const handleDeleteConfirmed = async () => {
+    try {
+      const result = await deleteTemplate({ ids: idsToDelete, token }).unwrap();
+      toast.success(result.message);
+      setSelectedTemplates([]); // bulk clear
+    } catch (err: any) {
+      toast.error(err?.data?.message || "Delete failed");
+    } finally {
+      setModalOpen(false);
+      setIdsToDelete([]);
+    }
+  };
+
+  const handlePublished = async (id: string) => {
+    try {
+      const data = {
+        id: id,
+        token: token,
+      };
+
+      console.log({ data });
+
+      const result = await toggleTemplatePublished(data).unwrap();
+
+      if (result?.success) toast.success(result?.message);
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to toggle published status");
+    }
   };
   return (
     <div>
@@ -243,11 +284,15 @@ export default function AllSpecificationsList() {
             <TableBody className="dark:bg-[#000] bg-gray-2">
               {isLoading ? (
                 <TableRow>
-                  <TableCell colSpan={7} className="h-24 text-center text-base">Loading...</TableCell>
+                  <TableCell colSpan={7} className="h-24 text-center text-base">
+                    Loading...
+                  </TableCell>
                 </TableRow>
               ) : paginatedTemplates.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={7} className="h-24 text-center text-base">No templates found</TableCell>
+                  <TableCell colSpan={7} className="h-24 text-center text-base">
+                    No templates found
+                  </TableCell>
                 </TableRow>
               ) : (
                 paginatedTemplates.map((t: any) => (
@@ -280,24 +325,25 @@ export default function AllSpecificationsList() {
                     {/* Fields */}
                     <TableCell>{t.fields?.length || 0}</TableCell>
 
-                    {/* Published */}
+                    {/* Added by */}
                     <TableCell>
                       <span className="font-medium capitalize">
                         {userDetails?.name} {userData?.lastName}
                       </span>
                     </TableCell>
                     <TableCell>
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-medium ${
-                          t.isPublished
-                            ? "bg-green/20 text-green"
-                            : "bg-gray-7 text-gray-3"
-                        }`}
-                      >
-                        {t.isPublished ? "Published" : "Unpublished"}
-                      </span>
+                      <label className="relative inline-block">
+                        <input
+                          onChange={() => handlePublished(t._id)}
+                          checked={t.isPublished}
+                          type="checkbox"
+                          disabled={isPublishedLoading}
+                          className="peer invisible cursor-pointer"
+                        />
+                        <span className="absolute top-0 left-0 w-9 h-5 cursor-pointer rounded-full bg-red border border-slate-300 transition-all duration-100 peer-checked:bg-green" />
+                        <span className="absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full z-10 transition-all duration-100 peer-checked:translate-x-4" />
+                      </label>
                     </TableCell>
-              
 
                     {/* Actions */}
                     <TableCell className="flex items-center gap-5">
@@ -316,9 +362,9 @@ export default function AllSpecificationsList() {
                       <TooltipProvider delayDuration={1}>
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <Link href={`/dashboard/spec-templates/${t._id}`}>
+                            <button onClick={() => confirmDelete([t._id])}>
                               <Trash2 size={20} />
-                            </Link>
+                            </button>
                           </TooltipTrigger>
                           <TooltipContent>
                             <p>Delete Specifications</p>
@@ -333,9 +379,8 @@ export default function AllSpecificationsList() {
           </Table>
         </div>
 
-      
-         {/* Pagination */}
-               
+        {/* Pagination */}
+
         <DataTablePagination
           filteredItems={filteredTemplates}
           itemsPerPage={itemsPerPage}
@@ -343,6 +388,16 @@ export default function AllSpecificationsList() {
           setCurrentPage={setCurrentPage}
         />
       </div>
+
+      {modalOpen && (
+        <ConfirmationModal
+          title={`Are You Sure?`}
+          message="This action cannot be undone. This will permanently delete the category and its associated data from the database."
+          onCancel={() => setModalOpen(false)}
+          onConfirm={handleDeleteConfirmed}
+          isLoading={isDeleteLoading}
+        />
+      )}
     </div>
   );
 }

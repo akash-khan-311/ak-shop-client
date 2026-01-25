@@ -68,18 +68,33 @@ const specTemplateApi = baseApi.injectEndpoints({
       },
       invalidatesTags: ['SpecTemplate']
     }),
-    deleteTemplates: builder.mutation({
-      query: ({ token, ids }) => {
+    deleteSpecTemplate: builder.mutation({
+      query: ({ ids, token }) => {
         return {
-          url: '/spec-template/delete',
+          url: `/spec-template/delete`,
           method: 'DELETE',
-          body: ids,
+          body: { ids },
           headers: {
-            Authorization: `${token}`,
+            Authorization: `${token}`
           }
         }
-      }
-    })
+
+      },
+      invalidatesTags: ['SpecTemplate']
+    }),
+    toggleTemplatePublished: builder.mutation({
+      query: (data) => ({
+        url: `/spec-template/change-status/${data.id}`,
+        method: "PATCH",
+
+        credentials: "include",
+        headers: {
+          Authorization: `${data.token}`,
+          "Content-Type": "application/json",
+        },
+      }),
+      invalidatesTags: ["SpecTemplate"],
+    }),
   }),
 
 });
@@ -88,6 +103,8 @@ export const {
   useGetTemplateByIdQuery,
   useUpdateTemplateMutation,
   useGetEffectiveTemplateQuery,
-  useCreateSpecTemplateMutation
+  useCreateSpecTemplateMutation,
+  useToggleTemplatePublishedMutation,
+  useDeleteSpecTemplateMutation
 
 } = specTemplateApi;
