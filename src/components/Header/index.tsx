@@ -36,6 +36,8 @@ const Header = () => {
     openCartModal();
   };
 
+  console.log('this is user from header', user)
+
   // Sticky menu
   const handleStickyMenu = () => {
     if (window.scrollY >= 80) {

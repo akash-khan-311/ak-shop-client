@@ -3,13 +3,24 @@ import DashboardPageHeader from "@/components/Dashboard/DashboardPageHeader";
 import FormField from "@/components/ui/FormField";
 import { productColors } from "@/data";
 import ImageUploadField from "@/helpers/ImageUpload";
-import { selectCurrentToken, selectCurrentUser } from "@/redux/features/auth/authSlice";
+import {
+  selectCurrentToken,
+  selectCurrentUser,
+} from "@/redux/features/auth/authSlice";
 import { useGetAllCategoryQuery } from "@/redux/features/category/categoryApi";
+import { useCreateProductMutation } from "@/redux/features/products/productApi";
 import { useGetEffectiveTemplateQuery } from "@/redux/features/specTemplate/specTemplate";
 import { useAppSelector } from "@/redux/hook";
 import { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
-type TSpecFieldType = "text" | "number" | "date" | "combobox" | "boolean" | "multi-select";
+import toast from "react-hot-toast";
+type TSpecFieldType =
+  | "text"
+  | "number"
+  | "date"
+  | "combobox"
+  | "boolean"
+  | "multi-select";
 
 type TSpecField = {
   label: string;
@@ -23,12 +34,12 @@ type TSpecField = {
 export default function AddProductForm({
   mode = "add",
   defaultValues,
-  onSubmit,
   isLoading,
 }: any) {
   const {
     register,
     control,
+    reset,
     watch,
     setValue,
     handleSubmit,
@@ -38,6 +49,8 @@ export default function AddProductForm({
   });
 
   const token = useAppSelector(selectCurrentToken);
+  const [createProduct, { isLoading: AddProductLoading }] =
+    useCreateProductMutation();
   const { data } = useGetAllCategoryQuery(token, { skip: !token });
   const categories = useMemo(() => data?.data || [], [data]);
   const categoryOptions = categories.map((cat: any) => cat.name);
@@ -54,7 +67,9 @@ export default function AddProductForm({
   const selectedSubObj = useMemo(() => {
     if (!selectedCatObj || !selectedSubCategory) return null;
     return (
-      selectedCatObj.subcategories?.find((sub: any) => sub.name === selectedSubCategory) || null
+      selectedCatObj.subcategories?.find(
+        (sub: any) => sub.name === selectedSubCategory,
+      ) || null
     );
   }, [selectedCatObj, selectedSubCategory]);
 
@@ -63,23 +78,23 @@ export default function AddProductForm({
   const subcategorySlug = selectedSubObj?.slug;
 
   // Subcategory options from DB
-  const subCategoryOptions = selectedCatObj?.subcategories?.map((sub: any) => sub.name) || [];
+  const subCategoryOptions =
+    selectedCatObj?.subcategories?.map((sub: any) => sub.name) || [];
 
   // Brand options from DB
   const brandOptions = selectedSubObj?.brands || [];
 
-
-  const user = useAppSelector(selectCurrentUser)
-  const userId = user?.userId
-
+  const user = useAppSelector(selectCurrentUser);
+  const userId = user?.userId;
 
   // ✅ fetch dynamic spec template
   const { data: tplRes, isLoading: tplLoading } = useGetEffectiveTemplateQuery(
     { subcategorySlug, userId },
-    { skip: !subcategorySlug }
+    { skip: !subcategorySlug },
   );
 
-  const specsFields: TSpecField[] = (tplRes?.data?.fields || []) as TSpecField[];
+  const specsFields: TSpecField[] = (tplRes?.data?.fields ||
+    []) as TSpecField[];
   // Reset subcategory & brand when category changes
   useEffect(() => {
     setValue("subcategory", "");
@@ -96,18 +111,17 @@ export default function AddProductForm({
     setValue("specifications", {});
   }, [subcategorySlug, setValue]);
 
-
   const handleFinalSubmit = async (formData: any) => {
-
-    const payload = {
+   try {
+     const payload = {
       ...formData,
       categorySlug,
       subcategorySlug,
+      userId: userId || "",
       specifications: formData?.specifications || {},
     };
 
     const fd = new FormData();
-
 
     fd.append("productName", payload.productName || "");
     fd.append("category", payload.category || "");
@@ -130,23 +144,29 @@ export default function AddProductForm({
     fd.append("quantity", String(payload.quantity || 0));
     fd.append("availability", payload.availability || "In Stock");
 
-
-    fd.append("vendorId", payload.vendorId || "");
+    fd.append("userId", payload.userId || "");
 
     fd.append("specifications", JSON.stringify(payload.specifications || {}));
-
 
     const images: File[] = formData?.images || [];
     images.forEach((file) => fd.append("images", file));
 
     // call API
 
-    console.log(fd.entries())
-
-
-    // await createProduct({ token, body: fd }).unwrap();
+    const result = await createProduct({ data: fd, token }).unwrap();
+    console.log(result);
+    if (result?.success) {
+      toast.success(result?.message);
+      reset()
+    }
+    else {
+      toast.error(result?.message);
+    }
+   } catch (error) {
+      console.error("Error creating product:", error);
+      toast.error("Failed to create product. Please try again.");
+   }
   };
-
 
   return (
     <div>
@@ -162,8 +182,9 @@ export default function AddProductForm({
             Product Details
           </h2>
           <div
-            className={`grid grid-cols-1 ${selectedCategory ? "md:grid-cols-3" : "md:grid-cols-2"
-              } mt-6 gap-4 justify-center items-center`}
+            className={`grid grid-cols-1 ${
+              selectedCategory ? "md:grid-cols-3" : "md:grid-cols-2"
+            } mt-6 gap-4 justify-center items-center`}
           >
             {/* Product Name */}
             <FormField
@@ -321,6 +342,30 @@ export default function AddProductForm({
               errors={errors}
               errorMessage="Availability Status is Required"
             />
+            <FormField
+              className="dark:bg-dark-2 bg-white"
+              name="regularPrice"
+              label="Regular Price"
+              required
+              register={register}
+              control={control}
+              type="text"
+              placeholder="Regular Price"
+              errors={errors}
+              errorMessage="Regular Price is Required"
+            />
+            <FormField
+              className="dark:bg-dark-2 bg-white"
+              name="price"
+              label="Price"
+              required
+              register={register}
+              control={control}
+              type="text"
+              placeholder="Product Price"
+              errors={errors}
+              errorMessage="Product Price is Required"
+            />
           </div>
         </div>
 
@@ -332,7 +377,9 @@ export default function AddProductForm({
             </h2>
 
             {tplLoading ? (
-              <p className="mt-6 text-sm text-gray-500">Loading specifications...</p>
+              <p className="mt-6 text-sm text-gray-500">
+                Loading specifications...
+              </p>
             ) : specsFields.length === 0 ? (
               <p className="mt-6 text-sm text-gray-500">
                 No specification template found for this subcategory.
@@ -370,11 +417,11 @@ export default function AddProductForm({
 
         <button
           type="submit"
-          disabled={isLoading}
-          className="mt-4 bg-pink text-white py-2 px-8 rounded-lg"
+          disabled={AddProductLoading || isLoading}
+          className="mt-4 bg-pink text-white py-2 px-8 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-pink/90 transition-colors duration-300"
         >
-          {isLoading
-            ? "Saving..."
+          {AddProductLoading
+            ? "Loading..."
             : mode === "add"
               ? "Add Product"
               : "Update Product"}

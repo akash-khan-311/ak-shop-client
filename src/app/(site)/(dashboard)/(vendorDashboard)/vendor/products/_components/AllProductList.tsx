@@ -1,14 +1,7 @@
 "use client";
-import React, { useState, useMemo } from "react";
+import  { useState, useMemo } from "react";
 import {
-  Search,
-  Download,
   Trash2,
-  Plus,
-  Eye,
-  Edit2,
-  ChevronLeft,
-  ChevronRight,
   ZoomIn,
   SquarePen,
 } from "lucide-react";
@@ -19,7 +12,6 @@ import {
   TableHead,
   TableRow,
   TableCell,
-  TableCaption,
 } from "@/components/ui/table";
 import {
   Tooltip,
@@ -27,122 +19,17 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import DashboardPageHeader from "@/components/Dashboard/DashboardPageHeader";
-import Link from "next/link";
+
 import DataTableActions from "@/components/data-table/DataTableActions";
 import DataTableFilters from "@/components/data-table/DataTableFilters";
 import DataTablePagination from "@/components/data-table/DataTablePagination";
 import { TooltipProvider } from "@radix-ui/react-tooltip";
-const initialProducts = [
-  {
-    id: 1,
-    name: "Teat",
-    category: "Home Decor",
-    price: 20.0,
-    salePrice: 28.0,
-    stock: 297,
-    published: true,
-    image: "🏠",
-  },
-  {
-    id: 2,
-    name: "Clementine Sloan",
-    category: "Outdoor Gear",
-    price: 331.0,
-    salePrice: 655.0,
-    stock: 573,
+import { useGetAllProductsQuery } from "@/redux/features/products/productApi";
+import { useAppSelector } from "@/redux/hook";
+import { selectCurrentToken } from "@/redux/features/auth/authSlice";
+import { TProduct } from "@/types/product.type";
+import Image from "next/image";
 
-    published: true,
-    image: "⛺",
-  },
-  {
-    id: 3,
-    name: "Heidi Morten",
-    category: "Computers & Laptops",
-    price: 797.0,
-    salePrice: 920.0,
-    stock: 575,
-
-    published: false,
-    image: "💻",
-  },
-  {
-    id: 4,
-    name: "Iphone 15pro",
-    category: "Computers & Laptops",
-    price: 2000.0,
-    salePrice: 3500.0,
-    stock: 3000,
-
-    published: true,
-    image: "📱",
-  },
-  {
-    id: 5,
-    name: "MX Vertical Mouses",
-    category: "Computers & Laptops",
-    price: 70.0,
-    salePrice: 109.99,
-    stock: 150,
-
-    published: false,
-    image: "🖱️",
-  },
-  {
-    id: 6,
-    name: "ErgoPro Mechanical Keyboard",
-    category: "Computers & Laptops",
-    price: 65.0,
-    salePrice: 98.0,
-    stock: 0,
-
-    published: true,
-    image: "⌨️",
-  },
-  {
-    id: 7,
-    name: "Non-Stick Loaf Pan",
-    category: "Smartphones & Wearables",
-    price: 7.5,
-    salePrice: 14.5,
-    stock: 280,
-
-    published: true,
-    image: "🍞",
-  },
-  {
-    id: 8,
-    name: "Silicone Baking Mat Set",
-    category: "Smartphones & Wearables",
-    price: 10.0,
-    salePrice: 19.99,
-    stock: 350,
-
-    published: true,
-    image: "🧁",
-  },
-  {
-    id: 9,
-    name: "Project Hail Mary",
-    category: "Smartphones & Wearables",
-    price: 12.5,
-    salePrice: 24.95,
-    stock: 19,
-
-    published: true,
-    image: "📚",
-  },
-  {
-    id: 10,
-    name: "The Silent Patient",
-    category: "Smartphones & Wearables",
-    price: 8.0,
-    salePrice: 14.98,
-    stock: 400,
-
-    published: true,
-    image: "📖",
-  },
-];
 
 const tableHeading = [
   "Product Name",
@@ -157,14 +44,12 @@ const tableHeading = [
 ];
 
 export default function AllProductsList() {
-  const [products, setProducts] = useState(initialProducts);
   const [selectedProducts, setSelectedProducts] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState("All Categories");
-  const [sortBy, setSortBy] = useState("No Sort");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
-
+  const token = useAppSelector(selectCurrentToken)
+  const {data} = useGetAllProductsQuery(token)
+  const products = useMemo(() => data?.data || [], [data?.data]);
   const [filters, setFilters] = useState({
     search: "",
     category: "All Categories",
@@ -173,15 +58,15 @@ export default function AllProductsList() {
 
   const categories = [
     "All Categories",
-    ...Array.from(new Set(products.map((p) => p.category))),
+    ...Array.from(new Set(products.map((p: TProduct) => p.category))) as string[],
   ];
-
+console.log('this is products', products);
   // Filter and sort products
   const filteredProducts = useMemo(() => {
-    let filtered = products.filter((product) => {
-      const matchesSearch = product.name
-        .toLowerCase()
-        .includes(filters.search.toLowerCase());
+    let filtered = products.filter((product:TProduct) => {
+      const matchesSearch = product?.productName
+        ?.toLowerCase()
+        ?.includes(filters.search.toLowerCase());
 
       const matchesCategory =
         filters.category === "All Categories" ||
@@ -205,7 +90,7 @@ export default function AllProductsList() {
 
   // Pagination
 
-  const paginatedProducts = filteredProducts.slice(
+  const paginatedProducts = filteredProducts?.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage,
   );
@@ -265,7 +150,7 @@ export default function AllProductsList() {
 
   // Delete product
   const deleteProduct = (id) => {
-    setProducts((prev) => prev.filter((p) => p.id !== id));
+    
     setSelectedProducts((prev) => prev.filter((i) => i !== id));
   };
 
@@ -275,18 +160,14 @@ export default function AllProductsList() {
       selectedProducts.length > 0 &&
       confirm(`Delete ${selectedProducts.length} products?`)
     ) {
-      setProducts((prev) =>
-        prev.filter((p) => !selectedProducts.includes(p.id)),
-      );
+     
       setSelectedProducts([]);
     }
   };
 
   // Toggle published status
   const togglePublished = (id) => {
-    setProducts((prev) =>
-      prev.map((p) => (p.id === id ? { ...p, published: !p.published } : p)),
-    );
+   
   };
 
   return (
@@ -370,39 +251,37 @@ export default function AllProductsList() {
 
               {/* Table Body */}
               <TableBody className="dark:bg-[#000] bg-gray-2">
-                {paginatedProducts.map((product: any, index: number) => (
+                {paginatedProducts?.map((product: any, index: number) => (
                   <TableRow
-                    className={`hover:bg-muted/50 ${selectedProducts.includes(product.id) && "bg-muted/50"}`}
-                    key={product.id}
+                    className={`hover:bg-muted/50 ${selectedProducts.includes(product?._id) && "bg-muted/50"}`}
+                    key={product?._id}
                   >
                     <TableCell>
                       <div className="flex items-center gap-x-5">
                         <input
                           type="checkbox"
-                          checked={selectedProducts.includes(product.id)}
-                          onChange={() => toggleSelect(product.id)}
+                          checked={selectedProducts.includes(product?._id)}
+                          onChange={() => toggleSelect(product?._id)}
                           className="w-4 h-4"
                         />
                         <div className="flex items-center gap-x-2">
-                          {/* <Image
-                            src={product.image}
+                          <Image
+                            src={product?.images?.[0]?.url}
                             width={50}
                             height={50}
                             alt="Product"
-                          /> */}
-                          <span className="text-2xl p-3 rounded-full border">
-                            {product.image}
-                          </span>
-                          <h2 className="text-base">{product.name}</h2>
+                          />
+                       
+                          <h2 className="text-base">{product?.productName}</h2>
                         </div>
                       </div>
                     </TableCell>
-                    <TableCell className="">{product.category}</TableCell>
-                    <TableCell>${product.price.toFixed()}</TableCell>
-                    <TableCell>${product.salePrice.toFixed()}</TableCell>
-                    <TableCell>{product.stock}</TableCell>
+                    <TableCell className="">{product?.subcategory}</TableCell>
+                    <TableCell>${product?.price?.toFixed()}</TableCell>
+                    <TableCell>${product?.salePrice?.toFixed()}</TableCell>
+                    <TableCell>{product?.quantity}</TableCell>
                     <TableCell>
-                      {product.stock > 0 ? (
+                      {product.availability ? (
                         <div className="bg-green text-center rounded-lg text-green-light-6 text-base">
                           <span>Selling</span>
                         </div>
@@ -422,8 +301,8 @@ export default function AllProductsList() {
                     <TableCell>
                       <label className="relative inline-block">
                         <input
-                          onChange={() => togglePublished(product.id)}
-                          checked={product.published}
+                          onChange={() => togglePublished(product?._id)}
+                          checked={product?.published}
                           type="checkbox"
                           className="peer invisible"
                         />

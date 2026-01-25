@@ -27,7 +27,7 @@ const authApi = baseApi.injectEndpoints({
         credentials: "include",
         headers: {
           Authorization: `${token}`,
-          "Content-Type": "application/json",
+         
         },
       }),
       providesTags: ["Me"],

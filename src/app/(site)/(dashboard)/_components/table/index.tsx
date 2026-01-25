@@ -104,7 +104,7 @@ export default function Table({
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center gap-5">
-                    <TooltipProvider>
+                    <TooltipProvider delayDuration={1}>
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <button onClick={() => handlePrintInvoice(order.id)}>
@@ -116,7 +116,7 @@ export default function Table({
                         </TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
-                    <TooltipProvider>
+                    <TooltipProvider delayDuration={1}>
                       <Tooltip>
                         <TooltipTrigger asChild>
                           <button

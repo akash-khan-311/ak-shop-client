@@ -5,7 +5,6 @@ export type TSpecField = {
   name: string
   type: TSpecFieldType
   options?: string[]
-  optional?: boolean
   unit?: string
   order?: number
 }

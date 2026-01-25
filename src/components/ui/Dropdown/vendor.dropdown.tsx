@@ -35,8 +35,9 @@ const dropDownItems = [
 export default function VendorDropDown({ setIsOpen, isOpen }) {
   const token = useAppSelector(selectCurrentToken);
 
-  const { data, isLoading, error } = useGetMeQuery(token === null ? "" : token);
+  const { data, isLoading, error } = useGetMeQuery(token);
   const vendor = data?.data;
+  console.log('this vendro from vendor dropdown ', data)
   return (
     <>
       <div

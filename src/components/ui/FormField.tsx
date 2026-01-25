@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   Controller,
   FieldErrors,
@@ -18,6 +18,29 @@ import { Button } from "@/components/ui/button";
 import { ChevronDownIcon, Eye, EyeOff } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
+// ✅ shadcn select
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+type FormFieldType =
+  | "text"
+  | "email"
+  | "number"
+  | "date"
+  | "file"
+  | "textarea"
+  | "select"
+  | "checkbox"
+  | "password"
+  | "combobox"
+  | "radio"
+  | "multi-select"; 
+
 type FormFieldProps = {
   label: string;
   name: string;
@@ -26,18 +49,7 @@ type FormFieldProps = {
   errors?: FieldErrors;
   control?: any;
   className?: string;
-  type?:
-    | "text"
-    | "email"
-    | "number"
-    | "date"
-    | "file"
-    | "textarea"
-    | "select"
-    | "checkbox"
-    | "password"
-    | "combobox"
-    | "radio";
+  type?: FormFieldType;
   placeholder?: string;
   options?: string[];
   required?: boolean;
@@ -64,11 +76,15 @@ const FormField: React.FC<FormFieldProps> = ({
   className,
   append,
 }) => {
-  const error = errors?.[name];
-
   const [showPassword, setShowPassword] = useState(false);
 
-  // 🔹 Dynamic array input
+
+  const error = useMemo(() => {
+    if (!errors) return undefined;
+    return name.split(".").reduce<any>((acc, key) => acc?.[key], errors);
+  }, [errors, name]);
+
+ 
   if (isArray && fields.length > 0) {
     return (
       <div className="w-full">
@@ -80,14 +96,14 @@ const FormField: React.FC<FormFieldProps> = ({
                 required: required ? errorMessage : false,
                 ...rules,
               })}
-              className={`flex-1 px-4 py-2 border  border-gray-6 rounded-lg focus:ring-1 focus:ring-pink focus:border-pink outline-none transition-all ${className}`}
+              className={`flex-1 px-4 py-2 border border-gray-6 rounded-lg focus:ring-1 focus:ring-pink focus:border-pink outline-none transition-all ${className}`}
               placeholder={placeholder || label}
             />
             {index === fields.length - 1 && append && (
               <button
                 type="button"
                 onClick={append}
-                className="bg-blue  px-3 rounded"
+                className="bg-blue px-3 rounded"
               >
                 +
               </button>
@@ -108,6 +124,7 @@ const FormField: React.FC<FormFieldProps> = ({
         {required && <span className="text-red"> *</span>}
       </label>
 
+      {/* FILE */}
       {type === "file" ? (
         <Input
           id={name}
@@ -119,6 +136,7 @@ const FormField: React.FC<FormFieldProps> = ({
           placeholder={placeholder}
         />
       ) : type === "date" ? (
+        /* DATE */
         <div className="space-y-1 w-full">
           <Controller
             control={control}
@@ -132,10 +150,7 @@ const FormField: React.FC<FormFieldProps> = ({
               return (
                 <Popover>
                   <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className="w-full justify-between"
-                    >
+                    <Button variant="outline" className="w-full justify-between">
                       {selectedDate
                         ? selectedDate.toLocaleDateString()
                         : "Select date"}
@@ -157,6 +172,7 @@ const FormField: React.FC<FormFieldProps> = ({
           />
         </div>
       ) : type === "combobox" ? (
+        /* COMBOBOX */
         <div className="space-y-1 w-full">
           <Controller
             name={name}
@@ -167,12 +183,75 @@ const FormField: React.FC<FormFieldProps> = ({
                 options={options || []}
                 placeholder={placeholder}
                 onSelect={(value) => field.onChange(value)}
-                className={className}
+                className={`${className} border-gray-6 rounded-lg focus:ring-1 focus:ring-pink focus:border-pink outline-none transition-all`}
+                
               />
             )}
           />
         </div>
+      ) : type === "multi-select" ? (
+        /*  MULTI SELECT  */
+        <div className="space-y-2 w-full">
+          <Controller
+            name={name}
+            control={control}
+            rules={{ required: required ? errorMessage : false }}
+            defaultValue={[]}
+            render={({ field }) => {
+              const selected: string[] = Array.isArray(field.value)
+                ? field.value
+                : [];
+
+              return (
+                <>
+                  <Select
+                    onValueChange={(val) => {
+                      if (!val) return;
+                      if (selected.includes(val)) return;
+                      field.onChange([...selected, val]);
+                    }}
+                  >
+                    <SelectTrigger
+                      className={`w-full border py-6 border-gray-6 rounded-lg focus:ring-1 focus:ring-pink focus:border-pink outline-none transition-all ${className}`}
+                    >
+                      <SelectValue
+                        placeholder={placeholder || "Select options"}
+                      />
+                    </SelectTrigger>
+
+                    <SelectContent>
+                      {(options || []).map((op) => (
+                        <SelectItem key={op} value={op}>
+                          {op}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+
+                  {selected.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      {selected.map((val) => (
+                        <button
+                          key={val}
+                          type="button"
+                          onClick={() =>
+                            field.onChange(selected.filter((x) => x !== val))
+                          }
+                          className="px-2 py-1 bg-gray-5 rounded-md border text-sm text-white border-gray-6 dark:text-white"
+                          title="Click to remove"
+                        >
+                          {val} ✕
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </>
+              );
+            }}
+          />
+        </div>
       ) : type === "textarea" ? (
+        /* TEXTAREA */
         <textarea
           {...register(name, {
             required: required ? errorMessage : false,
@@ -180,10 +259,11 @@ const FormField: React.FC<FormFieldProps> = ({
           })}
           id={name}
           placeholder={placeholder}
-          className={`w-full px-4 py-2  border border-gray-3 rounded-lg focus:ring-1 focus:ring-pink focus:border-pink outline-none transition-all ${className}`}
+          className={`w-full px-4 py-2 border border-gray-6 rounded-lg focus:ring-1 focus:ring-pink focus:border-pink outline-none transition-all ${className}`}
           rows={name === "address" ? 4 : 9}
         />
       ) : type === "radio" ? (
+        /* RADIO */
         <div className="flex gap-5">
           {options.map((opt) => (
             <label
@@ -193,7 +273,6 @@ const FormField: React.FC<FormFieldProps> = ({
             >
               <Input
                 id={opt}
-                className=""
                 type="radio"
                 value={opt}
                 {...register(name, {
@@ -206,6 +285,7 @@ const FormField: React.FC<FormFieldProps> = ({
           ))}
         </div>
       ) : (
+        /* DEFAULT INPUT */
         <div className="relative">
           <input
             id={name}
@@ -213,19 +293,20 @@ const FormField: React.FC<FormFieldProps> = ({
               required: required ? errorMessage : false,
               ...rules,
             })}
-            type={showPassword ? "text" : type}
+            type={type === "password" ? (showPassword ? "text" : "password") : type}
             placeholder={placeholder}
-            className={`w-full px-4 py-3 relative border border-gray-6 rounded-lg focus:ring-1 focus:ring-pink focus:border-pink outline-none transition-all dark:text-white  ${className}`}
+            className={`w-full px-4 py-3 relative border border-gray-6 rounded-lg focus:ring-1 focus:ring-pink focus:border-pink outline-none transition-all dark:text-white ${className}`}
           />
+
           {type === "password" && (
             <div
               onClick={() => setShowPassword(!showPassword)}
               className="cursor-pointer"
             >
-              {type === "password" && !showPassword ? (
+              {!showPassword ? (
                 <Eye size={20} className="absolute top-3 right-5" />
               ) : (
-                <EyeOff size={20} className="absolute top-3 right-5  " />
+                <EyeOff size={20} className="absolute top-3 right-5" />
               )}
             </div>
           )}

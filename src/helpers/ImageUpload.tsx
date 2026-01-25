@@ -62,17 +62,17 @@ export default function ImageUploadField({
   };
 
   return (
-    <div className="mb-6">
+    <div className="mb-6 mt-10">
       <div
         className="border-2 border-dashed border-gray-5 rounded-lg p-6 text-center cursor-pointer dark:border-gray-600 dark:text-gray-300"
         onClick={() => fileInputRef.current?.click()}
         onDragOver={(e) => e.preventDefault()}
         onDrop={handleDrop}
       >
-        <div className="text-gray-4 flex flex-col items-center">
+        <div className=" flex flex-col items-center py-10">
           <Upload />
           <p>Drag your images or click here</p>
-          <p className="text-sm text-gray-400">
+          <p className="text-sm ">
             (Only *.jpeg, *.webp and *.png images will be accepted)
           </p>
         </div>

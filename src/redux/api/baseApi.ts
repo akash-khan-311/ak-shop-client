@@ -1,4 +1,3 @@
-import config from "@/config";
 import Cookies from "js-cookie";
 import {
   BaseQueryApi,
@@ -31,7 +30,7 @@ const baseQueryWithRefreshToken: BaseQueryFn<
   DefinitionType
 > = async (args, api, extraOptions): Promise<any> => {
   let result = await baseQuery(args, api, extraOptions);
-  console.log("this is result from redux====", result);
+  
   if (result?.error?.status === 400) {
     const errorData = result.error.data as { message?: string };
 
@@ -47,7 +46,7 @@ const baseQueryWithRefreshToken: BaseQueryFn<
       credentials: "include",
     });
     const { data } = await res.json();
-    console.log("this token from redux", data.accessToken);
+    
     if (data?.accessToken) {
       const user = (api.getState() as RootState).auth.user;
       api.dispatch(setUser({ user, token: data?.accessToken }));
@@ -64,6 +63,6 @@ const baseQueryWithRefreshToken: BaseQueryFn<
 export const baseApi = createApi({
   reducerPath: "baseApi",
   baseQuery: baseQueryWithRefreshToken,
-  tagTypes: ["Me", "category",'subcategory'],
+  tagTypes: ["Me", "category",'subcategory','products','SpecTemplate'],
   endpoints: () => ({}),
 });
