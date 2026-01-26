@@ -5,7 +5,7 @@ import { useModalContext } from "@/app/context/QuickViewModalContext";
 import Image from "next/image";
 import Link from "next/link";
 
-const SingleItem = ({ item }: { item: Product }) => {
+const SingleItem = ({ item }: { item: any }) => {
   const { openModal } = useModalContext();
 
   // update the QuickView state

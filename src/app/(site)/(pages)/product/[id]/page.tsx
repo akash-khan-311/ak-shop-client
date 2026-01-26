@@ -1,5 +1,4 @@
 import shopData from "@/components/Shop/shopData";
-import ShopDetails from "@/components/ShopDetails";
 
 // export const metadata = {
 //   title: "Course Details | AS Programming",
@@ -26,10 +25,6 @@ const ProductDetailsPage = async ({
   const { id } = await params;
   const product = shopData?.find((p: any) => id === p.id);
   console.log(product);
-  return (
-    <main>
-      <ShopDetails />
-    </main>
-  );
+  return <main>{/* <ShopDetails /> */}</main>;
 };
 export default ProductDetailsPage;

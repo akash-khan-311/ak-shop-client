@@ -1,4 +1,3 @@
-// middleware.ts
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { verifyToken } from "./utils";
@@ -13,58 +12,64 @@ const ROLE_DASHBOARD: Record<Role, string> = {
 
 export function middleware(req: NextRequest) {
   const token = req.cookies.get("accessToken")?.value;
-  const { pathname } = req.nextUrl;
+  const { pathname, search } = req.nextUrl;
+
   const isAuthPage = pathname === "/signin" || pathname === "/signup";
 
-  const isDashboardRoute =
-    pathname.startsWith("/user") ||
-    pathname.startsWith("/admin") ||
-    pathname.startsWith("/vendor");
+  const isAdminRoute = pathname.startsWith("/admin");
+  const isVendorRoute = pathname.startsWith("/vendor");
+  const isUserRoute = pathname.startsWith("/user");
 
-  const publicRoutes = ["/signin", "/signup"];
-  const protectedRoutes = ["/user", "/admin", "/vendor", "/dashboard"];
+  const isDashboardAlias =
+    pathname === "/dashboard" || pathname.startsWith("/dashboard/");
 
-  const isPublicRoute = publicRoutes.includes(pathname);
-  const isProtectedRoute = protectedRoutes.some((route) =>
-    pathname.startsWith(route)
-  );
+  const isProtectedRoute =
+    isAdminRoute || isVendorRoute || isUserRoute || isDashboardAlias;
 
-  if (!token && isDashboardRoute) {
-    return NextResponse.redirect(
-      new URL(`/signin?redirect=${pathname}`, req.url)
+  const signinRedirect = () =>
+    NextResponse.redirect(
+      new URL(`/signin?redirect=${pathname}${search || ""}`, req.url)
     );
-  }
 
-  let user = null;
+  const forceLogout = () => {
+    const res = signinRedirect();
+    res.cookies.delete("accessToken");
+    return res;
+  };
+
+  // no token -> protected deny
+  if (!token && isProtectedRoute) return signinRedirect();
+
+  let user: any = null;
+
   if (token) {
     try {
-      user = verifyToken(token);
-      const correctDashboard = ROLE_DASHBOARD[user.role];
-      if (isAuthPage) {
-        return NextResponse.redirect(new URL(correctDashboard, req.url));
-      }
-      if (
-        pathname.startsWith("/user") ||
-        pathname.startsWith("/admin") ||
-        pathname.startsWith("/vendor")
-      ) {
-        if (!pathname.startsWith(`/${user.role}`)) {
-          return NextResponse.redirect(new URL(correctDashboard, req.url));
-        }
-      }
-    } catch (err) {
-      const response = NextResponse.redirect(
-        new URL(`/signin?redirect=${pathname}`, req.url)
-      );
-      response.cookies.delete("accessToken");
-      return response;
+      user = verifyToken(token); // must contain role
+    } catch (e) {
+      return forceLogout(); // invalid/expired token
     }
   }
 
-  if (isProtectedRoute && !token) {
-    return NextResponse.redirect(
-      new URL(`/signin?redirect=${pathname}`, req.url)
-    );
+  // logged-in user can't stay in auth pages
+  if (user && isAuthPage) {
+    return NextResponse.redirect(new URL(ROLE_DASHBOARD[user.role], req.url));
+  }
+
+  // /dashboard -> role dashboard
+  if (user && isDashboardAlias) {
+    return NextResponse.redirect(new URL(ROLE_DASHBOARD[user.role], req.url));
+  }
+
+  // role-based strict protection
+  if (user) {
+    if (isAdminRoute && user.role !== "admin")
+      return NextResponse.redirect(new URL(ROLE_DASHBOARD[user.role], req.url));
+
+    if (isVendorRoute && user.role !== "vendor")
+      return NextResponse.redirect(new URL(ROLE_DASHBOARD[user.role], req.url));
+
+    if (isUserRoute && user.role !== "user")
+      return NextResponse.redirect(new URL(ROLE_DASHBOARD[user.role], req.url));
   }
 
   return NextResponse.next();
@@ -76,7 +81,7 @@ export const config = {
     "/admin/:path*",
     "/vendor/:path*",
     "/dashboard/:path*",
-    "/orders/:path*",
+    "/dashboard",
     "/signin",
     "/signup",
   ],

@@ -33,7 +33,7 @@ export const AnimatedThemeToggler = ({
     } else {
       // fallback: system theme
       const prefersDark = window.matchMedia(
-        "(prefers-color-scheme: dark)"
+        "(prefers-color-scheme: dark)",
       ).matches;
       document.documentElement.classList.toggle("dark", prefersDark);
       setIsDark(prefersDark);
@@ -58,15 +58,24 @@ export const AnimatedThemeToggler = ({
   const toggleTheme = useCallback(async () => {
     if (!buttonRef.current) return;
 
-    await document.startViewTransition(() => {
-      flushSync(() => {
-        const newTheme = !isDark;
-        setIsDark(newTheme);
+    const applyTheme = () => {
+      const newTheme = !isDark;
+      setIsDark(newTheme);
 
-        document.documentElement.classList.toggle("dark", newTheme);
-        localStorage.setItem("theme", newTheme ? "dark" : "light");
-      });
-    }).ready;
+      document.documentElement.classList.toggle("dark", newTheme);
+      localStorage.setItem("theme", newTheme ? "dark" : "light");
+    };
+
+    if (!document.startViewTransition) {
+      applyTheme();
+      return;
+    }
+
+    const vt = document.startViewTransition(() => {
+      flushSync(() => applyTheme());
+    });
+
+    await vt.ready;
 
     const { top, left, width, height } =
       buttonRef.current.getBoundingClientRect();
@@ -74,7 +83,7 @@ export const AnimatedThemeToggler = ({
     const y = top + height / 2;
     const maxRadius = Math.hypot(
       Math.max(left, window.innerWidth - left),
-      Math.max(top, window.innerHeight - top)
+      Math.max(top, window.innerHeight - top),
     );
 
     document.documentElement.animate(
@@ -88,7 +97,7 @@ export const AnimatedThemeToggler = ({
         duration,
         easing: "ease-in-out",
         pseudoElement: "::view-transition-new(root)",
-      }
+      },
     );
   }, [isDark, duration]);
 

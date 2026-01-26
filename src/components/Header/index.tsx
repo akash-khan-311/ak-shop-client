@@ -13,6 +13,7 @@ import { AnimatedThemeToggler } from "../ui/animated-theme-toggler";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useAppSelector } from "@/redux/hook";
+
 import {
   selectCurrentToken,
   selectCurrentUser,
@@ -21,6 +22,8 @@ import UserDropDown from "../ui/Dropdown/user.dropdown";
 import { useGetMeQuery } from "@/redux/features/auth/authApi";
 import { usePathname } from "next/navigation";
 import VendorDropDown from "../ui/Dropdown/vendor.dropdown";
+import { useGetAllCategoryQuery } from "@/redux/features/category/categoryApi";
+import { TCategory } from "@/types/category";
 
 const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -31,12 +34,19 @@ const Header = () => {
   const token = useAppSelector(selectCurrentToken);
   const user = useAppSelector(selectCurrentUser);
   const [isOpen, setIsOpen] = useState(false);
+
+  const { data } = useGetAllCategoryQuery(token);
+  const categories = data?.data;
+  const options = [
+    "All Categories",
+    ...(Array.from(
+      new Set(categories?.map((category: TCategory) => category.name)),
+    ) as string[]),
+  ];
   const pathname = usePathname();
   const handleOpenCartModal = () => {
     openCartModal();
   };
-
-  console.log('this is user from header', user)
 
   // Sticky menu
   const handleStickyMenu = () => {
@@ -51,17 +61,6 @@ const Header = () => {
     window.addEventListener("scroll", handleStickyMenu);
   });
 
-  const options = [
-    { label: "All Categories", value: "0" },
-    { label: "Desktop", value: "1" },
-    { label: "Laptop", value: "2" },
-    { label: "Monitor", value: "3" },
-    { label: "Phone", value: "4" },
-    { label: "Watch", value: "5" },
-    { label: "Mouse", value: "6" },
-    { label: "Tablet", value: "7" },
-  ];
-
   const isVendorDashboard = pathname.startsWith("/vendor/");
   const isAdminDashboard = pathname.startsWith("/admin/");
   const isSuperAdminDashboard = pathname.startsWith("/superAdmin/");
@@ -73,7 +72,7 @@ const Header = () => {
         "shadow-[0px_2px_20px_1px_rgba(0,_0,_0,_0.7)] dark:shadow-[0px_15px_18px_5px_rgba(255,_255,_255,_0.05)] "
       }`}
     >
-      <div className="max-w-[1170px] mx-auto px-4 sm:px-7.5 xl:px-0">
+      <div className="container mx-auto px-4 sm:px-7.5 xl:px-0">
         {/* <!-- header top start --> */}
         <div
           className={`flex flex-col lg:flex-row gap-5 items-end lg:items-center xl:justify-between ease-out duration-200 ${
@@ -81,16 +80,16 @@ const Header = () => {
           }`}
         >
           {/* <!-- header top left --> */}
-          <div className="xl:w-auto flex-col sm:flex-row w-full flex sm:justify-between sm:items-center gap-5 sm:gap-10">
-            <Logo />
-            <div className="max-w-[475px] w-full ">
+          <div className="xl:w-auto  flex-col sm:flex-row w-full flex sm:justify-between sm:items-center gap-5 sm:gap-10">
+            <div className="w-full">
+              <Link href="/">
+                <Logo />
+              </Link>
+            </div>
+            <div className=" w-full ">
               <form className="">
                 <div className="flex items-center">
-                  <CustomSelect options={options} />
-
-                  <div className="relative max-w-[333px] sm:min-w-[333px] w-full ">
-                    {/* <!-- divider --> */}
-                    <span className="absolute left-0 top-1/2 -translate-y-1/2 inline-block w-px h-5.5 bg-gray-4"></span>
+                  <div className="relative  w-full ">
                     <input
                       onChange={(e) => setSearchQuery(e.target.value)}
                       value={searchQuery}
@@ -99,10 +98,11 @@ const Header = () => {
                       id="search"
                       placeholder="I am shopping for..."
                       autoComplete="off"
-                      className="custom-search w-full rounded-r-[5px] bg-gray-1 !border-l-0 border border-gray-3 py-2.5 pl-4 pr-10 outline-none ease-in duration-200"
+                      className=" w-full rounded-md bg-gray-1 dark:bg-dark-3 border border-gray-6 py-2.5 pl-4 pr-10 outline-none ease-in duration-200"
                     />
 
                     <button
+                      type="submit"
                       id="search-btn"
                       aria-label="Search"
                       className="flex items-center justify-center absolute right-3 top-1/2 -translate-y-1/2 ease-in duration-200 hover:text-pink"
@@ -240,7 +240,7 @@ const Header = () => {
                           {menuItem.title}
                         </Link>
                       </li>
-                    )
+                    ),
                   )}
                 </ul>
               </nav>

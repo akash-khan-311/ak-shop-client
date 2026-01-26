@@ -1,5 +1,5 @@
 import React from "react";
-import ShopDetails from "@/components/ShopDetails";
+// import ShopDetails from "@/components/ShopDetails";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -11,7 +11,8 @@ export const metadata: Metadata = {
 const ShopDetailsPage = () => {
   return (
     <main>
-      <ShopDetails />
+      {/* <ShopDetails /> */}
+      <h1>Shop Details</h1>
     </main>
   );
 };

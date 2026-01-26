@@ -1,63 +1,59 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect } from "react";
+"use client";
 
-const CustomSelect = ({ options }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState(options[0]);
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
-  const toggleDropdown = () => {
-    setIsOpen(!isOpen);
-  };
+type CustomSelectProps = {
+  options: string[];
+  value?: string; // controlled
+  defaultValue?: string; // uncontrolled
+  placeholder?: string;
+  onChange?: (value: string) => void;
+  className?: string;
+};
 
-  const handleOptionClick = (option) => {
-    setSelectedOption(option);
-    toggleDropdown();
-  };
-
-  useEffect(() => {
-    // closing modal while clicking outside
-    function handleClickOutside(event) {
-      if (!event.target.closest(".dropdown-content")) {
-        toggleDropdown();
-      }
-    }
-
-    if (isOpen) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [isOpen]);
-
+const CustomSelect = ({
+  options,
+  value,
+  defaultValue = "All Categories",
+  placeholder = "Select option",
+  onChange,
+  className,
+}: CustomSelectProps) => {
   return (
-    <div
-      className="dropdown-content custom-select relative"
-      style={{ width: "200px" }}
+    <Select
+      value={value}
+      defaultValue={value ? undefined : defaultValue}
+      onValueChange={(val) => onChange?.(val)}
     >
-      <div
-        className={`select-selected whitespace-nowrap ${
-          isOpen ? "select-arrow-active" : ""
-        }`}
-        onClick={toggleDropdown}
+      <SelectTrigger
+        className={` w-full rounded-none px-3 py-6 dark:bg-dark
+    focus:outline-none
+    focus:ring-0
+    focus:ring-offset-0
+    focus-visible:outline-none
+    focus-visible:ring-0
+    focus-visible:ring-offset-0  ${className}`}
       >
-        {selectedOption.label}
-      </div>
-      <div className={`select-items ${isOpen ? "" : "select-hide"}`}>
-        {options.slice(1, -1).map((option, index) => (
-          <div
-            key={index}
-            onClick={() => handleOptionClick(option)}
-            className={`select-item ${
-              selectedOption === option ? "same-as-selected" : ""
-            }`}
-          >
-            {option.label}
-          </div>
-        ))}
-      </div>
-    </div>
+        <SelectValue placeholder={placeholder} />
+      </SelectTrigger>
+
+      <SelectContent className="z-9999 overflow-auto ">
+        <SelectGroup className="">
+          {options.map((o) => (
+            <SelectItem key={o} value={o}>
+              {o}
+            </SelectItem>
+          ))}
+        </SelectGroup>
+      </SelectContent>
+    </Select>
   );
 };
 

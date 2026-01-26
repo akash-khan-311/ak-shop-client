@@ -1,10 +1,6 @@
 "use client";
-import  { useState, useMemo } from "react";
-import {
-  Trash2,
-  ZoomIn,
-  SquarePen,
-} from "lucide-react";
+import { useState, useMemo } from "react";
+import { Trash2, ZoomIn, SquarePen } from "lucide-react";
 import {
   Table as ReactTable,
   TableHeader,
@@ -30,7 +26,6 @@ import { selectCurrentToken } from "@/redux/features/auth/authSlice";
 import { TProduct } from "@/types/product.type";
 import Image from "next/image";
 
-
 const tableHeading = [
   "Product Name",
   "Category",
@@ -47,8 +42,8 @@ export default function AllProductsList() {
   const [selectedProducts, setSelectedProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
-  const token = useAppSelector(selectCurrentToken)
-  const {data} = useGetAllProductsQuery(token)
+  const token = useAppSelector(selectCurrentToken);
+  const { data } = useGetAllProductsQuery(token);
   const products = useMemo(() => data?.data || [], [data?.data]);
   const [filters, setFilters] = useState({
     search: "",
@@ -58,12 +53,14 @@ export default function AllProductsList() {
 
   const categories = [
     "All Categories",
-    ...Array.from(new Set(products.map((p: TProduct) => p.category))) as string[],
+    ...(Array.from(
+      new Set(products.map((p: TProduct) => p.category)),
+    ) as string[]),
   ];
-console.log('this is products', products);
+  console.log("this is products", products);
   // Filter and sort products
   const filteredProducts = useMemo(() => {
-    let filtered = products.filter((product:TProduct) => {
+    let filtered = products.filter((product: TProduct) => {
       const matchesSearch = product?.productName
         ?.toLowerCase()
         ?.includes(filters.search.toLowerCase());
@@ -142,7 +139,7 @@ console.log('this is products', products);
   };
 
   // Toggle individual selection
-  const toggleSelect = (id) => {
+  const toggleSelect = (id: string) => {
     setSelectedProducts((prev) =>
       prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id],
     );
@@ -150,7 +147,6 @@ console.log('this is products', products);
 
   // Delete product
   const deleteProduct = (id) => {
-    
     setSelectedProducts((prev) => prev.filter((i) => i !== id));
   };
 
@@ -160,15 +156,12 @@ console.log('this is products', products);
       selectedProducts.length > 0 &&
       confirm(`Delete ${selectedProducts.length} products?`)
     ) {
-     
       setSelectedProducts([]);
     }
   };
 
   // Toggle published status
-  const togglePublished = (id) => {
-   
-  };
+  const togglePublished = (id) => {};
 
   return (
     <div className="">
@@ -271,7 +264,7 @@ console.log('this is products', products);
                             height={50}
                             alt="Product"
                           />
-                       
+
                           <h2 className="text-base">{product?.productName}</h2>
                         </div>
                       </div>

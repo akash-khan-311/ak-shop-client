@@ -3,14 +3,11 @@ import { baseApi } from "@/redux/api/baseApi";
 const categoryApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getAllCategory: builder.query({
-      query: (token) => ({
+      query: () => ({
         url: "/category",
         method: "GET",
         credentials: "include",
-        headers: {
-          Authorization: `${token}`,
-          "Content-Type": "application/json",
-        },
+
       }),
       providesTags: ["category"],
     }),
@@ -67,7 +64,7 @@ const categoryApi = baseApi.injectEndpoints({
         credentials: "include",
         headers: {
           Authorization: `${token}`,
-          
+
         },
       }),
       invalidatesTags: ["subcategory"],
@@ -87,14 +84,12 @@ const categoryApi = baseApi.injectEndpoints({
       invalidatesTags: ["category"],
     }),
     getSubCategory: builder.query({
-      query: (token) => {
+      query: () => {
         return {
           url: "/category/all/subcategories",
           method: "GET",
           credentials: "include",
-          headers: {
-            Authorization: `${token}`,
-          },
+
         };
       },
       providesTags: ["subcategory"],
@@ -107,9 +102,9 @@ const categoryApi = baseApi.injectEndpoints({
         };
       },
     }),
-    
+
     updateSubCategory: builder.mutation({
-      query: ({id, token, data}) => ({
+      query: ({ id, token, data }) => ({
         url: `/category/subcategory/${id}`,
         method: "PATCH",
         body: data,
@@ -121,16 +116,16 @@ const categoryApi = baseApi.injectEndpoints({
       invalidatesTags: ["subcategory"],
     }),
     deleteSubCategory: builder.mutation({
-      query: ({ids,token })=> {
+      query: ({ ids, token }) => {
         return {
           url: `/category/subcategory/delete`,
           method: 'DELETE',
-          body: {ids},
+          body: { ids },
           headers: {
             Authorization: `${token}`
           }
         }
-        
+
       },
       invalidatesTags: ['subcategory']
     })
@@ -149,5 +144,5 @@ export const {
   useUpdateSubCategoryMutation,
   useGetSingleSubCategoryQuery,
   useDeleteSubCategoryMutation
-  
+
 } = categoryApi;
