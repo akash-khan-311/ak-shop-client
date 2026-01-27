@@ -28,6 +28,10 @@ import {
   Ticket,
   ListChecks,
   Blocks,
+  BarChart3,
+  Megaphone,
+  FileText,
+  LifeBuoy,
 } from "lucide-react";
 
 export const userMenuItems = [
@@ -51,24 +55,165 @@ export const userMenuItems = [
 //   { name: "Shop Settings", href: "/vendor/settings", icon: Settings },
 // ];
 
-export const adminMenuItems = [
-  { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
-  { name: "Users", href: "/admin/users", icon: Users },
-  { name: "Vendors", href: "/admin/vendors", icon: Users },
-  { name: "Products", href: "/admin/products", icon: Package },
-  { name: "Orders", href: "/admin/orders", icon: ShoppingCart },
-  { name: "Coupons", href: "/admin/coupons", icon: BadgePercent },
-  { name: "Support Tickets", href: "/admin/tickets", icon: TicketCheck },
-  { name: "Settings", href: "/admin/settings", icon: Settings },
-];
+// export const adminMenuItems = [
+//   { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
+//   { name: "Users", href: "/admin/users", icon: Users },
+//   { name: "Vendors", href: "/admin/vendors", icon: Users },
+//   { name: "Products", href: "/admin/products", icon: Package },
+//   { name: "Orders", href: "/admin/orders", icon: ShoppingCart },
+//   { name: "Coupons", href: "/admin/coupons", icon: BadgePercent },
+//   { name: "Support Tickets", href: "/admin/tickets", icon: TicketCheck },
+//   { name: "Settings", href: "/admin/settings", icon: Settings },
+// ];
 
-export const superAdminMenuItems = [
-  { name: "System Overview", href: "/super-admin/dashboard", icon: Shield },
-  { name: "Admins", href: "/super-admin/admins", icon: Users },
-  { name: "Role Management", href: "/super-admin/roles", icon: Shield },
-  { name: "System Settings", href: "/super-admin/settings", icon: Settings },
-  { name: "Database Logs", href: "/super-admin/logs", icon: Database },
-  { name: "Activity Monitor", href: "/super-admin/activity", icon: Activity },
+export const adminMenuItems = [
+  {
+    name: "Dashboard",
+    href: "/admin/dashboard",
+    icon: LayoutDashboard,
+  },
+
+  /* ---------------- USERS ---------------- */
+  {
+    name: "Users",
+    icon: Users,
+    subItems: [
+      { name: "All Users", path: "/admin/users" },
+      { name: "Vendors", path: "/admin/vendors" },
+      { name: "Admins", path: "/admin/admins" },
+      { name: "Blocked Users", path: "/admin/users/blocked" },
+    ],
+  },
+  // --------------Category-----------------
+  {
+    name: "Category",
+    icon: ListChecks,
+    subItems: [
+      { name: "All Category", path: "/admin/category" },
+      { name: "Add Category", path: "/admin/category/add" },
+      { name: "Sub Category", path: "/admin/category/subcategory" },
+    ],
+  },
+
+  /* ---------------- VENDORS ---------------- */
+  {
+    name: "Vendor Management",
+    icon: Store,
+    subItems: [
+      { name: "Vendor Requests", path: "/admin/vendors/requests" },
+      { name: "Approved Vendors", path: "/admin/vendors/approved" },
+      { name: "Suspended Vendors", path: "/admin/vendors/suspended" },
+      { name: "Vendor Payouts", path: "/admin/vendors/payouts" },
+    ],
+  },
+
+  /* ---------------- PRODUCTS ---------------- */
+  {
+    name: "Products",
+    icon: Box,
+    subItems: [
+      { name: "All Products", path: "/admin/products" },
+      { name: "Pending Approval", path: "/admin/products/pending" },
+      { name: "Reported Products", path: "/admin/products/reported" },
+    ],
+  },
+
+  /* ---------------- CATEGORY ---------------- */
+  {
+    name: "Categories",
+    icon: ListChecks,
+    subItems: [
+      { name: "All Categories", path: "/admin/categories" },
+      { name: "Sub Categories", path: "/admin/categories/sub" },
+      { name: "Category Requests", path: "/admin/categories/requests" },
+    ],
+  },
+
+  /* ---------------- SPECIFICATIONS ---------------- */
+  {
+    name: "Specifications",
+    icon: Blocks,
+    subItems: [
+      { name: "All Specifications", path: "/admin/specifications" },
+      { name: "Add Specification", path: "/admin/specifications/add" },
+    ],
+  },
+
+  /* ---------------- ORDERS ---------------- */
+  {
+    name: "Orders",
+    icon: ShoppingBag,
+    subItems: [
+      { name: "All Orders", path: "/admin/orders" },
+      { name: "Returns & Refunds", path: "/admin/orders/returns" },
+      { name: "Disputes", path: "/admin/orders/disputes" },
+    ],
+  },
+
+  /* ---------------- FINANCE ---------------- */
+  {
+    name: "Finance",
+    icon: DollarSign,
+    subItems: [
+      { name: "Commission Settings", path: "/admin/finance/commission" },
+      { name: "Payout Requests", path: "/admin/finance/payouts" },
+      { name: "Transactions", path: "/admin/finance/transactions" },
+    ],
+  },
+
+  /* ---------------- MARKETING ---------------- */
+  {
+    name: "Marketing",
+    icon: Megaphone,
+    subItems: [
+      { name: "Coupons", path: "/admin/coupons" },
+      { name: "Campaigns", path: "/admin/campaigns" },
+      { name: "Banners", path: "/admin/banners" },
+    ],
+  },
+
+  /* ---------------- CMS ---------------- */
+  {
+    name: "Content",
+    icon: FileText,
+    subItems: [
+      { name: "Pages", path: "/admin/pages" },
+      { name: "Blogs", path: "/admin/blogs" },
+      { name: "FAQs", path: "/admin/faqs" },
+    ],
+  },
+
+  /* ---------------- SUPPORT ---------------- */
+  {
+    name: "Support",
+    icon: LifeBuoy,
+    subItems: [
+      { name: "Support Tickets", path: "/admin/tickets" },
+      { name: "Vendor Disputes", path: "/admin/disputes" },
+    ],
+  },
+
+  /* ---------------- REPORTS ---------------- */
+  {
+    name: "Reports & Analytics",
+    icon: BarChart3,
+    subItems: [
+      { name: "Sales Report", path: "/admin/reports/sales" },
+      { name: "Vendor Performance", path: "/admin/reports/vendors" },
+      { name: "Product Insights", path: "/admin/reports/products" },
+    ],
+  },
+
+  /* ---------------- SYSTEM ---------------- */
+  {
+    name: "System Settings",
+    icon: Settings,
+    subItems: [
+      { name: "General Settings", path: "/admin/settings" },
+      { name: "Roles & Permissions", path: "/admin/settings/roles" },
+      { name: "Security Logs", path: "/admin/settings/logs" },
+    ],
+  },
 ];
 
 export const vendorMenuItems = [
@@ -82,23 +227,6 @@ export const vendorMenuItems = [
       { name: "Add Product", path: "/vendor/products/add" },
     ],
   },
-  {
-    name: "Category",
-    icon: ListChecks,
-    subItems: [
-      { name: "All Category", path: "/vendor/category" },
-      { name: "Add Category", path: "/vendor/category/add" },
-      { name: "Sub Category", path: "/vendor/category/subcategory" },
-    ],
-  },
-  {
-    name: "Specifications",
-    icon: Blocks,
-    subItems: [
-      { name: "All Specifications", path: "/vendor/specifications" },
-      { name: "Add Specification", path: "/vendor/specifications/add" },
-    ],
-  },
 
   {
     name: "Orders",
@@ -108,14 +236,11 @@ export const vendorMenuItems = [
 
   {
     name: "Earnings",
-    href: "/vendor/earnings",
     icon: DollarSign,
-  },
-
-  {
-    name: "Profile",
-    href: "/vendor/profile",
-    icon: Settings,
+    subItems: [
+      { name: "Wallet", path: "/vendor/earnings" },
+      { name: "Payouts", path: "/vendor/payouts" },
+    ],
   },
 
   {
@@ -141,10 +266,14 @@ export const vendorMenuItems = [
     href: "/vendor/store",
     icon: Store,
   },
-
   {
     name: "Settings",
-    href: "/vendor/settings",
     icon: Settings,
+    subItems: [
+      { name: "Profile", path: "/vendor/profile" },
+      { name: "Security", path: "/vendor/settings/security" },
+      { name: "Notifications", path: "/vendor/settings/notifications" },
+      { name: "Change Password", path: "/vendor/settings/change-password" },
+    ],
   },
 ];

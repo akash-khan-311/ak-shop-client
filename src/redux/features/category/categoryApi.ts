@@ -2,14 +2,23 @@ import { baseApi } from "@/redux/api/baseApi";
 
 const categoryApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getAllCategory: builder.query({
+    getAllCategoryForVendorAndAdmin: builder.query({
       query: () => ({
-        url: "/category",
+        url: "/category/vendor",
         method: "GET",
         credentials: "include",
 
       }),
       providesTags: ["category"],
+    }),
+    getAllCategoriesForUser: builder.query({
+      query: () => {
+        return {
+          url: '/category/all',
+          method: 'GET'
+        }
+      },
+      providesTags: ['userCategory']
     }),
     getSingleCategory: builder.query({
       query: (id) => {
@@ -29,7 +38,7 @@ const categoryApi = baseApi.injectEndpoints({
           Authorization: `${token}`,
         },
       }),
-      invalidatesTags: ["category"],
+      invalidatesTags: ["category", "userCategory"],
     }),
     toggleCategoryPublished: builder.mutation({
       query: (data) => ({
@@ -39,10 +48,10 @@ const categoryApi = baseApi.injectEndpoints({
         credentials: "include",
         headers: {
           Authorization: `${data.token}`,
-          "Content-Type": "application/json",
+
         },
       }),
-      invalidatesTags: ["category"],
+      invalidatesTags: ["category", "userCategory"],
     }),
     createCategory: builder.mutation({
       query: ({ token, formData }) => ({
@@ -54,7 +63,7 @@ const categoryApi = baseApi.injectEndpoints({
           Authorization: `${token}`,
         },
       }),
-      invalidatesTags: ["category"],
+      invalidatesTags: ["category", "userCategory"],
     }),
     createSubCategory: builder.mutation({
       query: ({ id, token, formData }) => ({
@@ -81,7 +90,7 @@ const categoryApi = baseApi.injectEndpoints({
           },
         };
       },
-      invalidatesTags: ["category"],
+      invalidatesTags: ["category", "userCategory"],
     }),
     getSubCategory: builder.query({
       query: () => {
@@ -133,7 +142,8 @@ const categoryApi = baseApi.injectEndpoints({
 });
 
 export const {
-  useGetAllCategoryQuery,
+  useGetAllCategoryForVendorAndAdminQuery,
+  useGetAllCategoriesForUserQuery,
   useToggleCategoryPublishedMutation,
   useCreateCategoryMutation,
   useCreateSubCategoryMutation,

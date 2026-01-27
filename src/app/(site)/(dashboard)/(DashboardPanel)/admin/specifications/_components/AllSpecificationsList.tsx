@@ -23,7 +23,7 @@ import {
   selectCurrentToken,
   selectCurrentUser,
 } from "@/redux/features/auth/authSlice";
-import { useGetAllCategoryQuery } from "@/redux/features/category/categoryApi";
+import { useGetAllCategoryForVendorAndAdminQuery } from "@/redux/features/category/categoryApi";
 import {
   useDeleteSpecTemplateMutation,
   useGetTemplatesQuery,
@@ -52,7 +52,8 @@ export default function AllSpecificationsList() {
     useToggleTemplatePublishedMutation();
   const [deleteTemplate, { isLoading: isDeleteLoading }] =
     useDeleteSpecTemplateMutation();
-  const { data: categoriesData } = useGetAllCategoryQuery(token);
+  const { data: categoriesData } =
+    useGetAllCategoryForVendorAndAdminQuery(token);
   const categories = useMemo(
     () => categoriesData?.data || [],
     [categoriesData],

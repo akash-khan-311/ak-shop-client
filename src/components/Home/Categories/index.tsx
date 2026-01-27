@@ -9,15 +9,18 @@ import "swiper/css/navigation";
 import "swiper/css";
 import SingleItem from "./SingleItem";
 import { ChevronLeft, ChevronRight, Tag } from "lucide-react";
+import { useGetAllCategoriesForUserQuery } from "@/redux/features/category/categoryApi";
+import { TCategory } from "@/types/category";
 
 const Categories = () => {
   const sliderRef = useRef(null);
 
+  const { data } = useGetAllCategoriesForUserQuery(undefined);
   const handlePrev = useCallback(() => {
     if (!sliderRef.current) return;
     sliderRef.current.swiper.slidePrev();
   }, []);
-
+  const categories = data?.data || [];
   const handleNext = useCallback(() => {
     if (!sliderRef.current) return;
     sliderRef.current.swiper.slideNext();
@@ -74,9 +77,9 @@ const Categories = () => {
               },
             }}
           >
-            {data.map((item, key) => (
-              <SwiperSlide key={key}>
-                <SingleItem item={item} />
+            {categories.map((category: TCategory) => (
+              <SwiperSlide key={category._id}>
+                <SingleItem item={category} />
               </SwiperSlide>
             ))}
           </Swiper>

@@ -7,7 +7,7 @@ import {
   selectCurrentToken,
   selectCurrentUser,
 } from "@/redux/features/auth/authSlice";
-import { useGetAllCategoryQuery } from "@/redux/features/category/categoryApi";
+import { useGetAllCategoriesForUserQuery } from "@/redux/features/category/categoryApi";
 import { useCreateProductMutation } from "@/redux/features/products/productApi";
 import { useGetEffectiveTemplateQuery } from "@/redux/features/specTemplate/specTemplate";
 import { useAppSelector } from "@/redux/hook";
@@ -51,7 +51,7 @@ export default function AddProductForm({
   const token = useAppSelector(selectCurrentToken);
   const [createProduct, { isLoading: AddProductLoading }] =
     useCreateProductMutation();
-  const { data } = useGetAllCategoryQuery(token, { skip: !token });
+  const { data } = useGetAllCategoriesForUserQuery(token, { skip: !token });
   const categories = useMemo(() => data?.data || [], [data]);
   const categoryOptions = categories.map((cat: any) => cat.name);
 
@@ -112,60 +112,59 @@ export default function AddProductForm({
   }, [subcategorySlug, setValue]);
 
   const handleFinalSubmit = async (formData: any) => {
-   try {
-     const payload = {
-      ...formData,
-      categorySlug,
-      subcategorySlug,
-      userId: userId || "",
-      specifications: formData?.specifications || {},
-    };
+    try {
+      const payload = {
+        ...formData,
+        categorySlug,
+        subcategorySlug,
+        userId: userId || "",
+        specifications: formData?.specifications || {},
+      };
 
-    const fd = new FormData();
+      const fd = new FormData();
 
-    fd.append("productName", payload.productName || "");
-    fd.append("category", payload.category || "");
-    fd.append("subcategory", payload.subcategory || "");
-    fd.append("categorySlug", payload.categorySlug || "");
-    fd.append("subcategorySlug", payload.subcategorySlug || "");
+      fd.append("productName", payload.productName || "");
+      fd.append("category", payload.category || "");
+      fd.append("subcategory", payload.subcategory || "");
+      fd.append("categorySlug", payload.categorySlug || "");
+      fd.append("subcategorySlug", payload.subcategorySlug || "");
 
-    fd.append("brand", payload.brand || "");
-    fd.append("color", payload.color || "");
+      fd.append("brand", payload.brand || "");
+      fd.append("color", payload.color || "");
 
-    if (payload.weight !== undefined && payload.weight !== "")
-      fd.append("weight", String(payload.weight));
-    if (payload.length !== undefined && payload.length !== "")
-      fd.append("length", String(payload.length));
-    if (payload.width !== undefined && payload.width !== "")
-      fd.append("width", String(payload.width));
+      if (payload.weight !== undefined && payload.weight !== "")
+        fd.append("weight", String(payload.weight));
+      if (payload.length !== undefined && payload.length !== "")
+        fd.append("length", String(payload.length));
+      if (payload.width !== undefined && payload.width !== "")
+        fd.append("width", String(payload.width));
 
-    fd.append("description", payload.description || "");
+      fd.append("description", payload.description || "");
 
-    fd.append("quantity", String(payload.quantity || 0));
-    fd.append("availability", payload.availability || "In Stock");
+      fd.append("quantity", String(payload.quantity || 0));
+      fd.append("availability", payload.availability || "In Stock");
 
-    fd.append("userId", payload.userId || "");
+      fd.append("userId", payload.userId || "");
 
-    fd.append("specifications", JSON.stringify(payload.specifications || {}));
+      fd.append("specifications", JSON.stringify(payload.specifications || {}));
 
-    const images: File[] = formData?.images || [];
-    images.forEach((file) => fd.append("images", file));
+      const images: File[] = formData?.images || [];
+      images.forEach((file) => fd.append("images", file));
 
-    // call API
+      // call API
 
-    const result = await createProduct({ data: fd, token }).unwrap();
-    console.log(result);
-    if (result?.success) {
-      toast.success(result?.message);
-      reset()
-    }
-    else {
-      toast.error(result?.message);
-    }
-   } catch (error) {
+      const result = await createProduct({ data: fd, token }).unwrap();
+      console.log(result);
+      if (result?.success) {
+        toast.success(result?.message);
+        reset();
+      } else {
+        toast.error(result?.message);
+      }
+    } catch (error) {
       console.error("Error creating product:", error);
       toast.error("Failed to create product. Please try again.");
-   }
+    }
   };
 
   return (

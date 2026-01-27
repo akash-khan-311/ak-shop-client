@@ -24,7 +24,7 @@ import {
 import { selectCurrentToken } from "@/redux/features/auth/authSlice";
 import {
   useDeleteCategoryMutation,
-  useGetAllCategoryQuery,
+  useGetAllCategoryForVendorAndAdminQuery,
   useGetSingleCategoryQuery,
   useToggleCategoryPublishedMutation,
 } from "@/redux/features/category/categoryApi";
@@ -49,7 +49,7 @@ export default function AllCategoryLists() {
   const [toggleCategoryPublished] = useToggleCategoryPublishedMutation();
   const [deleteCategory] = useDeleteCategoryMutation();
   const token = useAppSelector(selectCurrentToken);
-  const { data, isLoading } = useGetAllCategoryQuery(token, {
+  const { data, isLoading } = useGetAllCategoryForVendorAndAdminQuery(token, {
     skip: !token,
   });
   const categories = useMemo(() => data?.data || [], [data]);

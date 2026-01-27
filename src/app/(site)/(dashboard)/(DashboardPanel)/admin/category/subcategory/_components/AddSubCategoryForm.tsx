@@ -7,7 +7,7 @@ import SingleImageUploadField from "@/helpers/SingleImageUploadField";
 import { selectCurrentToken } from "@/redux/features/auth/authSlice";
 import {
   useCreateSubCategoryMutation,
-  useGetAllCategoryQuery,
+  useGetAllCategoryForVendorAndAdminQuery,
 } from "@/redux/features/category/categoryApi";
 import { useAppSelector } from "@/redux/hook";
 import { X } from "lucide-react";
@@ -30,14 +30,14 @@ export default function AddSubCategoryForm() {
       categoryId: "",
       name: "",
       image: null,
-      slug: '',
+      slug: "",
       brands: [{ value: "" }],
     },
   });
 
   const token = useAppSelector(selectCurrentToken);
 
-  const { data } = useGetAllCategoryQuery(token, {
+  const { data } = useGetAllCategoryForVendorAndAdminQuery(token, {
     skip: !token,
   });
 
@@ -67,7 +67,7 @@ export default function AddSubCategoryForm() {
     const formData = new FormData();
     formData.append("name", data.name);
     formData.append("slug", data.slug);
-    formData.append('categoryId', data.categoryId)
+    formData.append("categoryId", data.categoryId);
     data.brands
       .map((b: any) => b.value.trim())
       .filter(Boolean)
@@ -85,12 +85,10 @@ export default function AddSubCategoryForm() {
         formData,
       }).unwrap();
 
-
-
       if (result.success) {
         toast.success("Subcategory created successfully");
         reset();
-        setResetImage(true)
+        setResetImage(true);
       }
 
       // reset();

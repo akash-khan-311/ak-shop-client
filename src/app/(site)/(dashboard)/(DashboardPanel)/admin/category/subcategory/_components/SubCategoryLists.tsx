@@ -1,7 +1,11 @@
 "use client";
 
 import { selectCurrentToken } from "@/redux/features/auth/authSlice";
-import { useDeleteSubCategoryMutation, useGetAllCategoryQuery, useGetSubCategoryQuery } from "@/redux/features/category/categoryApi";
+import {
+  useDeleteSubCategoryMutation,
+  useGetAllCategoryForVendorAndAdminQuery,
+  useGetSubCategoryQuery,
+} from "@/redux/features/category/categoryApi";
 import { useAppSelector } from "@/redux/hook";
 import {
   Table,
@@ -31,12 +35,10 @@ import Image from "next/image";
 const tableHeading = ["Sub Category Name", "Category", "Published", "Actions"];
 export default function SubCategoryLists() {
   const token = useAppSelector(selectCurrentToken);
-  const { data } =
-    useGetSubCategoryQuery(token);
-  const { data: categoryData } = useGetAllCategoryQuery(token);
-  const [deleteSubCategory] =
-    useDeleteSubCategoryMutation();
-  const allCategories = categoryData?.data
+  const { data } = useGetSubCategoryQuery(token);
+  const { data: categoryData } = useGetAllCategoryForVendorAndAdminQuery(token);
+  const [deleteSubCategory] = useDeleteSubCategoryMutation();
+  const allCategories = categoryData?.data;
   const subCategories = useMemo(() => data?.data || [], [data]);
   const itemsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
@@ -45,9 +47,9 @@ export default function SubCategoryLists() {
   const [modalOpen, setModalOpen] = useState(false);
   const [idsToDelete, setIdsToDelete] = useState<string[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [selectedSubCategoryId, setSelectedSubCategoryId] = useState<string | null>(
-    null,
-  );
+  const [selectedSubCategoryId, setSelectedSubCategoryId] = useState<
+    string | null
+  >(null);
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [filters, setFilters] = useState({
@@ -167,8 +169,6 @@ export default function SubCategoryLists() {
     },
   ];
 
-
-
   const toggleSelect = (id: string) => {
     setSelectedCategories((prev) =>
       prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id],
@@ -180,16 +180,16 @@ export default function SubCategoryLists() {
     setModalOpen(true);
   };
 
-
-
   const handleDeleteConfirmed = async () => {
     try {
-      const result = await deleteSubCategory({ ids: idsToDelete, token }).unwrap();
-      console.log(result)
+      const result = await deleteSubCategory({
+        ids: idsToDelete,
+        token,
+      }).unwrap();
+      console.log(result);
       if (result.success) {
         toast.success(result.message);
         setSelectedCategories([]); // bulk clear
-
       }
     } catch (err: any) {
       toast.error(err?.data?.message || "Delete failed");
@@ -279,7 +279,13 @@ export default function SubCategoryLists() {
                         />
                         <div className="flex items-center gap-3">
                           <div className="p-2 h-12 w-12 rounded-full bg-gray-4">
-                            <Image className="w-full h-full rounded-full" src={subCategory?.image?.url} width={50} height={50} alt={subCategory.name} />
+                            <Image
+                              className="w-full h-full rounded-full"
+                              src={subCategory?.image?.url}
+                              width={50}
+                              height={50}
+                              alt={subCategory.name}
+                            />
                           </div>
                           <h2 className="text-base">{subCategory.name}</h2>
                         </div>
@@ -312,7 +318,9 @@ export default function SubCategoryLists() {
                       <TooltipProvider delayDuration={1}>
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <button onClick={() => handleEditClick(subCategory._id)}>
+                            <button
+                              onClick={() => handleEditClick(subCategory._id)}
+                            >
                               <SquarePen size={20} />
                             </button>
                           </TooltipTrigger>
@@ -324,7 +332,9 @@ export default function SubCategoryLists() {
                       <TooltipProvider delayDuration={1}>
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <button onClick={() => confirmDelete([subCategory._id])}>
+                            <button
+                              onClick={() => confirmDelete([subCategory._id])}
+                            >
                               <Trash2 size={20} />
                             </button>
                           </TooltipTrigger>
@@ -367,7 +377,6 @@ export default function SubCategoryLists() {
           categories={allCategories}
         />
       )}
-
     </div>
   );
 }

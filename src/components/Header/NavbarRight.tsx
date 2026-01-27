@@ -6,13 +6,13 @@ const NavbarRight = ({ wishlists }) => {
     <div className="hidden xl:block">
       <ul className="flex items-center gap-5.5">
         <li className="py-4">
-          <a
+          <Link
             href="#"
             className="flex items-center gap-1.5 font-medium dark:text-white dark:hover:text-pink text-custom-sm text-dark hover:text-pink"
           >
             <RefreshCw size={16} />
             Recently Viewed
-          </a>
+          </Link>
         </li>
 
         <li className="py-4">
@@ -27,6 +27,15 @@ const NavbarRight = ({ wishlists }) => {
                 {wishlists.length}
               </span>
             )}
+          </Link>
+        </li>
+        <li className="py-4">
+          <Link
+            href="/seller"
+            className="flex items-center uppercase gap-1.5 font-medium dark:text-white dark:hover:text-pink  text-custom-sm text-dark hover:text-pink"
+          >
+            <Heart size={16} />
+            Become a Seller
           </Link>
         </li>
       </ul>

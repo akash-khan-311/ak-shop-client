@@ -1,8 +1,7 @@
 "use client";
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Box } from "lucide-react";
 
 import { useSidebar } from "@/app/context/SidebarContext";
 import Logo from "@/components/Logo";
@@ -11,6 +10,7 @@ import { NavItem } from "@/types";
 import MenuItem from "@/components/Dashboard/MenuItem/MenuItem";
 import { useAppSelector } from "@/redux/hook";
 import { selectCurrentUser } from "@/redux/features/auth/authSlice";
+import { USER_ROLE } from "@/constant";
 
 const AppSidebar: React.FC = () => {
   const user = useAppSelector(selectCurrentUser);
@@ -78,11 +78,12 @@ const AppSidebar: React.FC = () => {
         bg-white dark:bg-dark 
         h-screen transition-all duration-300 ease-in-out 
         border-r border-gray-6
-        ${isExpanded || isMobileOpen
-          ? "w-[290px]"
-          : isHovered
+        ${
+          isExpanded || isMobileOpen
             ? "w-[290px]"
-            : "w-[90px]"
+            : isHovered
+              ? "w-[290px]"
+              : "w-[90px]"
         }
         ${isMobileOpen ? "translate-x-0" : "-translate-x-full"}
         lg:translate-x-0`}
@@ -91,8 +92,9 @@ const AppSidebar: React.FC = () => {
     >
       {/* LOGO */}
       <div
-        className={`py-8 flex ${!isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
-          }`}
+        className={`py-8 flex ${
+          !isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
+        }`}
       >
         <Link className="w-full flex justify-center" href="/">
           <Logo />
@@ -103,14 +105,15 @@ const AppSidebar: React.FC = () => {
       <div className="flex flex-col overflow-y-auto no-scrollbar">
         <nav className="mb-6">
           <h2
-            className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${!isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
-              }`}
+            className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
+              !isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
+            }`}
           >
             {isExpanded || isHovered || (isMobileOpen && "Menu")}
           </h2>
 
           <ul className="flex flex-col gap-2">
-            {user?.role === "vendor" &&
+            {user?.role === USER_ROLE.vendor &&
               vendorMenuItems.map((item, index) => {
                 const Icon = item.icon;
 
@@ -129,7 +132,7 @@ const AppSidebar: React.FC = () => {
                   />
                 );
               })}
-            {user?.role === "admin" &&
+            {user?.role === USER_ROLE.admin &&
               vendorMenuItems.map((item, index) => {
                 const Icon = item.icon;
 
@@ -148,7 +151,7 @@ const AppSidebar: React.FC = () => {
                   />
                 );
               })}
-            {user?.role === "superAdmin" &&
+            {user?.role === USER_ROLE.superAdmin &&
               vendorMenuItems.map((item, index) => {
                 const Icon = item.icon;
 

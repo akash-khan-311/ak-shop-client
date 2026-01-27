@@ -32,7 +32,7 @@ export default function UserDropdown() {
     <div className="relative ">
       <button
         onClick={toggleDropdown}
-        className="flex items-center text-gray-700 dark:text-gray-400 dropdown-toggle"
+        className="flex items-center text-gray-7 dark:text-gray-4 dropdown-toggle"
       >
         <span className="mr-3 overflow-hidden rounded-full h-11 w-11">
           <Image
@@ -57,7 +57,7 @@ export default function UserDropdown() {
       <Dropdown
         isOpen={isOpen}
         onClose={closeDropdown}
-        className="absolute right-0  mt-[17px] flex w-[320px] flex-col rounded-2xl border  bg-white dark:bg-dark-3 p-3 shadow-theme-lg dark:border-gray-6 dark:bg-gray-dark"
+        className="absolute right-0 mt-[17px] flex w-[320px] flex-col rounded-2xl border bg-white dark:bg-dark p-3 shadow-theme-lg dark:border-gray-6"
       >
         <div className="border-b border-gray-3 dark:border-gray-5">
           <span className="block font-medium text-gray-700 text-theme-sm dark:text-gray-400">

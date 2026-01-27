@@ -24,6 +24,7 @@ import { usePathname } from "next/navigation";
 import VendorDropDown from "../ui/Dropdown/vendor.dropdown";
 import { useGetAllCategoryQuery } from "@/redux/features/category/categoryApi";
 import { TCategory } from "@/types/category";
+import Container from "../ui/Container";
 
 const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -35,14 +36,6 @@ const Header = () => {
   const user = useAppSelector(selectCurrentUser);
   const [isOpen, setIsOpen] = useState(false);
 
-  const { data } = useGetAllCategoryQuery(token);
-  const categories = data?.data;
-  const options = [
-    "All Categories",
-    ...(Array.from(
-      new Set(categories?.map((category: TCategory) => category.name)),
-    ) as string[]),
-  ];
   const pathname = usePathname();
   const handleOpenCartModal = () => {
     openCartModal();
@@ -61,6 +54,10 @@ const Header = () => {
     window.addEventListener("scroll", handleStickyMenu);
   });
 
+  const handleSearch = () => {
+    console.log({ searchQuery });
+  };
+
   const isVendorDashboard = pathname.startsWith("/vendor/");
   const isAdminDashboard = pathname.startsWith("/admin/");
   const isSuperAdminDashboard = pathname.startsWith("/superAdmin/");
@@ -72,7 +69,7 @@ const Header = () => {
         "shadow-[0px_2px_20px_1px_rgba(0,_0,_0,_0.7)] dark:shadow-[0px_15px_18px_5px_rgba(255,_255,_255,_0.05)] "
       }`}
     >
-      <div className="container mx-auto px-4 sm:px-7.5 xl:px-0">
+      <Container>
         {/* <!-- header top start --> */}
         <div
           className={`flex flex-col lg:flex-row gap-5 items-end lg:items-center xl:justify-between ease-out duration-200 ${
@@ -80,13 +77,13 @@ const Header = () => {
           }`}
         >
           {/* <!-- header top left --> */}
-          <div className="xl:w-auto  flex-col sm:flex-row w-full flex sm:justify-between sm:items-center gap-5 sm:gap-10">
-            <div className="w-full">
+          <div className="w-full flex flex-col sm:flex-row sm:items-center gap-5 sm:gap-10">
+            <div className="shrink-0 w-full sm:w-auto">
               <Link href="/">
                 <Logo />
               </Link>
             </div>
-            <div className=" w-full ">
+            <div className=" relative xl:w-1/3 w-full ">
               <form className="">
                 <div className="flex items-center">
                   <div className="relative  w-full ">
@@ -116,7 +113,7 @@ const Header = () => {
           </div>
 
           {/* <!-- header top right --> */}
-          <div className="flex w-full lg:w-auto items-center gap-7.5 ">
+          <div className=" flex w-full justify-end items-center gap-7.5 ">
             <div className="hidden xl:flex items-center gap-3.5">
               <PhoneCall color="#A3004C" size={22} />
 
@@ -204,7 +201,7 @@ const Header = () => {
           </div>
         </div>
         {/* <!-- header top end --> */}
-      </div>
+      </Container>
 
       <div className="border-t border-gray-3">
         <div className="max-w-[1170px] mx-auto px-4 sm:px-7.5 xl:px-0">

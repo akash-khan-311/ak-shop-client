@@ -30,7 +30,7 @@ const baseQueryWithRefreshToken: BaseQueryFn<
   DefinitionType
 > = async (args, api, extraOptions): Promise<any> => {
   let result = await baseQuery(args, api, extraOptions);
-  
+
   if (result?.error?.status === 400) {
     const errorData = result.error.data as { message?: string };
 
@@ -46,7 +46,7 @@ const baseQueryWithRefreshToken: BaseQueryFn<
       credentials: "include",
     });
     const { data } = await res.json();
-    
+
     if (data?.accessToken) {
       const user = (api.getState() as RootState).auth.user;
       api.dispatch(setUser({ user, token: data?.accessToken }));
@@ -63,6 +63,6 @@ const baseQueryWithRefreshToken: BaseQueryFn<
 export const baseApi = createApi({
   reducerPath: "baseApi",
   baseQuery: baseQueryWithRefreshToken,
-  tagTypes: ["Me", "category",'subcategory','products','SpecTemplate'],
+  tagTypes: ["Me", "category", 'subcategory', 'products', 'SpecTemplate', 'userCategory'],
   endpoints: () => ({}),
 });
