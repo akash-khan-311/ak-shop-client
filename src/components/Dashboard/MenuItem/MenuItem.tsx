@@ -39,7 +39,6 @@ export default function MenuItem({
   const isActive =
     path === pathname || subItems?.some((item) => item.path === pathname);
 
-
   if (subItems?.length) {
     return (
       <motion.div layout>
@@ -51,13 +50,13 @@ export default function MenuItem({
             hover:backdrop-blur-sm hover:bg-dark/10 dark:hover:bg-white/10
             ${
               isActive
-                ? "bg-dark/10 dark:bg-white/10 text-gray-100"
-                : "text-gray-100"
+                ? "bg-dark/10 dark:bg-white/10 text-gray-1"
+                : "text-gray-1"
             }`}
         >
           <div className="flex items-center gap-4">
             {icon}
-            <span className="font-medium">{label}</span>
+            <span className="font-medium ">{label}</span>
           </div>
 
           <ChevronDown
@@ -114,16 +113,12 @@ export default function MenuItem({
         className={`flex items-center gap-4 px-4 py-4 my-1
           transition-colors duration-300
           hover:backdrop-blur-sm hover:bg-dark/10 dark:hover:bg-white/10 rounded-md
-          ${
-            isActive
-              ? "bg-dark/10 dark:bg-white/10 text-gray-100"
-              : "text-gray-100"
-          }`}
+          ${isActive ? "bg-dark/10 dark:bg-white/10 " : ""}`}
       >
         {isExpanded || isHovered || isMobileOpen ? (
           <>
             {icon}
-            <span className="font-medium">{label}</span>
+            <span className="font-medium">{label} asdfasd</span>
           </>
         ) : (
           <span>{icon}</span>

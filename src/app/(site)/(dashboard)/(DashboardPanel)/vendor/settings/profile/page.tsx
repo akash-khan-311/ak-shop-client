@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import React from "react";
-import Profile from "../../../_components/Profile/Profile";
+import Profile from "../../../../_components/Profile/Profile";
 export const metadata: Metadata = {
   title: "Profile",
   description: "View and manage your account profile details.",

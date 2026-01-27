@@ -3,7 +3,7 @@ import { LucideIcon } from "lucide-react";
 export type TUser = {
   name: string;
   role: string;
-  userId: string;
+  userId: number;
   iat: number;
   exp: number;
 };

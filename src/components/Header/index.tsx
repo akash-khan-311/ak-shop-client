@@ -9,7 +9,7 @@ import { Fade as Hamburger } from "hamburger-react";
 import { PhoneCall, User, ShoppingCart, Search } from "lucide-react";
 import Logo from "../Logo";
 import NavbarRight from "./NavbarRight";
-import { AnimatedThemeToggler } from "../ui/animated-theme-toggler";
+
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useAppSelector } from "@/redux/hook";
@@ -22,9 +22,10 @@ import UserDropDown from "../ui/Dropdown/user.dropdown";
 import { useGetMeQuery } from "@/redux/features/auth/authApi";
 import { usePathname } from "next/navigation";
 import VendorDropDown from "../ui/Dropdown/vendor.dropdown";
-import { useGetAllCategoryQuery } from "@/redux/features/category/categoryApi";
 import { TCategory } from "@/types/category";
 import Container from "../ui/Container";
+import Logout from "../ui/Auth/Logout";
+import AppThemeSwitch from "../ui/ThemeSwitch";
 
 const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -126,7 +127,7 @@ const Header = () => {
                 </p>
               </div>
             </div>
-
+            {/* <Logout /> */}
             {/* <!-- divider --> */}
             <span className="hidden xl:block w-px h-7.5 bg-gray-4"></span>
 
@@ -134,14 +135,14 @@ const Header = () => {
               <div className="flex items-center gap-5">
                 {user ? (
                   <>
-                    {user.role === "user" && (
+                    {user?.role === "user" && (
                       <UserDropDown setIsOpen={setIsOpen} isOpen={isOpen} />
                     )}
-                    {user.role === "vendor" && (
+                    {user?.role === "vendor" && (
                       <VendorDropDown setIsOpen={setIsOpen} isOpen={isOpen} />
                     )}
-                    {user.role === "admin" && <>Admin</>}
-                    {user.role === "superAdmin" && <>Super Admin</>}
+                    {user?.role === "admin" && <>Admin</>}
+                    {user?.role === "superAdmin" && <>Super Admin</>}
                   </>
                 ) : (
                   <Link href="/signin" className="flex items-center gap-2.5">
@@ -195,7 +196,7 @@ const Header = () => {
                   />
                 </button>
                 {/* //   <!-- Hamburger Toggle BTN --> */}
-                <AnimatedThemeToggler />
+                <AppThemeSwitch />
               </div>
             </div>
           </div>
@@ -246,7 +247,7 @@ const Header = () => {
             {/* // <!--=== Main Nav End ===--> */}
 
             {/* // <!--=== Nav Right Start ===--> */}
-            <NavbarRight wishlists={wishlists} />
+            <NavbarRight user={user} wishlists={wishlists} />
             {/* <!--=== Nav Right End ===--> */}
           </div>
         </div>

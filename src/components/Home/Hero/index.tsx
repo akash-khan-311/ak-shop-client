@@ -2,7 +2,7 @@ import React from "react";
 import HeroCarousel from "./HeroCarousel";
 import HeroFeature from "./HeroFeature";
 import Image from "next/image";
-import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
+import { AnimatedThemeToggler } from "@/components/ui/ThemeSwitch";
 import Container from "@/components/ui/Container";
 
 const Hero = () => {

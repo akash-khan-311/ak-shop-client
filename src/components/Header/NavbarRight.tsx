@@ -1,7 +1,8 @@
+import { USER_ROLE } from "@/constant";
 import { Heart, RefreshCw } from "lucide-react";
 import Link from "next/link";
 
-const NavbarRight = ({ wishlists }) => {
+const NavbarRight = ({ wishlists, user }) => {
   return (
     <div className="hidden xl:block">
       <ul className="flex items-center gap-5.5">
@@ -29,15 +30,28 @@ const NavbarRight = ({ wishlists }) => {
             )}
           </Link>
         </li>
-        <li className="py-4">
-          <Link
-            href="/seller"
-            className="flex items-center uppercase gap-1.5 font-medium dark:text-white dark:hover:text-pink  text-custom-sm text-dark hover:text-pink"
-          >
-            <Heart size={16} />
-            Become a Seller
-          </Link>
-        </li>
+        {!user && (
+          <li className="py-4">
+            <Link
+              href="/seller"
+              className="flex items-center uppercase gap-1.5 font-medium dark:text-white dark:hover:text-pink  text-custom-sm text-dark hover:text-pink"
+            >
+              <Heart size={16} />
+              Become a Seller
+            </Link>
+          </li>
+        )}
+        {user && user?.role === USER_ROLE.user && (
+          <li className="py-4">
+            <Link
+              href="/seller"
+              className="flex items-center uppercase gap-1.5 font-medium dark:text-white dark:hover:text-pink  text-custom-sm text-dark hover:text-pink"
+            >
+              <Heart size={16} />
+              Become a Seller
+            </Link>
+          </li>
+        )}
       </ul>
     </div>
   );

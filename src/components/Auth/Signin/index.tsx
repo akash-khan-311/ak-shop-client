@@ -45,8 +45,11 @@ const Signin = () => {
     };
     try {
       const res = await login(loginInfo).unwrap();
+
+      console.log(res);
       if (res.data.accessToken) {
         const user = verifyToken(res.data.accessToken);
+
         dispatch(setUser({ user, token: res.data.accessToken }));
         Cookies.set("accessToken", res.data.accessToken);
       }

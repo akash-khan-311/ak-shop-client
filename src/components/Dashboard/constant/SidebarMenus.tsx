@@ -270,7 +270,7 @@ export const vendorMenuItems = [
     name: "Settings",
     icon: Settings,
     subItems: [
-      { name: "Profile", path: "/vendor/profile" },
+      { name: "Profile", path: "/vendor/settings/profile" },
       { name: "Security", path: "/vendor/settings/security" },
       { name: "Notifications", path: "/vendor/settings/notifications" },
       { name: "Change Password", path: "/vendor/settings/change-password" },

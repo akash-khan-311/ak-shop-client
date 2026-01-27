@@ -2,8 +2,11 @@
 
 import config from "@/config";
 import { uploadImageToCloudinary } from "@/lib/utils";
-import { useUpdateProfileMutation } from "@/redux/features/auth/authApi";
-import { selectCurrentToken } from "@/redux/features/auth/authSlice";
+import { useUpdateAvatarMutation } from "@/redux/features/auth/authApi";
+import {
+  selectCurrentToken,
+  selectCurrentUser,
+} from "@/redux/features/auth/authSlice";
 import { useAppSelector } from "@/redux/hook";
 import { Camera, X } from "lucide-react";
 import Image from "next/image";
@@ -13,30 +16,24 @@ import React, { useState } from "react";
 export default function UploadProfileImage({ user }: any) {
   const [showProfileOptions, setShowProfileOptions] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
-
-  const router = useRouter();
   const token = useAppSelector(selectCurrentToken);
-  const [updateProfile, { isLoading: loading, isSuccess }] =
-    useUpdateProfileMutation();
+  const [updateAvatar] = useUpdateAvatarMutation();
+  const id = user?.id;
   const handleProfileChange = async (
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     const reader = new FileReader();
     reader.readAsDataURL(file);
-    console.log("this is token from image upload", token);
-    try {
-      const profileImage = await uploadImageToCloudinary(file);
-      const userInfo = {
-        id: user._id,
-        userData: { avatar: profileImage },
-        token,
-      };
 
-      const res = await updateProfile(userInfo).unwrap();
-      console.log(res);
+    try {
+      const result = await updateAvatar({ token, id, file }).unwrap();
+
+      if (result?.success) {
+        setShowProfileOptions(false);
+      }
     } catch (error) {
       console.error("Error uploading profile image:", error);
     }
@@ -81,7 +78,8 @@ export default function UploadProfileImage({ user }: any) {
               <X className="text-dark" />
             </button>
             <Image
-              src={user?.avatar || "/demo_male.png"}
+              className="shadow-lg dark:shadow-white/10 rounded-full w-40 h-40 object-cover"
+              src={user?.avatar?.url || "/demo_male.png"}
               width={400}
               height={400}
               alt="profile preview"

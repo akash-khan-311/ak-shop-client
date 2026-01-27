@@ -1,87 +1,53 @@
-"use client";
-import { useState, useEffect } from "react";
 import "../css/euclid-circular-a-font.css";
 import "../css/style.css";
 import "flatpickr/dist/flatpickr.css";
+
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-
-import { ModalProvider } from "../context/QuickViewModalContext";
-import { CartModalProvider } from "../context/CartSidebarModalContext";
+import { Toaster } from "react-hot-toast";
+import ThemeInit from "../context/Theme";
 
 import CartSidebarModal from "@/components/Common/CartSidebarModal";
-import { PreviewSliderProvider } from "../context/PreviewSliderContext";
 import PreviewSliderModal from "@/components/Common/PreviewSlider";
-
 import ScrollToTop from "@/components/Common/ScrollToTop";
-import PreLoader from "@/components/Common/PreLoader";
-import { Provider } from "react-redux";
-import { persistor, store } from "@/redux/store";
-import { PersistGate } from "redux-persist/integration/react";
-import { SidebarProvider } from "../context/SidebarContext";
-import { Toaster } from "react-hot-toast";
+import RootProviders from "@/Providers/RooProvider";
+import ThemeGuard from "@/Providers/ThemeGurd";
+
+const themeScript = `
+(function() {
+  try {
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "dark") document.documentElement.classList.add("dark");
+    else if (savedTheme === "light") document.documentElement.classList.remove("dark");
+    else {
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      document.documentElement.classList.toggle("dark", prefersDark);
+    }
+  } catch (e) {}
+})();
+`;
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [loading, setLoading] = useState<boolean>(true);
-
-  useEffect(() => {
-    setTimeout(() => setLoading(false), 1000);
-  }, []);
-
   return (
-    <html lang="en" suppressHydrationWarning={true}>
+    <html lang="en" suppressHydrationWarning>
       <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-          (function() {
-            try {
-              const savedTheme = localStorage.getItem("theme");
-              if (savedTheme === "dark") {
-                document.documentElement.classList.add("dark");
-              } else if (savedTheme === "light") {
-                document.documentElement.classList.remove("dark");
-              } else {
-                const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-                if (prefersDark) document.documentElement.classList.add("dark");
-              }
-            } catch (e) {}
-          })();
-        `,
-          }}
-        />
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body className="dark:bg-dark-2">
-        {loading ? (
-          <PreLoader />
-        ) : (
-          <>
-            <Provider store={store}>
-              <PersistGate loading={null} persistor={persistor}>
-                <SidebarProvider>
-                  <CartModalProvider>
-                    <ModalProvider>
-                      <PreviewSliderProvider>
-                        <Header />
-                        <Toaster position="bottom-right" reverseOrder={false} />
-                        {children}
-                        {/* <QuickViewModal /> */}
-                        <CartSidebarModal />
-                        <PreviewSliderModal />
-                      </PreviewSliderProvider>
-                    </ModalProvider>
-                  </CartModalProvider>
-                </SidebarProvider>
-                <ScrollToTop />
-                <Footer />
-              </PersistGate>
-            </Provider>
-          </>
-        )}
+        <RootProviders>
+          <ThemeGuard />
+          <Header />
+          <Toaster position="bottom-right" reverseOrder={false} />
+          {children}
+          <CartSidebarModal />
+          <PreviewSliderModal />
+          <ScrollToTop />
+          <Footer />
+        </RootProviders>
       </body>
     </html>
   );

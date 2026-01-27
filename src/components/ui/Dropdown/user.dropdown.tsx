@@ -12,6 +12,7 @@ import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import Logout from "../Auth/Logout";
 import { useGetMeQuery } from "@/redux/features/auth/authApi";
+import { useEffect } from "react";
 
 type Props = {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -26,12 +27,19 @@ const dropDownItems = [
 ];
 
 export default function UserDropDown({ setIsOpen, isOpen }) {
+  const dispatch = useAppDispatch();
   const token = useAppSelector(selectCurrentToken);
   const { data, isLoading, error } = useGetMeQuery(token);
+  const anotherUser = useAppSelector(selectCurrentUser);
   const user = data?.data;
+
+  console.log("this is user from userdropdown", data);
   return (
     <div onClick={() => setIsOpen(!isOpen)} className="relative cursor-pointer">
-      {user?.name} Your Name
+      <div>
+        <span></span>
+        <span>{user?.name}</span>
+      </div>
       <div
         className={`absolute overflow-hidden top-5 transition-[opacity,margin] duration-300 ease-in-out ${isOpen ? "opacity-100" : "opacity-0 invisible"}   min-w-60 backdrop-blur-md bg-white/10 shadow-md rounded-lg p-2 mt-2 divide-y divide-gray-200 dark:bg-gray-800 dark:border dark:border-gray-700 dark:divide-gray-700`}
       >

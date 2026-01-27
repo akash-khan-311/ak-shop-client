@@ -17,7 +17,6 @@ export default function UserDropdown() {
     refetchOnMountOrArgChange: true,
   });
   const user = data?.data;
-  console.log("this is from app header user dropwodn", data);
   const [isOpen, setIsOpen] = useState(false);
 
   function toggleDropdown(e: React.MouseEvent<HTMLButtonElement, MouseEvent>) {

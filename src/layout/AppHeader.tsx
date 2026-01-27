@@ -4,7 +4,7 @@ import { useSidebar } from "@/app/context/SidebarContext";
 import NotificationDropdown from "@/components/Header/NotificationDropdown";
 import UserDropdown from "@/components/Header/UserDropdown";
 import Logo from "@/components/Logo";
-import { AnimatedThemeToggler } from "@/components/ui/animated-theme-toggler";
+import { AnimatedThemeToggler } from "@/components/ui/ThemeSwitch";
 import { Ellipsis, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
