@@ -1,11 +1,9 @@
 "use client";
 
-import { SidebarProvider, useSidebar } from "@/app/context/SidebarContext";
+import { useSidebar } from "@/app/context/SidebarContext";
 import AppHeader from "@/layout/AppHeader";
 import AppSidebar from "@/layout/AppSidebar";
 import Backdrop from "@/layout/Backdrop";
-import { selectCurrentToken } from "@/redux/features/auth/authSlice";
-import { useAppSelector } from "@/redux/hook";
 import React from "react";
 
 export default function AdminLayout({
@@ -23,7 +21,7 @@ export default function AdminLayout({
       : "lg:ml-[90px]";
 
   return (
-    <div className="min-h-screen xl:flex">
+    <main className="min-h-screen xl:flex">
       {/* Sidebar and Backdrop */}
       <AppSidebar />
       <Backdrop />
@@ -38,6 +36,6 @@ export default function AdminLayout({
           {children}
         </main>
       </div>
-    </div>
+    </main>
   );
 }

@@ -1,5 +1,5 @@
 import { TSpecFieldType } from "@/types/specTemplate";
-
+export const API_BASE = "http://localhost:5000/v1/api";
 export const COMMON_BRANDS = ["Non Brand / Other"];
 export const TYPE_OPTIONS: TSpecFieldType[] = [
   "text",

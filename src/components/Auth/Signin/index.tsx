@@ -11,6 +11,7 @@ import Cookies from "js-cookie";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { showToast } from "nextjs-toast-notify";
+import { API_BASE } from "@/data";
 const Signin = () => {
   const {
     register,
@@ -37,6 +38,18 @@ const Signin = () => {
       }
     }
   }, [user, redirectTo, router]);
+
+  const redirectToGoogle = () => {
+    window.location.href = `${API_BASE}/auth/google`;
+  };
+
+  const redirectToGithub = () => {
+    window.location.href = `${API_BASE}/auth/github`;
+  };
+
+  const redirectToFacebook = () => {
+    window.location.href = `${API_BASE}/auth/facebook`;
+  };
 
   const onSubmitForm = async (data: any) => {
     const loginInfo = {
@@ -143,7 +156,11 @@ const Signin = () => {
                 </span>
 
                 <div className="flex flex-col gap-4.5 mt-4.5">
-                  <button className="flex  dark:text-dark-2 justify-center items-center gap-3.5 rounded-lg border border-gray-3 bg-gray-1 p-3 ease-out duration-200 hover:bg-gray-2">
+                  <button
+                    type="button"
+                    onClick={redirectToGoogle}
+                    className="flex  dark:text-dark-2 justify-center items-center gap-3.5 rounded-lg border border-gray-3 bg-gray-1 p-3 ease-out duration-200 hover:bg-gray-2"
+                  >
                     <svg
                       width="20"
                       height="20"
@@ -190,7 +207,11 @@ const Signin = () => {
                     Sign In with Google
                   </button>
 
-                  <button className="flex dark:text-dark-2  justify-center items-center gap-3.5 rounded-lg border border-gray-3 bg-gray-1 p-3 ease-out duration-200 hover:bg-gray-2">
+                  <button
+                    type="button"
+                    onClick={redirectToFacebook}
+                    className="flex dark:text-dark-2  justify-center items-center gap-3.5 rounded-lg border border-gray-3 bg-gray-1 p-3 ease-out duration-200 hover:bg-gray-2"
+                  >
                     <svg
                       width="22"
                       height="22"
