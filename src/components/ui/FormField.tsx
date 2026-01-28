@@ -42,6 +42,7 @@ type FormFieldType =
   | "multi-select";
 
 type FormFieldProps = {
+  autoComplete?: string;
   label: string;
   name: string;
   errorMessage?: string;
@@ -77,6 +78,7 @@ const FormField: React.FC<FormFieldProps> = ({
   className,
   readOnly,
   append,
+  autoComplete,
 }) => {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -92,7 +94,8 @@ const FormField: React.FC<FormFieldProps> = ({
         {fields.map((field, index) => (
           <div key={field.id} className="flex gap-2 mb-2">
             <input
-            readOnly={readOnly}
+              autoComplete={autoComplete}
+              readOnly={readOnly}
               {...register(`${name}.${index}.value`, {
                 required: required ? errorMessage : false,
                 ...rules,
@@ -128,7 +131,8 @@ const FormField: React.FC<FormFieldProps> = ({
       {/* FILE */}
       {type === "file" ? (
         <Input
-         readOnly={readOnly}
+          autoComplete={autoComplete}
+          readOnly={readOnly}
           id={name}
           {...register(name, {
             required: required ? errorMessage : false,
@@ -185,7 +189,6 @@ const FormField: React.FC<FormFieldProps> = ({
             rules={{ required: required ? errorMessage : false }}
             render={({ field }) => (
               <ComboBox
-              
                 value={field.value}
                 options={options || []}
                 placeholder={placeholder}
@@ -211,7 +214,6 @@ const FormField: React.FC<FormFieldProps> = ({
               return (
                 <>
                   <Select
-                  
                     onValueChange={(val) => {
                       if (!val) return;
                       if (selected.includes(val)) return;
@@ -264,7 +266,8 @@ const FormField: React.FC<FormFieldProps> = ({
             required: required ? errorMessage : false,
             ...rules,
           })}
-           readOnly={readOnly}
+          autoComplete={autoComplete}
+          readOnly={readOnly}
           id={name}
           placeholder={placeholder}
           className={`w-full px-4 py-2 border border-gray-6 rounded-lg focus:ring-1 focus:ring-pink focus:border-pink outline-none transition-all ${className}`}
@@ -280,7 +283,8 @@ const FormField: React.FC<FormFieldProps> = ({
               className="flex items-center gap-2 text-white"
             >
               <Input
-               readOnly={readOnly}
+                autoComplete={autoComplete}
+                readOnly={readOnly}
                 id={opt}
                 type="radio"
                 value={opt}
@@ -333,8 +337,9 @@ const FormField: React.FC<FormFieldProps> = ({
         /* DEFAULT INPUT */
         <div className="relative">
           <input
+            autoComplete={autoComplete}
             id={name}
-             readOnly={readOnly}
+            readOnly={readOnly}
             {...register(name, {
               required: required ? errorMessage : false,
               ...rules,

@@ -162,6 +162,29 @@ input[type="search"]::-webkit-search-results-decoration {
   @apply right-3.5;
 }
 
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+  -webkit-text-fill-color: inherit;
+  caret-color: inherit;
+  transition: background-color 9999s ease-in-out 0s;
+}
+
+/* 🌙 Dark mode autofill */
+.dark input:-webkit-autofill,
+.dark textarea:-webkit-autofill,
+.dark select:-webkit-autofill {
+  -webkit-text-fill-color: #ffffff;
+  box-shadow: 0 0 0px 1000px #111827 inset; /* dark:bg-dark-2 */
+}
+
+/* ☀️ Light mode autofill */
+input:-webkit-autofill {
+  box-shadow: 0 0 0px 1000px #ffffff inset; /* bg-white */
+}
+
 .custom-select-common .select-selected {
   @apply bg-gray-1 rounded-md !border-r text-dark-4 py-3 pl-5 pr-9 duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-pink/20;
 }

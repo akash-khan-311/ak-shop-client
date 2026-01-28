@@ -33,6 +33,13 @@ const authApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Me"],
     }),
+    logout: builder.mutation({
+      query: () => ({
+        url: "/auth/logout",
+        method: "POST",
+      }),
+      invalidatesTags: ["Me"],
+    }),
 
     getMe: builder.query<ApiResponse<IUser>, string | void>({
 
@@ -201,6 +208,7 @@ const authApi = baseApi.injectEndpoints({
 export const {
   useSignupMutation,
   useLoginMutation,
+  useLogoutMutation,
   useGetMeQuery,
   useGetAllUsersQuery,
   useGetUserByIdQuery,
