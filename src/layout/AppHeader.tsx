@@ -4,7 +4,8 @@ import { useSidebar } from "@/app/context/SidebarContext";
 import NotificationDropdown from "@/components/Header/NotificationDropdown";
 import UserDropdown from "@/components/Header/UserDropdown";
 import Logo from "@/components/Logo";
-import { AnimatedThemeToggler } from "@/components/ui/ThemeSwitch";
+import AppThemeSwitch from "@/components/ui/ThemeSwitch";
+
 import { Ellipsis, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -44,7 +45,7 @@ const AppHeader: React.FC = () => {
   }, []);
 
   return (
-    <header className="sticky top-0 flex w-full bg-white dark:bg-dark border-gray-2 z-10 dark:border-gray-7 dark:bg-gray-900 lg:border-b">
+    <header className="sticky top-0 flex w-full bg-white dark:bg-dark border-gray-2 z-10 dark:border-gray-7 lg:border-b">
       <div className="flex flex-col items-center justify-between grow lg:flex-row lg:px-6">
         <div className="flex items-center justify-between w-full gap-2 px-3 py-3 border-b border-gray-2 dark:border-gray-7 sm:gap-4 lg:justify-normal lg:border-b-0 lg:px-0 lg:py-4">
           <button
@@ -131,7 +132,7 @@ const AppHeader: React.FC = () => {
         >
           <div className="flex items-center gap-2 2xsm:gap-3">
             {/* <!-- Dark Mode Toggler --> */}
-            <AnimatedThemeToggler />
+            <AppThemeSwitch />
             {/* <!-- Dark Mode Toggler --> */}
 
             <NotificationDropdown />

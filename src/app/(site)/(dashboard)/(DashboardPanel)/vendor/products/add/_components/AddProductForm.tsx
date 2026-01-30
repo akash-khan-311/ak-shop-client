@@ -85,11 +85,11 @@ export default function AddProductForm({
   const brandOptions = selectedSubObj?.brands || [];
 
   const user = useAppSelector(selectCurrentUser);
-  const userId = user?.userId;
+  const userId = user?._id;
 
   // ✅ fetch dynamic spec template
   const { data: tplRes, isLoading: tplLoading } = useGetEffectiveTemplateQuery(
-    { subcategorySlug, userId },
+    { subcategorySlug, userId: String(userId) },
     { skip: !subcategorySlug },
   );
 
@@ -117,7 +117,7 @@ export default function AddProductForm({
         ...formData,
         categorySlug,
         subcategorySlug,
-        userId: userId || "",
+        vendorId: userId,
         specifications: formData?.specifications || {},
       };
 
@@ -144,7 +144,7 @@ export default function AddProductForm({
       fd.append("quantity", String(payload.quantity || 0));
       fd.append("availability", payload.availability || "In Stock");
 
-      fd.append("userId", payload.userId || "");
+      fd.append("vendorId", payload.vendorId);
 
       fd.append("specifications", JSON.stringify(payload.specifications || {}));
 
@@ -152,7 +152,7 @@ export default function AddProductForm({
       images.forEach((file) => fd.append("images", file));
 
       // call API
-
+      console.log(payload);
       const result = await createProduct({ data: fd, token }).unwrap();
       console.log(result);
       if (result?.success) {

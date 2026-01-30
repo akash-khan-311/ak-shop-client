@@ -6,10 +6,6 @@ export default function SocialMediaLogin() {
     window.location.href = `${API_BASE}/auth/google`;
   };
 
-  const redirectToGithub = () => {
-    window.location.href = `${API_BASE}/auth/github`;
-  };
-
   const redirectToFacebook = () => {
     window.location.href = `${API_BASE}/auth/facebook`;
   };

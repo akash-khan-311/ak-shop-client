@@ -38,7 +38,7 @@ export default function UserDropdown() {
             className="w-full h-full object-cover"
             width={44}
             height={44}
-            src={user?.avatar || "/demo_male.png"}
+            src={user?.avatar?.url || "/demo_male.png"}
             alt="User"
           />
         </span>
