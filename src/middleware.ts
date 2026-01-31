@@ -2,12 +2,12 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { verifyToken } from "./utils";
 
-type Role = "user" | "admin" | "vendor";
+type Role = "user" | "admin" | "superAdmin";
 
 const ROLE_DASHBOARD: Record<Role, string> = {
   user: "/user/dashboard",
   admin: "/admin/dashboard",
-  vendor: "/vendor/dashboard",
+  superAdmin: "/admin/dashboard",
 };
 
 export function middleware(req: NextRequest) {
@@ -65,8 +65,7 @@ export function middleware(req: NextRequest) {
     if (isAdminRoute && user.role !== "admin")
       return NextResponse.redirect(new URL(ROLE_DASHBOARD[user.role], req.url));
 
-    if (isVendorRoute && user.role !== "vendor")
-      return NextResponse.redirect(new URL(ROLE_DASHBOARD[user.role], req.url));
+
 
     if (isUserRoute && user.role !== "user")
       return NextResponse.redirect(new URL(ROLE_DASHBOARD[user.role], req.url));
@@ -79,7 +78,6 @@ export const config = {
   matcher: [
     "/user/:path*",
     "/admin/:path*",
-    "/vendor/:path*",
     "/dashboard/:path*",
     "/dashboard",
     "/signin",

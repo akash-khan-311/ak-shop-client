@@ -1,12 +1,20 @@
-import { Download, Link, Plus, Trash2 } from "lucide-react";
+import { Download, Plus, Trash2 } from "lucide-react";
+import Link from "next/link";
 
-// DataTableActions.tsx
+type Props = {
+  exportCSV: () => void;
+  exportJSON: () => void;
+  bulkDelete: (ids: string[]) => void;
+  selectedProducts: string[];
+  add?: any;
+};
 
 export default function DataTableActions({
   exportCSV,
   exportJSON,
   bulkDelete,
   selectedProducts,
+  add,
 }: any) {
   return (
     <div className="bg-white dark:bg-dark border  rounded-lg p-4 mb-4 flex flex-wrap gap-3 items-center justify-between">
@@ -35,6 +43,14 @@ export default function DataTableActions({
           <Trash2 size={16} />
           Delete
         </button>
+        {add && (
+          <Link href={"/admin/coupons/add"}>
+            <button className="px-4 text-white py-2 transition-all duration-100 bg-green hover:bg-green/60 rounded flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+              <Plus size={16} />
+              {add}
+            </button>
+          </Link>
+        )}
       </div>
     </div>
   );

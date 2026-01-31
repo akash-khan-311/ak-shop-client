@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useMemo, useState } from "react";
 import {
   Controller,
@@ -18,7 +19,6 @@ import { Button } from "@/components/ui/button";
 import { ChevronDownIcon, Eye, EyeOff } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
-// ✅ shadcn select
 import {
   Select,
   SelectContent,
@@ -26,6 +26,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
+type SelectOption = string | { label: string; value: string };
 
 type FormFieldType =
   | "text"
@@ -52,7 +54,7 @@ type FormFieldProps = {
   className?: string;
   type?: FormFieldType;
   placeholder?: string;
-  options?: string[];
+  options?: SelectOption[];
   required?: boolean;
   rules?: RegisterOptions;
   isArray?: boolean;
@@ -60,6 +62,9 @@ type FormFieldProps = {
   readOnly?: boolean;
   append?: () => void;
 };
+
+const normalizeOptions = (options: SelectOption[] = []) =>
+  options.map((op) => (typeof op === "string" ? { label: op, value: op } : op));
 
 const FormField: React.FC<FormFieldProps> = ({
   label,
@@ -86,6 +91,14 @@ const FormField: React.FC<FormFieldProps> = ({
     if (!errors) return undefined;
     return name.split(".").reduce<any>((acc, key) => acc?.[key], errors);
   }, [errors, name]);
+
+  const normalizedOptions = useMemo(() => normalizeOptions(options), [options]);
+
+  // ✅ combobox helper: ComboBox যদি string[] expect করে, label list pass করছি
+  const comboBoxOptions = useMemo(
+    () => normalizedOptions.map((o) => o.label),
+    [normalizedOptions],
+  );
 
   if (isArray && fields.length > 0) {
     return (
@@ -138,7 +151,7 @@ const FormField: React.FC<FormFieldProps> = ({
             required: required ? errorMessage : false,
             ...rules,
           })}
-          type={type}
+          type="file"
           placeholder={placeholder}
         />
       ) : type === "date" ? (
@@ -162,7 +175,7 @@ const FormField: React.FC<FormFieldProps> = ({
                     >
                       {selectedDate
                         ? selectedDate.toLocaleDateString()
-                        : "Select date"}
+                        : placeholder || "Select date"}
                       <ChevronDownIcon className="ml-2 h-4 w-4" />
                     </Button>
                   </PopoverTrigger>
@@ -181,7 +194,6 @@ const FormField: React.FC<FormFieldProps> = ({
           />
         </div>
       ) : type === "combobox" ? (
-        /* COMBOBOX */
         <div className="space-y-1 w-full">
           <Controller
             name={name}
@@ -190,7 +202,7 @@ const FormField: React.FC<FormFieldProps> = ({
             render={({ field }) => (
               <ComboBox
                 value={field.value}
-                options={options || []}
+                options={comboBoxOptions}
                 placeholder={placeholder}
                 onSelect={(value) => field.onChange(value)}
                 className={`${className} border-gray-6 rounded-lg focus:ring-1 focus:ring-pink focus:border-pink outline-none transition-all`}
@@ -199,7 +211,7 @@ const FormField: React.FC<FormFieldProps> = ({
           />
         </div>
       ) : type === "multi-select" ? (
-        /*  MULTI SELECT  */
+        /* MULTI SELECT (label+value support) */
         <div className="space-y-2 w-full">
           <Controller
             name={name}
@@ -211,13 +223,18 @@ const FormField: React.FC<FormFieldProps> = ({
                 ? field.value
                 : [];
 
+              const selectedLabels = selected.map(
+                (val) =>
+                  normalizedOptions.find((o) => o.value === val)?.label || val,
+              );
+
               return (
                 <>
                   <Select
                     onValueChange={(val) => {
                       if (!val) return;
                       if (selected.includes(val)) return;
-                      field.onChange([...selected, val]);
+                      field.onChange([...selected, val]); // ✅ store only value (id)
                     }}
                   >
                     <SelectTrigger
@@ -229,9 +246,9 @@ const FormField: React.FC<FormFieldProps> = ({
                     </SelectTrigger>
 
                     <SelectContent>
-                      {(options || []).map((op) => (
-                        <SelectItem key={op} value={op}>
-                          {op}
+                      {normalizedOptions.map((op) => (
+                        <SelectItem key={op.value} value={op.value}>
+                          {op.label}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -239,7 +256,7 @@ const FormField: React.FC<FormFieldProps> = ({
 
                   {selected.length > 0 && (
                     <div className="flex flex-wrap gap-2">
-                      {selected.map((val) => (
+                      {selected.map((val, idx) => (
                         <button
                           key={val}
                           type="button"
@@ -249,7 +266,7 @@ const FormField: React.FC<FormFieldProps> = ({
                           className="px-2 py-1 bg-gray-5 rounded-md border text-sm text-white border-gray-6 dark:text-white"
                           title="Click to remove"
                         >
-                          {val} ✕
+                          {selectedLabels[idx]} ✕
                         </button>
                       ))}
                     </div>
@@ -274,65 +291,63 @@ const FormField: React.FC<FormFieldProps> = ({
           rows={name === "address" ? 4 : 9}
         />
       ) : type === "radio" ? (
-        /* RADIO */
-        <div className="flex gap-5">
-          {options.map((opt) => (
+        /* RADIO (label+value support) */
+        <div className="flex gap-5 flex-wrap">
+          {normalizedOptions.map((opt) => (
             <label
-              htmlFor={opt}
-              key={opt}
+              htmlFor={`${name}-${opt.value}`}
+              key={opt.value}
               className="flex items-center gap-2 text-white"
             >
               <Input
                 autoComplete={autoComplete}
                 readOnly={readOnly}
-                id={opt}
+                id={`${name}-${opt.value}`}
                 type="radio"
-                value={opt}
+                value={opt.value}
                 {...register(name, {
                   required: required ? errorMessage : false,
                   ...rules,
                 })}
               />
-              {opt}
+              {opt.label}
             </label>
           ))}
         </div>
       ) : type === "select" ? (
-        <>
-          <div className="space-y-1 w-full">
-            <Controller
-              name={name}
-              control={control}
-              rules={{ required: required ? errorMessage : false }}
-              render={({ field }) => (
-                <Select
-                  value={field.value ?? ""} // ✅ default show
-                  onValueChange={(val) => {
-                    field.onChange(val);
-                    // ✅ extra rules support (optional)
-                    if (rules?.onChange) {
-                      rules.onChange({ target: { value: val } } as any);
-                    }
-                  }}
+        /* SELECT (label+value support) */
+        <div className="space-y-1 w-full">
+          <Controller
+            name={name}
+            control={control}
+            rules={{ required: required ? errorMessage : false }}
+            render={({ field }) => (
+              <Select
+                value={field.value ?? ""} // ✅ default show
+                onValueChange={(val) => {
+                  field.onChange(val);
+                  if (rules?.onChange) {
+                    rules.onChange({ target: { value: val } } as any);
+                  }
+                }}
+              >
+                <SelectTrigger
+                  className={`w-full border py-6 border-gray-6 rounded-lg focus:ring-1 focus:ring-pink focus:border-pink outline-none transition-all ${className}`}
                 >
-                  <SelectTrigger
-                    className={`w-full border py-6 border-gray-6 rounded-lg focus:ring-1 focus:ring-pink focus:border-pink outline-none transition-all ${className}`}
-                  >
-                    <SelectValue placeholder={placeholder || "Select"} />
-                  </SelectTrigger>
+                  <SelectValue placeholder={placeholder || "Select"} />
+                </SelectTrigger>
 
-                  <SelectContent>
-                    {(options || []).map((op) => (
-                      <SelectItem key={op} value={op}>
-                        {op}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
-            />
-          </div>{" "}
-        </>
+                <SelectContent>
+                  {normalizedOptions.map((op) => (
+                    <SelectItem key={op.value} value={op.value}>
+                      {op.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          />
+        </div>
       ) : (
         /* DEFAULT INPUT */
         <div className="relative">

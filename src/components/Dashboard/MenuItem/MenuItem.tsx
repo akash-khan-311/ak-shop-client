@@ -48,7 +48,7 @@ export default function MenuItem({
           className={`w-full rounded-md flex items-center justify-between px-4 py-4 my-1
             transition-colors duration-300
             hover:backdrop-blur-sm hover:bg-dark/10 dark:hover:bg-white/10
-            ${isActive ? "bg-dark/10 dark:bg-white/10 text-gray-1" : ""}`}
+            ${isActive ? "bg-dark/10 dark:bg-white/10 " : ""}`}
         >
           <div className="flex items-center gap-4">
             {icon}

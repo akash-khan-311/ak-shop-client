@@ -32,7 +32,7 @@ export default function AdminLayout({
         {/* Header */}
         <AppHeader />
         {/* Page Content */}
-        <main className="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6">
+        <main className="p-4 mx-auto max-w-(--breakpoint-2xl) md:p-6 dark:bg-dark-2 bg-gray-2 ">
           {children}
         </main>
       </div>

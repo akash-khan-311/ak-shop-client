@@ -195,20 +195,20 @@ export const adminMenuItems = [
 ];
 
 export const vendorMenuItems = [
-  { name: "Dashboard", href: "/vendor/dashboard", icon: LayoutDashboard },
+  { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
 
   {
     name: "Products",
     icon: Box,
     subItems: [
-      { name: "All Products", path: "/vendor/products" },
-      { name: "Add Product", path: "/vendor/products/add" },
+      { name: "All Products", path: "/admin/products" },
+      { name: "Add Product", path: "/admin/products/add" },
     ],
   },
 
   {
     name: "Orders",
-    href: "/vendor/orders",
+    href: "/admin/orders",
     icon: ShoppingBag,
   },
 
@@ -216,42 +216,45 @@ export const vendorMenuItems = [
     name: "Earnings",
     icon: DollarSign,
     subItems: [
-      { name: "Wallet", path: "/vendor/earnings" },
-      { name: "Payouts", path: "/vendor/payouts" },
+      { name: "Wallet", path: "/admin/earnings" },
+      { name: "Payouts", path: "/admin/payouts" },
     ],
   },
 
   {
     name: "Tickets",
-    href: "/vendor/tickets",
+    href: "/admin/tickets",
     icon: Ticket,
   },
 
   {
     name: "Reviews",
-    href: "/vendor/reviews",
+    href: "/admin/reviews",
     icon: Star,
   },
 
   {
     name: "Coupons",
-    href: "/vendor/coupons",
     icon: TicketPercent,
+    subItems: [
+      { name: "All Coupons List", path: "/admin/coupons" },
+      { name: "Create Coupons", path: "/admin/coupons/add" },
+    ],
   },
 
   {
     name: "Store Settings",
-    href: "/vendor/store",
+    href: "/admin/store",
     icon: Store,
   },
   {
     name: "Settings",
     icon: Settings,
     subItems: [
-      { name: "Profile", path: "/vendor/settings/profile" },
-      { name: "Security", path: "/vendor/settings/security" },
-      { name: "Notifications", path: "/vendor/settings/notifications" },
-      { name: "Change Password", path: "/vendor/settings/change-password" },
+      { name: "Profile", path: "/admin/settings/profile" },
+      { name: "Security", path: "/admin/settings/security" },
+      { name: "Notifications", path: "/admin/settings/notifications" },
+      { name: "Change Password", path: "/admin/settings/change-password" },
     ],
   },
 ];
