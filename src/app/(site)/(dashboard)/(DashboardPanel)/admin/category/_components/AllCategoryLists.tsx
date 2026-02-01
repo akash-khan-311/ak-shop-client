@@ -47,7 +47,8 @@ export default function AllCategoryLists() {
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [toggleCategoryPublished] = useToggleCategoryPublishedMutation();
-  const [deleteCategory] = useDeleteCategoryMutation();
+  const [deleteCategory, { isLoading: isDeleteLoading }] =
+    useDeleteCategoryMutation();
   const token = useAppSelector(selectCurrentToken);
   const { data, isLoading } = useGetAllCategoryForAdminQuery(token, {
     skip: !token,
@@ -170,7 +171,7 @@ export default function AllCategoryLists() {
     try {
       const result = await deleteCategory({ ids: idsToDelete, token }).unwrap();
       toast.success(result.message);
-      setSelectedCategories([]); // bulk clear
+      setSelectedCategories([]);
     } catch (err: any) {
       toast.error(err?.data?.message || "Delete failed");
     } finally {
@@ -382,6 +383,7 @@ export default function AllCategoryLists() {
       )}
       {modalOpen && (
         <ConfirmationModal
+          isLoading={isDeleteLoading}
           title={`Are You Sure?`}
           message="This action cannot be undone. This will permanently delete the category and its associated data from the database."
           onCancel={() => setModalOpen(false)}

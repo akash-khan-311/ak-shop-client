@@ -11,11 +11,20 @@ import shopData from "../Shop/shopData";
 import SingleGridItem from "../Shop/SingleGridItem";
 import SingleListItem from "../Shop/SingleListItem";
 import { LayoutGrid, PanelLeftOpen, StretchHorizontal } from "lucide-react";
+import { useGetAllCategoriesForUserQuery } from "@/redux/features/category/categoryApi";
+import { useGetAllProductsQuery } from "@/redux/features/products/productApi";
+import Container from "../ui/Container";
 
 const ShopWithSidebar = () => {
   const [productStyle, setProductStyle] = useState("grid");
   const [productSidebar, setProductSidebar] = useState(false);
+  const { data, isLoading } = useGetAllCategoriesForUserQuery(undefined);
+  const { data: ProductData, isLoading: loading } =
+    useGetAllProductsQuery(undefined);
   const [stickyMenu, setStickyMenu] = useState(false);
+
+  const categories = data?.data || [];
+  const products = ProductData?.data || [];
 
   const handleStickyMenu = () => {
     if (window.scrollY >= 80) {
@@ -30,40 +39,6 @@ const ShopWithSidebar = () => {
     { label: "Best Selling", value: "1" },
     { label: "Old Products", value: "2" },
   ];
-
-  const categories = [
-    {
-      name: "Desktop",
-      products: 10,
-      isRefined: true,
-    },
-    {
-      name: "Laptop",
-      products: 12,
-      isRefined: false,
-    },
-    {
-      name: "Monitor",
-      products: 30,
-      isRefined: false,
-    },
-    {
-      name: "UPS",
-      products: 23,
-      isRefined: false,
-    },
-    {
-      name: "Phone",
-      products: 10,
-      isRefined: false,
-    },
-    {
-      name: "Watch",
-      products: 13,
-      isRefined: false,
-    },
-  ];
-
   const genders = [
     {
       name: "Men",
@@ -105,7 +80,7 @@ const ShopWithSidebar = () => {
         pages={["shop", "/", "shop with sidebar"]}
       />
       <section className="overflow-hidden relative pb-20 pt-5 lg:pt-20 xl:pt-28 dark:bg-dark bg-[#f3f4f6]">
-        <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
+        <Container>
           <div className="flex gap-7.5">
             {/* <!-- Sidebar Start --> */}
             <div
@@ -157,7 +132,7 @@ const ShopWithSidebar = () => {
             {/* // <!-- Sidebar End --> */}
 
             {/* // <!-- Content Start --> */}
-            <div className="xl:max-w-[870px] w-full">
+            <div className=" w-full">
               <div className="rounded-lg bg-white dark:bg-dark-2 shadow-1 pl-3 pr-2.5 py-2.5 mb-6">
                 <div className="flex items-center justify-between">
                   {/* <!-- top bar left --> */}
@@ -206,12 +181,12 @@ const ShopWithSidebar = () => {
                     : "flex flex-col gap-7.5"
                 }`}
               >
-                {shopData.map((item, key) =>
+                {products.map((item, key) =>
                   productStyle === "grid" ? (
                     <SingleGridItem item={item} key={key} />
                   ) : (
                     <SingleListItem item={item} key={key} />
-                  )
+                  ),
                 )}
               </div>
               {/* <!-- Products Grid Tab Content End --> */}
@@ -336,7 +311,7 @@ const ShopWithSidebar = () => {
             </div>
             {/* // <!-- Content End --> */}
           </div>
-        </div>
+        </Container>
       </section>
     </>
   );

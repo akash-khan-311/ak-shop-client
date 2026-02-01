@@ -1,6 +1,7 @@
 import { baseApi } from "@/redux/api/baseApi";
 
 const productApi = baseApi.injectEndpoints({
+    overrideExisting: true,
     endpoints: (builder) => ({
         createProduct: builder.mutation({
             query: ({ data, token }) => ({
@@ -32,7 +33,6 @@ const productApi = baseApi.injectEndpoints({
                 return {
                     url: '/product',
                     method: 'GET',
-
                 }
             },
             providesTags: ["products"],
@@ -69,6 +69,17 @@ const productApi = baseApi.injectEndpoints({
                     Authorization: `${token}`,
                 }
             })
+        }),
+        deleteProducts: builder.mutation({
+            query: ({ ids, token }) => ({
+                url: `/product/delete`,
+                method: "DELETE",
+                body: { ids },
+                headers: {
+                    Authorization: `${token}`,
+                }
+            }),
+            invalidatesTags: ["products", "category", "SpecTemplate", "userCategory"],
         })
     }),
 });
@@ -79,5 +90,7 @@ export const {
     useGetAllProductsQuery,
     useGetSingleProductQuery,
     useGetAllProductForAdminQuery,
-    useTogglePublishProductMutation
+    useTogglePublishProductMutation,
+    useDeleteProductsMutation,
+    useUpdateProductMutation,
 } = productApi

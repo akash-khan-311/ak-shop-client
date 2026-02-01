@@ -9,8 +9,8 @@ export default function DataTablePagination({
 }: any) {
   const totalPages = Math.ceil(filteredItems?.length / itemsPerPage);
   return (
-    <div className="p-4 dark:bg-dark flex items-center justify-between border-t border-gray-700">
-      <div className="text-sm text-gray-400">
+    <div className="p-4 shadow-xl dark:bg-dark flex items-center justify-between  border border-t-0">
+      <div className="text-sm dark:text-gray-5 text-gray-6">
         SHOWING {(currentPage - 1) * itemsPerPage + 1} TO{" "}
         {Math.min(currentPage * itemsPerPage, filteredItems?.length)} OF{" "}
         {filteredItems?.length}

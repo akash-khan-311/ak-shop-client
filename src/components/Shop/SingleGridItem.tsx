@@ -10,6 +10,7 @@ import { useAppDispatch } from "@/redux/hook";
 import { addToWishlist } from "@/redux/features/wishListsSlice";
 
 const SingleGridItem = ({ item }: any) => {
+  console.log("this is product item", item);
   const { openModal } = useModalContext();
   const dispatch = useAppDispatch();
   // update the QuickView state
@@ -35,8 +36,8 @@ const SingleGridItem = ({ item }: any) => {
     <div className="group bg-white shadow-1 rounded-md dark:bg-dark-2 ">
       <div className="relative overflow-hidden flex items-center justify-center rounded-lg shadow-1 min-h-[270px] mb-4">
         <Image
-          src={item.images.thumbnail}
-          alt={item.title}
+          src={item?.images[0].url}
+          alt={item.productName}
           width={250}
           height={250}
         />
@@ -106,19 +107,17 @@ const SingleGridItem = ({ item }: any) => {
           />
         </div>
 
-        <p className=" text-sm">({item.reviews})</p>
+        <p className=" text-sm">({item.ratings ? item.ratings.length : 0})</p>
       </div>
 
       <h3 className="font-medium text-dark dark:text-white px-4 ease-out duration-200 hover:text-pink ">
-        <Link href="/shop-details"> {item.title} </Link>
+        <Link href="/shop-details"> {item.productName} </Link>
       </h3>
 
       <span className="flex items-center gap-2 font-medium text-lg p-4 ">
-        <span className="text-dark dark:text-gray-3">
-          ${item.discountedPrice}
-        </span>
+        <span className="text-dark dark:text-gray-3">৳ {item.price}</span>
         <span className="text-dark-4 dark:text-gray-6 line-through">
-          ${item.price}
+          ৳ {item.price}
         </span>
       </span>
     </div>

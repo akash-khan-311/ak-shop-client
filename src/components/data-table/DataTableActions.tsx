@@ -6,7 +6,6 @@ type Props = {
   exportJSON: () => void;
   bulkDelete: (ids: string[]) => void;
   selectedProducts: string[];
-  add?: any;
 };
 
 export default function DataTableActions({
@@ -14,8 +13,7 @@ export default function DataTableActions({
   exportJSON,
   bulkDelete,
   selectedProducts,
-  add,
-}: any) {
+}: Props) {
   return (
     <div className="bg-white dark:bg-dark border  rounded-lg p-4 mb-4 flex flex-wrap gap-3 items-center justify-between">
       <div className="flex gap-2">
@@ -43,14 +41,6 @@ export default function DataTableActions({
           <Trash2 size={16} />
           Delete
         </button>
-        {add && (
-          <Link href={"/admin/coupons/add"}>
-            <button className="px-4 text-white py-2 transition-all duration-100 bg-green hover:bg-green/60 rounded flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
-              <Plus size={16} />
-              {add}
-            </button>
-          </Link>
-        )}
       </div>
     </div>
   );
