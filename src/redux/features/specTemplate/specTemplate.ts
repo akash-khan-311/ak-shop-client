@@ -6,10 +6,10 @@ const specTemplateApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getEffectiveTemplate: builder.query<
       { success: boolean; data: TTemplate },
-      { subcategorySlug: string; userId?: string }
+      { subcategorySlug: string; adminId?: string }
     >({
-      query: ({ subcategorySlug, userId }) => ({
-        url: `/spec-template/effective/${subcategorySlug}${userId ? `?userId=${userId}` : ""}`,
+      query: ({ subcategorySlug, adminId }) => ({
+        url: `/spec-template/effective/${subcategorySlug}${adminId ? `?adminId=${adminId}` : ""}`,
         method: "GET",
 
 
@@ -17,14 +17,14 @@ const specTemplateApi = baseApi.injectEndpoints({
       providesTags: ["category"],
     }),
     getTemplates: builder.query({
-      query: ({ token, userId }) => {
+      query: ({ token, adminId }) => {
         return {
           url: '/spec-template',
           method: 'GET',
           headers: {
             Authorization: `${token}`,
           },
-          params: userId ? { userId } : undefined
+          params: adminId ? { adminId } : undefined
         }
       },
       providesTags: ['SpecTemplate']

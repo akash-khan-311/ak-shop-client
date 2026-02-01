@@ -2,10 +2,13 @@ import { baseApi } from "@/redux/api/baseApi";
 
 const categoryApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getAllCategoryForVendorAndAdmin: builder.query({
-      query: () => ({
-        url: "/category/vendor",
+    getAllCategoryForAdmin: builder.query({
+      query: (token) => ({
+        url: "/category/admin",
         method: "GET",
+        headers: {
+          Authorization: `${token}`,
+        },
         credentials: "include",
 
       }),
@@ -142,7 +145,7 @@ const categoryApi = baseApi.injectEndpoints({
 });
 
 export const {
-  useGetAllCategoryForVendorAndAdminQuery,
+  useGetAllCategoryForAdminQuery,
   useGetAllCategoriesForUserQuery,
   useToggleCategoryPublishedMutation,
   useCreateCategoryMutation,

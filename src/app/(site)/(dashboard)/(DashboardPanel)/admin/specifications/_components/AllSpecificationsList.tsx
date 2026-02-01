@@ -23,7 +23,7 @@ import {
   selectCurrentToken,
   selectCurrentUser,
 } from "@/redux/features/auth/authSlice";
-import { useGetAllCategoryForVendorAndAdminQuery } from "@/redux/features/category/categoryApi";
+import { useGetAllCategoryForAdminQuery } from "@/redux/features/category/categoryApi";
 import {
   useDeleteSpecTemplateMutation,
   useGetTemplatesQuery,
@@ -52,8 +52,7 @@ export default function AllSpecificationsList() {
     useToggleTemplatePublishedMutation();
   const [deleteTemplate, { isLoading: isDeleteLoading }] =
     useDeleteSpecTemplateMutation();
-  const { data: categoriesData } =
-    useGetAllCategoryForVendorAndAdminQuery(token);
+  const { data: categoriesData } = useGetAllCategoryForAdminQuery(token);
   const categories = useMemo(
     () => categoriesData?.data || [],
     [categoriesData],
@@ -119,7 +118,6 @@ export default function AllSpecificationsList() {
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage,
   );
-
   const exportCSV = () => {
     const csv = [
       "Category,Sub Category,Fields, Added By, Published",
@@ -351,7 +349,7 @@ export default function AllSpecificationsList() {
                       <TooltipProvider delayDuration={1}>
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <Link href={`/vendor/specifications/edit/${t._id}`}>
+                            <Link href={`/admin/specifications/edit/${t._id}`}>
                               <SquarePen size={20} />
                             </Link>
                           </TooltipTrigger>

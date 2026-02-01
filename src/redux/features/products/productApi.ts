@@ -15,16 +15,27 @@ const productApi = baseApi.injectEndpoints({
             }),
             invalidatesTags: ["products"],
         }),
-        getAllProducts: builder.query({
+        getAllProductForAdmin: builder.query({
             query: (token) => {
                 return {
-                    url: '/product',
+                    url: '/product/admin',
                     method: 'GET',
                     headers: {
                         Authorization: `${token}`,
                     }
                 }
-            }
+            },
+            providesTags: ["products"],
+        }),
+        getAllProducts: builder.query({
+            query: () => {
+                return {
+                    url: '/product',
+                    method: 'GET',
+
+                }
+            },
+            providesTags: ["products"],
         }),
         getSingleProduct: builder.query<any, { id: string, token: string }>({
             query: ({ id, token }) => {
@@ -35,7 +46,29 @@ const productApi = baseApi.injectEndpoints({
                         Authorization: `${token}`,
                     }
                 }
-            }
+            },
+            providesTags: ["products"],
+        }),
+        togglePublishProduct: builder.mutation({
+            query: ({ id, token }) => ({
+                url: `/product/publish/${id}`,
+                method: "PATCH",
+                credentials: "include",
+                headers: {
+                    Authorization: `${token}`,
+                },
+            }),
+            invalidatesTags: ["products"],
+        }),
+        updateProduct: builder.mutation({
+            query: ({ id, data, token }) => ({
+                url: `/product/${id}`,
+                method: "PATCH",
+                body: data,
+                headers: {
+                    Authorization: `${token}`,
+                }
+            })
         })
     }),
 });
@@ -44,5 +77,7 @@ const productApi = baseApi.injectEndpoints({
 export const {
     useCreateProductMutation,
     useGetAllProductsQuery,
-    useGetSingleProductQuery
+    useGetSingleProductQuery,
+    useGetAllProductForAdminQuery,
+    useTogglePublishProductMutation
 } = productApi

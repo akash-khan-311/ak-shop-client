@@ -20,11 +20,15 @@ import DataTableActions from "@/components/data-table/DataTableActions";
 import DataTableFilters from "@/components/data-table/DataTableFilters";
 import DataTablePagination from "@/components/data-table/DataTablePagination";
 import { TooltipProvider } from "@radix-ui/react-tooltip";
-import { useGetAllProductsQuery } from "@/redux/features/products/productApi";
+import {
+  useGetAllProductForAdminQuery,
+  useTogglePublishProductMutation,
+} from "@/redux/features/products/productApi";
 import { useAppSelector } from "@/redux/hook";
 import { selectCurrentToken } from "@/redux/features/auth/authSlice";
 import { TProduct } from "@/types/product.type";
 import Image from "next/image";
+import toast from "react-hot-toast";
 
 const tableHeading = [
   "Product Name",
@@ -43,7 +47,8 @@ export default function AllProductsList() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const token = useAppSelector(selectCurrentToken);
-  const { data } = useGetAllProductsQuery(token);
+  const [togglePublish] = useTogglePublishProductMutation();
+  const { data } = useGetAllProductForAdminQuery(token);
   const products = useMemo(() => data?.data || [], [data?.data]);
   const [filters, setFilters] = useState({
     search: "",
@@ -161,7 +166,16 @@ export default function AllProductsList() {
   };
 
   // Toggle published status
-  const togglePublished = (id) => {};
+  const handleTogglePublished = async (id: string) => {
+    try {
+      const result = await togglePublish({ id, token }).unwrap();
+
+      if (result?.success) toast.success(result?.message);
+    } catch (error) {
+      console.log(error);
+      toast.error("Failed to toggle published status");
+    }
+  };
 
   return (
     <div className="">
@@ -294,8 +308,8 @@ export default function AllProductsList() {
                     <TableCell>
                       <label className="relative inline-block">
                         <input
-                          onChange={() => togglePublished(product?._id)}
-                          checked={product?.published}
+                          onChange={() => handleTogglePublished(product?._id)}
+                          checked={product?.isPublished}
                           type="checkbox"
                           className="peer invisible"
                         />

@@ -24,6 +24,7 @@ export type TUserAvatar = {
 };
 
 export type IUser = {
+    userId: any;
     _id?: string;
     id: number;
     name: string;

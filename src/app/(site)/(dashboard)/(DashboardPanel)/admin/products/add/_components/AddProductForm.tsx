@@ -54,7 +54,7 @@ export default function AddProductForm({
   const { data } = useGetAllCategoriesForUserQuery(token, { skip: !token });
   const categories = useMemo(() => data?.data || [], [data]);
   const categoryOptions = categories.map((cat: any) => cat.name);
-
+  console.log("this is categories", categories);
   const selectedCategory = watch("category");
   const selectedSubCategory = watch("subcategory");
 
@@ -89,12 +89,14 @@ export default function AddProductForm({
 
   // ✅ fetch dynamic spec template
   const { data: tplRes, isLoading: tplLoading } = useGetEffectiveTemplateQuery(
-    { subcategorySlug, userId: String(userId) },
+    { subcategorySlug, adminId: String(userId) },
     { skip: !subcategorySlug },
   );
 
   const specsFields: TSpecField[] = (tplRes?.data?.fields ||
     []) as TSpecField[];
+
+  console.log("this is templates", tplRes);
   // Reset subcategory & brand when category changes
   useEffect(() => {
     setValue("subcategory", "");
@@ -131,7 +133,9 @@ export default function AddProductForm({
 
       fd.append("brand", payload.brand || "");
       fd.append("color", payload.color || "");
-
+      if (payload.price !== undefined && payload.price !== "")
+        fd.append("price", String(payload.price));
+      fd.append("regularPrice", String(payload.regularPrice));
       if (payload.weight !== undefined && payload.weight !== "")
         fd.append("weight", String(payload.weight));
       if (payload.length !== undefined && payload.length !== "")
@@ -143,8 +147,6 @@ export default function AddProductForm({
 
       fd.append("quantity", String(payload.quantity || 0));
       fd.append("availability", payload.availability || "In Stock");
-
-      fd.append("vendorId", payload.vendorId);
 
       fd.append("specifications", JSON.stringify(payload.specifications || {}));
 
@@ -348,7 +350,7 @@ export default function AddProductForm({
               required
               register={register}
               control={control}
-              type="text"
+              type="number"
               placeholder="Regular Price"
               errors={errors}
               errorMessage="Regular Price is Required"
@@ -360,7 +362,7 @@ export default function AddProductForm({
               required
               register={register}
               control={control}
-              type="text"
+              type="number"
               placeholder="Product Price"
               errors={errors}
               errorMessage="Product Price is Required"

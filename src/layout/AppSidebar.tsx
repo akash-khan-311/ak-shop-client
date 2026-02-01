@@ -5,12 +5,13 @@ import { usePathname } from "next/navigation";
 
 import { useSidebar } from "@/app/context/SidebarContext";
 import Logo from "@/components/Logo";
-import { vendorMenuItems } from "@/components/Dashboard/constant/SidebarMenus";
+
 import { NavItem } from "@/types";
 import MenuItem from "@/components/Dashboard/MenuItem/MenuItem";
 import { useAppSelector } from "@/redux/hook";
 import { selectCurrentUser } from "@/redux/features/auth/authSlice";
 import { USER_ROLE } from "@/constant";
+import { adminMenusItems } from "@/components/Dashboard/constant/SidebarMenus";
 
 const AppSidebar: React.FC = () => {
   const user = useAppSelector(selectCurrentUser);
@@ -23,7 +24,7 @@ const AppSidebar: React.FC = () => {
     menuType: "main" | "others",
   ) => (
     <ul className="flex flex-col gap-4">
-      {vendorMenuItems.map((item, index) => {
+      {adminMenusItems.map((item, index) => {
         const Icon = item.icon;
 
         return (
@@ -113,27 +114,8 @@ const AppSidebar: React.FC = () => {
           </h2>
 
           <ul className="flex flex-col gap-2">
-            {user?.role === USER_ROLE.vendor &&
-              vendorMenuItems.map((item, index) => {
-                const Icon = item.icon;
-
-                return (
-                  <MenuItem
-                    key={item.name}
-                    label={item.name}
-                    path={item.href}
-                    icon={<Icon size={20} />}
-                    subItems={item.subItems}
-                    isOpen={openIndex === index}
-                    onToggle={() => handleToggle(index)}
-                    isExpanded={isExpanded}
-                    isHovered={isHovered}
-                    isMobileOpen={isMobileOpen}
-                  />
-                );
-              })}
             {user?.role === USER_ROLE.admin &&
-              vendorMenuItems.map((item, index) => {
+              adminMenusItems.map((item, index) => {
                 const Icon = item.icon;
 
                 return (
@@ -152,7 +134,7 @@ const AppSidebar: React.FC = () => {
                 );
               })}
             {user?.role === USER_ROLE.superAdmin &&
-              vendorMenuItems.map((item, index) => {
+              adminMenusItems.map((item, index) => {
                 const Icon = item.icon;
 
                 return (

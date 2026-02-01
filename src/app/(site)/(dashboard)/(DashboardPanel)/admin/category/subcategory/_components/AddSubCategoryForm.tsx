@@ -4,10 +4,13 @@ import { slugify } from "@/app/(site)/(dashboard)/utils/slugify";
 import DashboardPageHeader from "@/components/Dashboard/DashboardPageHeader";
 import FormField from "@/components/ui/FormField";
 import SingleImageUploadField from "@/helpers/SingleImageUploadField";
-import { selectCurrentToken } from "@/redux/features/auth/authSlice";
+import {
+  selectCurrentToken,
+  selectCurrentUser,
+} from "@/redux/features/auth/authSlice";
 import {
   useCreateSubCategoryMutation,
-  useGetAllCategoryForVendorAndAdminQuery,
+  useGetAllCategoryForAdminQuery,
 } from "@/redux/features/category/categoryApi";
 import { useAppSelector } from "@/redux/hook";
 import { X } from "lucide-react";
@@ -36,8 +39,9 @@ export default function AddSubCategoryForm() {
   });
 
   const token = useAppSelector(selectCurrentToken);
+  const user = useAppSelector(selectCurrentUser);
 
-  const { data } = useGetAllCategoryForVendorAndAdminQuery(token, {
+  const { data } = useGetAllCategoryForAdminQuery(token, {
     skip: !token,
   });
 

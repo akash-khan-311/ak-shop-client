@@ -13,7 +13,7 @@ import {
   selectCurrentToken,
   selectCurrentUser,
 } from "@/redux/features/auth/authSlice";
-import { useGetAllCategoryQuery } from "@/redux/features/category/categoryApi";
+import { useGetAllCategoryForAdminQuery } from "@/redux/features/category/categoryApi";
 import { useCreateSpecTemplateMutation } from "@/redux/features/specTemplate/specTemplate";
 import { useAppSelector } from "@/redux/hook";
 import React, { useEffect, useMemo, useState } from "react";
@@ -47,7 +47,7 @@ type TForm = {
 export default function AddSpecTemplateForm() {
   const token = useAppSelector(selectCurrentToken);
   const user = useAppSelector(selectCurrentUser);
-  const { data } = useGetAllCategoryQuery(token, { skip: !token });
+  const { data } = useGetAllCategoryForAdminQuery(token, { skip: !token });
   const categories = useMemo(() => data?.data || [], [data]);
   const categoryOptions = categories.map((c: any) => c.name);
   const {
@@ -66,7 +66,7 @@ export default function AddSpecTemplateForm() {
       isPublished: true,
     },
   });
-
+  console.log("this is categories", categories);
   const selectedCategoryName = watch("categoryName");
   const selectedSubcategoryName = watch("subcategoryName");
 
@@ -156,7 +156,7 @@ export default function AddSpecTemplateForm() {
     const body = {
       subcategorySlug,
       categorySlug,
-      userId: user?.userId,
+      adminId: user?._id,
       fields: cleanedFields,
     };
 

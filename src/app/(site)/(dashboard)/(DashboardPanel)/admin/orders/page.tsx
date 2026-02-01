@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import React from "react";
-import AllCategoryLists from "../../_admin/category/_components/AllCategoryLists";
+import AllCategoryLists from "../category/_components/AllCategoryLists";
 import AllOrderList from "./_components/orders-table/AllOrderList";
 export const metadata: Metadata = {
   title: "Orders | AK Shop E-Commerce Solutions",

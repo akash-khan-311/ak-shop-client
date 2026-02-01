@@ -3,7 +3,7 @@
 import { selectCurrentToken } from "@/redux/features/auth/authSlice";
 import {
   useDeleteSubCategoryMutation,
-  useGetAllCategoryForVendorAndAdminQuery,
+  useGetAllCategoryForAdminQuery,
   useGetSubCategoryQuery,
 } from "@/redux/features/category/categoryApi";
 import { useAppSelector } from "@/redux/hook";
@@ -36,7 +36,7 @@ const tableHeading = ["Sub Category Name", "Category", "Published", "Actions"];
 export default function SubCategoryLists() {
   const token = useAppSelector(selectCurrentToken);
   const { data } = useGetSubCategoryQuery(token);
-  const { data: categoryData } = useGetAllCategoryForVendorAndAdminQuery(token);
+  const { data: categoryData } = useGetAllCategoryForAdminQuery(token);
   const [deleteSubCategory] = useDeleteSubCategoryMutation();
   const allCategories = categoryData?.data;
   const subCategories = useMemo(() => data?.data || [], [data]);

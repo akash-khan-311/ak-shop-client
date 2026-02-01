@@ -1,16 +1,18 @@
 "use client";
 
 import FormField from "@/components/ui/FormField";
-import React, { useEffect, useState } from "react";
-import { useForm, useFieldArray } from "react-hook-form";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import DashboardPageHeader from "@/components/Dashboard/DashboardPageHeader";
 import { slugify } from "@/app/(site)/(dashboard)/utils/slugify";
 import { useCreateCategoryMutation } from "@/redux/features/category/categoryApi";
 import { useAppSelector } from "@/redux/hook";
-import { selectCurrentToken } from "@/redux/features/auth/authSlice";
+import {
+  selectCurrentToken,
+  selectCurrentUser,
+} from "@/redux/features/auth/authSlice";
 
 import SingleImageUploadField from "@/helpers/SingleImageUploadField";
-import { uploadImageToCloudinary } from "@/lib/utils";
 import toast from "react-hot-toast";
 
 /* ---------------- TYPES ---------------- */
@@ -52,6 +54,7 @@ const CreateCategory = () => {
   });
 
   const token = useAppSelector(selectCurrentToken);
+  const user = useAppSelector(selectCurrentUser);
   const [createCategory, { isLoading }] = useCreateCategoryMutation();
   const [resetImage, setResetImage] = useState(false);
   const categoryName = watch("name");
