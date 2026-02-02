@@ -21,11 +21,14 @@ import {
 import UserDropDown from "../ui/Dropdown/user.dropdown";
 import { useGetMeQuery } from "@/redux/features/auth/authApi";
 import { usePathname } from "next/navigation";
-import VendorDropDown from "../ui/Dropdown/vendor.dropdown";
+import VendorDropDown from "../ui/Dropdown/admin.dropdown";
 import { TCategory } from "@/types/category";
 import Container from "../ui/Container";
 import Logout from "../ui/Auth/Logout";
 import AppThemeSwitch from "../ui/ThemeSwitch";
+
+import { USER_ROLE } from "@/constant";
+import AdminDropDown from "../ui/Dropdown/admin.dropdown";
 
 const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -138,11 +141,12 @@ const Header = () => {
                     {user?.role === "user" && (
                       <UserDropDown setIsOpen={setIsOpen} isOpen={isOpen} />
                     )}
-                    {user?.role === "vendor" && (
-                      <VendorDropDown setIsOpen={setIsOpen} isOpen={isOpen} />
+                    {user?.role === USER_ROLE.admin && (
+                      <AdminDropDown setIsOpen={setIsOpen} isOpen={isOpen} />
                     )}
-                    {user?.role === "admin" && <>Admin</>}
-                    {user?.role === "superAdmin" && <>Super Admin</>}
+                    {user?.role === USER_ROLE.superAdmin && (
+                      <AdminDropDown setIsOpen={setIsOpen} isOpen={isOpen} />
+                    )}
                   </>
                 ) : (
                   <Link href="/signin" className="flex items-center gap-2.5">

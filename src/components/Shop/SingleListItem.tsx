@@ -20,52 +20,36 @@ const SingleListItem = ({ item }: any) => {
   const handleItemToWishList = () => {};
 
   return (
-    <div className="group rounded-lg bg-white dark:bg-dark-2 shadow-1">
+    <div className="group rounded-lg bg-white dark:bg-dark-2 shadow-xl relative">
       <div className="flex">
         <div className="shadow-list relative overflow-hidden flex items-center justify-center max-w-[270px] w-full sm:min-h-[270px] p-4">
-          <Image src={item.images.thumbnail} alt="" width={250} height={250} />
-
-          <div className="absolute left-0 bottom-0 translate-y-full w-full flex items-center justify-center gap-2.5 pb-5 ease-linear duration-200 group-hover:translate-y-0">
-            <button
-              onClick={() => {
-                openModal();
-                handleQuickViewUpdate();
-              }}
-              aria-label="button for quick view"
-              className="flex items-center justify-center w-9 h-9 rounded-[5px] shadow-1 ease-out duration-200 text-dark bg-white hover:text-pink"
-            >
-              <Eye size={16} />
-            </button>
-
+          <div className="flex flex-col justify-center items-center">
+            <Image
+              src={item?.images[0].url}
+              alt={item.productName}
+              width={250}
+              height={250}
+              className="w-full h-full object-contain hover:scale-110 ease-in duration-300"
+            />
             <button
               onClick={() => handleAddToCart()}
-              className="inline-flex font-medium text-custom-sm py-[7px] px-5 rounded-[5px] bg-pink text-white ease-out duration-200 hover:bg-pink-dark"
+              className="flex justify-center w-full font-medium text-custom-sm py-[7px] px-5 rounded-[5px] mt-10 bg-pink text-white ease-out duration-200 hover:bg-pink-dark"
             >
               Add to cart
-            </button>
-
-            <button
-              onClick={() => handleItemToWishList()}
-              aria-label="button for favorite select"
-              className="flex items-center justify-center w-9 h-9 rounded-[5px] shadow-1 ease-out duration-200 text-dark bg-white hover:text-pink"
-            >
-              <Heart size={16} />
             </button>
           </div>
         </div>
 
         <div className="w-full flex flex-col gap-5 sm:flex-row sm:items-center justify-center sm:justify-between py-5 px-4 sm:px-7.5 lg:pl-11 lg:pr-12">
           <div>
-            <h3 className="font-medium text-dark dark:text-white ease-out duration-200 hover:text-pink mb-1.5">
-              <Link href="/shop-details"> {item.title} </Link>
+            <h3 className="font-medium text-2xl text-dark dark:text-white ease-out duration-200 hover:text-pink mb-1.5">
+              <Link href={`/shop-details/${item._id}`}>{item.productName}</Link>
             </h3>
-
+            <p>{item.description}</p>
             <span className="flex items-center gap-2 font-medium text-lg">
-              <span className="text-dark dark:text-gray-3">
-                ${item.discountedPrice}
-              </span>
+              <span className="text-dark dark:text-gray-3">৳ {item.price}</span>
               <span className="text-dark-4 line-through dark:text-gray-6">
-                ${item.price}
+                ৳ {item.regularPrice}
               </span>
             </span>
           </div>
@@ -104,9 +88,18 @@ const SingleListItem = ({ item }: any) => {
               />
             </div>
 
-            <p className="text-custom-sm">({item.reviews})</p>
+            <p className="text-custom-sm">({item.reviews | 0})</p>
           </div>
         </div>
+      </div>
+      {/* Hover Action Buttons */}
+      <div className="absolute right-5 top-3 flex flex-col gap-2 transform   transition-all duration-300">
+        <button
+          // onClick={() => handleItemToWishList(item)}
+          className="w-8 h-8 sm:w-9 sm:h-9 bg-white dark:bg-dark rounded-full shadow-md flex items-center justify-center  text-pink hover:shadow-lg transition-all duration-200"
+        >
+          <Heart className="w-4 h-4 sm:w-5 sm:h-5" />
+        </button>
       </div>
     </div>
   );

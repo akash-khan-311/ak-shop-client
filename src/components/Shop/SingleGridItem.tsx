@@ -5,16 +5,24 @@ import { useModalContext } from "@/app/context/QuickViewModalContext";
 
 import Link from "next/link";
 import Image from "next/image";
-import { Eye, Heart } from "lucide-react";
+import {
+  ArrowLeftRight,
+  Eye,
+  Heart,
+  RefreshCw,
+  ShoppingCart,
+  Star,
+} from "lucide-react";
 import { useAppDispatch } from "@/redux/hook";
 import { addToWishlist } from "@/redux/features/wishListsSlice";
 
 const SingleGridItem = ({ item }: any) => {
-  console.log("this is product item", item);
   const { openModal } = useModalContext();
   const dispatch = useAppDispatch();
   // update the QuickView state
-  const handleQuickViewUpdate = () => {};
+  const handleQuickViewUpdate = () => {
+    console.log("Opened");
+  };
 
   // add to cart
   const handleAddToCart = () => {};
@@ -33,93 +41,68 @@ const SingleGridItem = ({ item }: any) => {
   };
 
   return (
-    <div className="group bg-white shadow-1 rounded-md dark:bg-dark-2 ">
-      <div className="relative overflow-hidden flex items-center justify-center rounded-lg shadow-1 min-h-[270px] mb-4">
+    <div className="bg-white dark:bg-dark-2 rounded-lg border border-gray-100 overflow-hidden hover:shadow-lg transition-shadow duration-300 group">
+      {/* Image Container */}
+      <div className="relative overflow-hidden p-4">
         <Image
-          src={item?.images[0].url}
+          src={item.images[0].url}
           alt={item.productName}
-          width={250}
-          height={250}
+          width={300}
+          height={300}
+          className="object-cover object-center hover:scale-110  duration-500 p-6 mx-auto"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
         />
 
-        <div className="absolute  left-0 bottom-0 translate-y-full w-full flex items-center justify-center gap-2.5 pb-5 ease-linear duration-200 group-hover:translate-y-0">
-          <button
-            onClick={() => {
-              openModal();
-              handleQuickViewUpdate();
-            }}
-            id="newOne"
-            aria-label="button for quick view"
-            className="flex items-center justify-center w-9 h-9 rounded-[5px] shadow-1 ease-out duration-200 text-dark bg-white hover:text-pink"
-          >
-            <Eye size={16} />
-          </button>
-
-          <button
-            onClick={() => handleAddToCart()}
-            className="inline-flex font-medium text-custom-sm py-[7px] px-5 rounded-[5px] bg-pink text-white ease-out duration-200 hover:bg-pink-dark"
-          >
-            Add to cart
-          </button>
-
+        {/* Hover Action Buttons */}
+        <div className="absolute right-3 top-3 flex flex-col gap-2 transform   transition-all duration-300">
           <button
             onClick={() => handleItemToWishList(item)}
-            aria-label="button for favorite select"
-            id="favOne"
-            className="flex items-center justify-center w-9 h-9 rounded-[5px] shadow-1 ease-out duration-200 text-dark bg-white hover:text-pink"
+            className="w-8 h-8 sm:w-9 sm:h-9 bg-white dark:bg-dark rounded-full shadow-md flex items-center justify-center  text-pink hover:shadow-lg transition-all duration-200"
           >
-            <Heart size={16} />
+            <Heart className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
         </div>
       </div>
 
-      <div className="flex items-center gap-2.5  px-4">
-        <div className="flex items-center gap-1">
-          <Image
-            src="/images/icons/icon-star.svg"
-            alt="star icon"
-            width={15}
-            height={15}
-          />
-          <Image
-            src="/images/icons/icon-star.svg"
-            alt="star icon"
-            width={15}
-            height={15}
-          />
-          <Image
-            src="/images/icons/icon-star.svg"
-            alt="star icon"
-            width={15}
-            height={15}
-          />
-          <Image
-            src="/images/icons/icon-star.svg"
-            alt="star icon"
-            width={15}
-            height={15}
-          />
-          <Image
-            src="/images/icons/icon-star.svg"
-            alt="star icon"
-            width={15}
-            height={15}
-          />
+      {/* Content */}
+      <div className="p-3 sm:p-4">
+        <Link href={`/product/${item._id}`}>
+          <h3 className="text-xl font-medium mb-1.5 line-clamp-1  transition-colors cursor-pointer">
+            {item.productName}
+          </h3>
+        </Link>
+
+        {/* Price */}
+        <div className="flex items-center gap-2 mb-2">
+          <span className="text-gray-7 dark:text-gray-2 font-semibold text-sm sm:text-base">
+            ৳ {item.price}
+          </span>
+          {item.regularPrice && (
+            <span className="text-gray-4 text-xs sm:text-sm line-through">
+              ৳ {item.regularPrice}
+            </span>
+          )}
         </div>
 
-        <p className=" text-sm">({item.ratings ? item.ratings.length : 0})</p>
+        {/* Rating */}
+        <div className="flex items-center gap-1.5 mb-3">
+          <div className="flex items-center gap-0.5">
+            {[...Array(5)].map((_, i) => (
+              <Star
+                key={i}
+                className={`w-3 h-3 sm:w-4 sm:h-4 ${i < item.rating ? "fill-yellow-400 text-yellow" : "text-gray-6"}`}
+              />
+            ))}
+          </div>
+          <span className="text-xs text-gray-500">({0})</span>
+        </div>
+
+        {/* Add to Cart Button */}
+        <button className="w-full bg-pink text-white py-2 rounded-md text-xs sm:text-sm font-medium hover:bg-pink-dark transition-all duration-300 flex items-center justify-center gap-2">
+          <ShoppingCart className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+          Add to Cart
+        </button>
       </div>
-
-      <h3 className="font-medium text-dark dark:text-white px-4 ease-out duration-200 hover:text-pink ">
-        <Link href="/shop-details"> {item.productName} </Link>
-      </h3>
-
-      <span className="flex items-center gap-2 font-medium text-lg p-4 ">
-        <span className="text-dark dark:text-gray-3">৳ {item.price}</span>
-        <span className="text-dark-4 dark:text-gray-6 line-through">
-          ৳ {item.price}
-        </span>
-      </span>
     </div>
   );
 };

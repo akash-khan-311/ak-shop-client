@@ -6,13 +6,20 @@ import {
   selectCurrentUser,
 } from "@/redux/features/auth/authSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
-import { Heart, LogOut, ShoppingBag, UserCog, UserPen } from "lucide-react";
+import {
+  Heart,
+  LogOut,
+  ShoppingBag,
+  Tickets,
+  UserCog,
+  UserPen,
+} from "lucide-react";
 import Link from "next/link";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import Logout from "../Auth/Logout";
 import { useGetMeQuery } from "@/redux/features/auth/authApi";
-import { useEffect } from "react";
+import Image from "next/image";
 
 type Props = {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -20,26 +27,33 @@ type Props = {
 };
 
 const dropDownItems = [
-  { name: "Dashboard", path: "/user/dashboard", Icon: UserCog },
-  { name: "Orders", path: "/user/orders", Icon: ShoppingBag },
-  { name: "Wishlist", path: "/user/wishlist", Icon: Heart },
-  { name: "Profile", path: "/user/profile", Icon: UserPen },
+  { name: "Dashboard", path: "/admin/dashboard", Icon: UserCog },
+  { name: "Orders", path: "/admin/orders", Icon: ShoppingBag },
+  { name: "Tickets", path: "/admin/tickets", Icon: Tickets },
+  { name: "Profile", path: "/admin/profile", Icon: UserPen },
 ];
 
-export default function UserDropDown({ setIsOpen, isOpen }) {
+export default function AdminDropDown({ setIsOpen, isOpen }) {
   const token = useAppSelector(selectCurrentToken);
-  const { data, isLoading, error } = useGetMeQuery(token);
 
-  const user = data?.data;
+  const { data, isLoading, error } = useGetMeQuery(token);
+  const me = data?.data;
+
+  console.log(me);
 
   return (
     <div onClick={() => setIsOpen(!isOpen)} className="relative cursor-pointer">
       <div>
-        <span></span>
-        <span>{user?.name}</span>
+        <Image
+          height={100}
+          width={100}
+          className="w-10 h-10 rounded-full"
+          src={me?.avatar?.url || "/demo_male.png"}
+          alt={me?.name}
+        />
       </div>
       <div
-        className={`absolute overflow-hidden top-5 transition-[opacity,margin] duration-300 ease-in-out ${isOpen ? "opacity-100" : "opacity-0 invisible"}   min-w-60 backdrop-blur-md bg-white/10 shadow-md rounded-lg p-2 mt-2 divide-y divide-gray-200 dark:bg-gray-800 dark:border dark:border-gray-700 dark:divide-gray-700`}
+        className={`absolute overflow-hidden top-10 transition-[opacity,margin] duration-300 ease-in-out ${isOpen ? "opacity-100" : "opacity-0 invisible"}   min-w-60 backdrop-blur-md bg-white/10 shadow-md rounded-lg p-2 mt-2 divide-y divide-gray-200 dark:bg-gray-800 dark:border dark:border-gray-700 dark:divide-gray-700`}
       >
         <div className="py-2 first:pt-0 last:pb-0">
           {dropDownItems.map((item, index) => {
