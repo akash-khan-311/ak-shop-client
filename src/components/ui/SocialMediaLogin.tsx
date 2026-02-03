@@ -1,5 +1,4 @@
 import { API_BASE } from "@/data";
-import React from "react";
 
 export default function SocialMediaLogin() {
   const redirectToGoogle = () => {

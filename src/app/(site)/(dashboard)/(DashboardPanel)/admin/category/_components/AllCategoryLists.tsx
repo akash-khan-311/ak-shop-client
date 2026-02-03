@@ -25,13 +25,12 @@ import { selectCurrentToken } from "@/redux/features/auth/authSlice";
 import {
   useDeleteCategoryMutation,
   useGetAllCategoryForAdminQuery,
-  useGetSingleCategoryQuery,
   useToggleCategoryPublishedMutation,
 } from "@/redux/features/category/categoryApi";
 
 import { useAppSelector } from "@/redux/hook";
 import { TCategory } from "@/types/category";
-import { Plus, SquarePen, Trash2, ZoomIn } from "lucide-react";
+import { SquarePen, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { useMemo, useState } from "react";
 import toast from "react-hot-toast";

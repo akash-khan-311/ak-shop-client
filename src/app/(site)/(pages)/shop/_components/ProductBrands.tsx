@@ -22,8 +22,8 @@ export default function ProductBrands() {
   };
 
   return (
-    <div className="bg-white rounded-lg p-4 sm:p-6 shadow-sm border border-gray-100 mt-6">
-      <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-4 pb-3 border-b border-gray-200">
+    <div className=" bg-white dark:bg-dark-2 rounded-lg p-4 sm:p-6 shadow-sm border border-gray-100 mt-6">
+      <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-4 pb-3 border-b border-gray-2">
         Product Brands
       </h2>
 

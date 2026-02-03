@@ -54,9 +54,12 @@ const authApi = baseApi.injectEndpoints({
 
     //---------------- Users---------------
     getAllUsers: builder.query<ApiResponse<IUser[]>, void>({
-      query: () => ({
+      query: (token) => ({
         url: "/users",
         method: "GET",
+        headers: {
+          Authorization: `${token}`,
+        }
       }),
       providesTags: ["User"],
     }),
@@ -65,6 +68,7 @@ const authApi = baseApi.injectEndpoints({
       query: (id) => ({
         url: `/users/${id}`,
         method: "GET",
+
       }),
       providesTags: (_res, _err, id) => [{ type: "User", id }],
     }),
@@ -164,6 +168,16 @@ const authApi = baseApi.injectEndpoints({
     getFacebookAuthUrl: builder.query<string, void>({
       queryFn: () => ({ data: `${API_BASE}/auth/facebook` }),
     }),
+    toggleStatusChange: builder.mutation({
+      query: (data) => ({
+        url: `/users/status/${data.id}`,
+        method: 'PATCH',
+        headers: {
+          Authorization: `${data.token}`,
+        }
+      }),
+      invalidatesTags: ['User']
+    }),
 
 
     oauthFinalize: builder.mutation<ApiResponse<{ accessToken: string }>, void>({
@@ -215,6 +229,7 @@ export const {
   useGetUserByEmailQuery,
   useGetUserByPhoneQuery,
   useUpdateUserMutation,
+  useToggleStatusChangeMutation,
   useAddAddressMutation,
   useRemoveAddressMutation,
   useSetDefaultAddressMutation,

@@ -6,10 +6,13 @@ import { useModalContext } from "@/app/context/QuickViewModalContext";
 
 import Link from "next/link";
 import Image from "next/image";
-import { Eye, Heart } from "lucide-react";
+import { Eye, Heart, Star } from "lucide-react";
+import { useAppDispatch } from "@/redux/hook";
+import { addToWishlist } from "@/redux/features/wishListsSlice";
 
 const SingleListItem = ({ item }: any) => {
   const { openModal } = useModalContext();
+  const dispatch = useAppDispatch();
 
   // update the QuickView state
   const handleQuickViewUpdate = () => {};
@@ -17,7 +20,18 @@ const SingleListItem = ({ item }: any) => {
   // add to cart
   const handleAddToCart = () => {};
 
-  const handleItemToWishList = () => {};
+  const handleItemToWishList = (item: any) => {
+    const data = {
+      id: item.id,
+      title: item.title,
+      price: item.discountedPrice,
+      image: item.images.thumbnail,
+      slug: item.slug,
+      inStock: item.stock > 0,
+    };
+
+    dispatch(addToWishlist(data));
+  };
 
   return (
     <div className="group rounded-lg bg-white dark:bg-dark-2 shadow-xl relative">
@@ -55,47 +69,25 @@ const SingleListItem = ({ item }: any) => {
           </div>
 
           <div className="flex items-center gap-2.5 mb-2">
-            <div className="flex items-center gap-1">
-              <Image
-                src="/images/icons/icon-star.svg"
-                alt="star icon"
-                width={15}
-                height={15}
-              />
-              <Image
-                src="/images/icons/icon-star.svg"
-                alt="star icon"
-                width={15}
-                height={15}
-              />
-              <Image
-                src="/images/icons/icon-star.svg"
-                alt="star icon"
-                width={15}
-                height={15}
-              />
-              <Image
-                src="/images/icons/icon-star.svg"
-                alt="star icon"
-                width={15}
-                height={15}
-              />
-              <Image
-                src="/images/icons/icon-star.svg"
-                alt="star icon"
-                width={15}
-                height={15}
-              />
+            {/* Rating */}
+            <div className="flex items-center gap-1.5 mb-3">
+              <div className="flex items-center gap-0.5">
+                {[...Array(5)].map((_, i) => (
+                  <Star
+                    key={i}
+                    className={`w-3 h-3 sm:w-4 sm:h-4 ${i < item.rating ? "fill-yellow-400 text-yellow" : "text-gray-6"}`}
+                  />
+                ))}
+              </div>
+              <span className="text-sm text-gray-5">({0})</span>
             </div>
-
-            <p className="text-custom-sm">({item.reviews | 0})</p>
           </div>
         </div>
       </div>
       {/* Hover Action Buttons */}
       <div className="absolute right-5 top-3 flex flex-col gap-2 transform   transition-all duration-300">
         <button
-          // onClick={() => handleItemToWishList(item)}
+          onClick={() => handleItemToWishList(item)}
           className="w-8 h-8 sm:w-9 sm:h-9 bg-white dark:bg-dark rounded-full shadow-md flex items-center justify-center  text-pink hover:shadow-lg transition-all duration-200"
         >
           <Heart className="w-4 h-4 sm:w-5 sm:h-5" />

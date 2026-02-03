@@ -2,10 +2,10 @@ import { Download, Plus, Trash2 } from "lucide-react";
 import Link from "next/link";
 
 type Props = {
-  exportCSV: () => void;
-  exportJSON: () => void;
-  bulkDelete: (ids: string[]) => void;
-  selectedProducts: string[];
+  exportCSV?: () => void;
+  exportJSON?: () => void;
+  bulkDelete?: (ids: string[]) => void;
+  selectedProducts?: string[];
 };
 
 export default function DataTableActions({

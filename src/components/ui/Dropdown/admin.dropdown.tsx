@@ -39,8 +39,6 @@ export default function AdminDropDown({ setIsOpen, isOpen }) {
   const { data, isLoading, error } = useGetMeQuery(token);
   const me = data?.data;
 
-  console.log(me);
-
   return (
     <div onClick={() => setIsOpen(!isOpen)} className="relative cursor-pointer">
       <div>
@@ -49,7 +47,7 @@ export default function AdminDropDown({ setIsOpen, isOpen }) {
           width={100}
           className="w-10 h-10 rounded-full"
           src={me?.avatar?.url || "/demo_male.png"}
-          alt={me?.name}
+          alt={me?.name || "User"}
         />
       </div>
       <div
