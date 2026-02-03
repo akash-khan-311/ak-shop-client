@@ -49,7 +49,7 @@ const Signin = () => {
     try {
       const res = await login(loginInfo).unwrap();
 
-      console.log(res);
+      console.log("this is login res", res);
       if (res.data.accessToken) {
         const user = verifyToken(res.data.accessToken);
 
@@ -67,7 +67,7 @@ const Signin = () => {
           sound: true,
         });
       }
-      console.log(error);
+
       toast.error(error.data.message);
     }
   };

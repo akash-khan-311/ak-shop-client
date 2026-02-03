@@ -122,9 +122,9 @@ export default function AllUserList() {
     <div className="">
       <div className="">
         <DashboardPageHeader
-          pathnames={["Category", "All Category"]}
-          title="All Category"
-          description="All Category Listing Here"
+          pathnames={["Users", "All Users"]}
+          title="All Users"
+          description="All Users Listing Here"
         />
 
         {/* Filters */}

@@ -44,8 +44,8 @@ export default function DataTableFilters({
               onChange={(e) => handleChange(filter.key, e.target.value)}
               className="p-4 dark:bg-gray-7 bg-gray-3 w-full rounded focus:ring-2 focus:ring-green-500"
             >
-              {filter.options?.map((opt) => (
-                <option key={opt} value={opt}>
+              {filter.options?.map((opt, indx) => (
+                <option key={indx} value={opt}>
                   {opt}
                 </option>
               ))}

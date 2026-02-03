@@ -6,32 +6,15 @@ import {
   MapPin,
   TicketCheck,
   CreditCard,
-  Package,
-  PlusSquare,
-  ShoppingCart,
-  BarChart,
-  BadgePercent,
-  Wallet,
   Users,
   Star,
   Settings,
-  Shield,
-  Database,
-  Activity,
-  DollarSign,
-  Banknote,
-  Boxes,
   TicketPercent,
   Store,
   Box,
-  Settings2,
   Ticket,
   ListChecks,
   Blocks,
-  BarChart3,
-  Megaphone,
-  FileText,
-  LifeBuoy,
 } from "lucide-react";
 
 export const userMenuItems = [
@@ -49,13 +32,8 @@ export const adminMenusItems = [
   /* ---------------- USERS ---------------- */
   {
     name: "Users",
+    href: "/admin/users",
     icon: Users,
-    subItems: [
-      { name: "All Users", path: "/admin/users" },
-      { name: "Vendors", path: "/admin/vendors" },
-      { name: "Admins", path: "/admin/admins" },
-      { name: "Blocked Users", path: "/admin/users/blocked" },
-    ],
   },
 
   {
