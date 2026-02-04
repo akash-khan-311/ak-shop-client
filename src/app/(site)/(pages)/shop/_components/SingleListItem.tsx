@@ -6,19 +6,21 @@ import { useModalContext } from "@/app/context/QuickViewModalContext";
 
 import Link from "next/link";
 import Image from "next/image";
-import { Eye, Heart, Star } from "lucide-react";
+import { Heart, Star } from "lucide-react";
 import { useAppDispatch } from "@/redux/hook";
 import { addToWishlist } from "@/redux/features/wishListsSlice";
+import { useAddToCartMutation } from "@/redux/features/cart/cartApi";
+import AddToCartButton from "./AddToCartButton";
 
 const SingleListItem = ({ item }: any) => {
   const { openModal } = useModalContext();
+  const [addToCart] = useAddToCartMutation();
   const dispatch = useAppDispatch();
 
   // update the QuickView state
   const handleQuickViewUpdate = () => {};
 
   // add to cart
-  const handleAddToCart = () => {};
 
   const handleItemToWishList = (item: any) => {
     const data = {
@@ -33,6 +35,12 @@ const SingleListItem = ({ item }: any) => {
     dispatch(addToWishlist(data));
   };
 
+  const handleAddToCart = async (id: string) => {
+    try {
+      console.log("this is product id", id);
+    } catch (error) {}
+  };
+
   return (
     <div className="group rounded-lg bg-white dark:bg-dark-2 shadow-xl relative">
       <div className="flex">
@@ -45,12 +53,7 @@ const SingleListItem = ({ item }: any) => {
               height={250}
               className="w-full h-full object-contain hover:scale-110 ease-in duration-300"
             />
-            <button
-              onClick={() => handleAddToCart()}
-              className="flex justify-center w-full font-medium text-custom-sm py-[7px] px-5 rounded-[5px] mt-10 bg-pink text-white ease-out duration-200 hover:bg-pink-dark"
-            >
-              Add to cart
-            </button>
+            <AddToCartButton addToCart={handleAddToCart} product={item} />
           </div>
         </div>
 

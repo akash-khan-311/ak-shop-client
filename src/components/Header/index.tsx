@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import CustomSelect from "./CustomSelect";
 import { menuData } from "./menuData";
 import Dropdown from "./Dropdown";
 import { useCartModalContext } from "@/app/context/CartSidebarModalContext";
@@ -9,7 +8,6 @@ import { Fade as Hamburger } from "hamburger-react";
 import { PhoneCall, User, ShoppingCart, Search } from "lucide-react";
 import Logo from "../Logo";
 import NavbarRight from "./NavbarRight";
-
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useAppSelector } from "@/redux/hook";
@@ -19,16 +17,15 @@ import {
   selectCurrentUser,
 } from "@/redux/features/auth/authSlice";
 import UserDropDown from "../ui/Dropdown/user.dropdown";
-import { useGetMeQuery } from "@/redux/features/auth/authApi";
 import { usePathname } from "next/navigation";
-import VendorDropDown from "../ui/Dropdown/admin.dropdown";
-import { TCategory } from "@/types/category";
+
 import Container from "../ui/Container";
-import Logout from "../ui/Auth/Logout";
+
 import AppThemeSwitch from "../ui/ThemeSwitch";
 
 import { USER_ROLE } from "@/constant";
 import AdminDropDown from "../ui/Dropdown/admin.dropdown";
+import { useGetMyCartQuery } from "@/redux/features/cart/cartApi";
 
 const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -39,7 +36,9 @@ const Header = () => {
   const token = useAppSelector(selectCurrentToken);
   const user = useAppSelector(selectCurrentUser);
   const [isOpen, setIsOpen] = useState(false);
-
+  const { data: cartData } = useGetMyCartQuery(undefined);
+  const cart = cartData?.data || null;
+  const cartItems = cart?.items;
   const pathname = usePathname();
   const handleOpenCartModal = () => {
     openCartModal();
@@ -170,7 +169,7 @@ const Header = () => {
                     <ShoppingCart color="#A3004C" size={25} />
 
                     <span className="flex items-center justify-center font-medium text-2xs absolute -right-2 -top-2.5 bg-pink w-4.5 h-4.5 rounded-full text-white">
-                      {/* {product.length} */}
+                      {cartItems?.length}
                     </span>
                   </span>
 

@@ -15,9 +15,13 @@ import {
 } from "lucide-react";
 import { useAppDispatch } from "@/redux/hook";
 import { addToWishlist } from "@/redux/features/wishListsSlice";
+import AddToCartButton from "./AddToCartButton";
+import { useAddToCartMutation } from "@/redux/features/cart/cartApi";
+import toast from "react-hot-toast";
 
 const SingleGridItem = ({ item }: any) => {
   const { openModal } = useModalContext();
+  const [addToCart] = useAddToCartMutation();
   const dispatch = useAppDispatch();
   // update the QuickView state
   const handleQuickViewUpdate = () => {
@@ -25,7 +29,15 @@ const SingleGridItem = ({ item }: any) => {
   };
 
   // add to cart
-  const handleAddToCart = () => {};
+  const handleAddToCart = async (id: string) => {
+    try {
+      const result = await addToCart({ productId: id, quantity: 1 }).unwrap();
+      console.log("this is result from add to cart", result);
+      if (result?.success) toast.success(result?.message);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleItemToWishList = (item: any) => {
     const data = {
@@ -98,10 +110,11 @@ const SingleGridItem = ({ item }: any) => {
         </div>
 
         {/* Add to Cart Button */}
-        <button className="w-full bg-pink text-white py-2 rounded-md text-xs sm:text-sm font-medium hover:bg-pink-dark transition-all duration-300 flex items-center justify-center gap-2">
+        {/* <button className="w-full bg-pink text-white py-2 rounded-md text-xs sm:text-sm font-medium hover:bg-pink-dark transition-all duration-300 flex items-center justify-center gap-2">
           <ShoppingCart className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           Add to Cart
-        </button>
+        </button> */}
+        <AddToCartButton addToCart={handleAddToCart} product={item} />
       </div>
     </div>
   );

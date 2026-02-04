@@ -33,7 +33,7 @@ const baseQueryWithRefreshToken: BaseQueryFn<
 
   if (result?.error?.status === 400) {
     const errorData = result.error.data as { message?: string };
-    console.log('this is result from redux', result)
+    console.log("this is result from redux", result);
     if (errorData?.message) {
       toast.error(errorData.message);
     }
@@ -49,7 +49,7 @@ const baseQueryWithRefreshToken: BaseQueryFn<
 
     if (data?.accessToken) {
       const user = (api.getState() as RootState).auth.user;
-      console.log("this is user from redux base api", user)
+      console.log("this is user from redux base api", user);
       api.dispatch(setUser({ user, token: data?.accessToken }));
       Cookies.set("accessToken", data?.accessToken);
 
@@ -64,6 +64,20 @@ const baseQueryWithRefreshToken: BaseQueryFn<
 export const baseApi = createApi({
   reducerPath: "baseApi",
   baseQuery: baseQueryWithRefreshToken,
-  tagTypes: ["Me", "User", "category", 'subcategory', 'products', 'SpecTemplate', 'userCategory', 'Review', 'ReviewSummary', "Coupon", "CouponList", "CouponApply"],
+  tagTypes: [
+    "Me",
+    "User",
+    "category",
+    "subcategory",
+    "products",
+    "SpecTemplate",
+    "userCategory",
+    "Review",
+    "ReviewSummary",
+    "Coupon",
+    "CouponList",
+    "CouponApply",
+    "cart",
+  ],
   endpoints: () => ({}),
 });
