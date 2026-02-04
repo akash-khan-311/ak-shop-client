@@ -1,7 +1,6 @@
 import { baseApi } from "@/redux/api/baseApi";
 import { TTemplate } from "@/types/specTemplate";
 
-
 const specTemplateApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getEffectiveTemplate: builder.query<
@@ -11,76 +10,82 @@ const specTemplateApi = baseApi.injectEndpoints({
       query: ({ subcategorySlug, adminId }) => ({
         url: `/spec-template/effective/${subcategorySlug}${adminId ? `?adminId=${adminId}` : ""}`,
         method: "GET",
-
-
       }),
       providesTags: ["category"],
     }),
     getTemplates: builder.query({
       query: ({ token, adminId }) => {
         return {
-          url: '/spec-template',
-          method: 'GET',
+          url: "/spec-template",
+          method: "GET",
           headers: {
             Authorization: `${token}`,
           },
-          params: adminId ? { adminId } : undefined
-        }
+          params: adminId ? { adminId } : undefined,
+        };
       },
-      providesTags: ['SpecTemplate']
+      providesTags: ["SpecTemplate"],
+    }),
+    getTemplateForAdmin: builder.query({
+      query: () => {
+        return {
+          url: "/spec-template/admin",
+          method: "GET",
+        };
+      },
+      providesTags: ["SpecTemplate"],
     }),
 
     getTemplateById: builder.query({
       query: ({ token, id }) => {
         return {
           url: `/spec-template/${id}`,
-          method: 'GET',
+          method: "GET",
           headers: {
             Authorization: `${token}`,
-          }
-        }
+          },
+        };
       },
-      providesTags: ['SpecTemplate']
+      providesTags: ["SpecTemplate"],
     }),
     updateTemplate: builder.mutation({
       query: ({ token, id, body }) => {
         return {
           url: `/spec-template/${id}`,
-          method: 'PATCH',
+          method: "PATCH",
           body,
           headers: {
             Authorization: `${token}`,
-          }
-        }
+          },
+        };
       },
-      invalidatesTags: ['SpecTemplate']
+      invalidatesTags: ["SpecTemplate"],
     }),
-    createSpecTemplate: builder.mutation<any, { token: string, body: any }>({
+    createSpecTemplate: builder.mutation<any, { token: string; body: any }>({
       query: ({ token, body }) => {
         return {
-          url: '/spec-template/create',
-          method: 'POST',
+          url: "/spec-template/create",
+          method: "POST",
           body,
           headers: {
             Authorization: `${token}`,
-          }
-        }
+          },
+        };
       },
-      invalidatesTags: ['SpecTemplate']
+      invalidatesTags: ["SpecTemplate"],
     }),
     deleteSpecTemplate: builder.mutation({
       query: ({ ids, token }) => {
         return {
           url: `/spec-template/delete`,
-          method: 'DELETE',
+          method: "DELETE",
           body: { ids },
           headers: {
-            Authorization: `${token}`
-          }
-        }
-
+            Authorization: `${token}`,
+          },
+        };
       },
-      invalidatesTags: ['SpecTemplate']
+      invalidatesTags: ["SpecTemplate"],
     }),
     toggleTemplatePublished: builder.mutation({
       query: (data) => ({
@@ -96,15 +101,14 @@ const specTemplateApi = baseApi.injectEndpoints({
       invalidatesTags: ["SpecTemplate"],
     }),
   }),
-
 });
 export const {
   useGetTemplatesQuery,
+  useGetTemplateForAdminQuery,
   useGetTemplateByIdQuery,
   useUpdateTemplateMutation,
   useGetEffectiveTemplateQuery,
   useCreateSpecTemplateMutation,
   useToggleTemplatePublishedMutation,
-  useDeleteSpecTemplateMutation
-
+  useDeleteSpecTemplateMutation,
 } = specTemplateApi;

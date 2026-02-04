@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/tooltip";
 import Image from "next/image";
 import {
+  useDeleteUserMutation,
   useGetAllUsersQuery,
   useToggleStatusChangeMutation,
 } from "@/redux/features/auth/authApi";
@@ -29,6 +30,7 @@ import { useMemo, useState } from "react";
 import { SquarePen, Trash2 } from "lucide-react";
 import { USER_ROLE } from "@/constant";
 import toast from "react-hot-toast";
+import { ConfirmationModal } from "@/components/ui/confirmationToast";
 
 const statusStyles = {
   active: "bg-green/60 text-white",
@@ -40,8 +42,10 @@ export default function AllUserList() {
   const token: string | undefined = useAppSelector(selectCurrentToken);
   const [toggleStatus, { isLoading: statusLoading }] =
     useToggleStatusChangeMutation();
+  const [deleteUser, { isLoading: deleteLoading }] = useDeleteUserMutation();
   const [isOpen, setIsOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const [idToDelete, setIdToDelete] = useState<number>(null);
   const { data, isLoading } = useGetAllUsersQuery(
     token ? undefined : skipToken,
   );
@@ -118,6 +122,24 @@ export default function AllUserList() {
       toast.error("Failed to toggle published status");
     }
   };
+
+  const confirmDelete = (id: number) => {
+    setModalOpen(true);
+    setIdToDelete(id);
+  };
+
+  const handleDeleteConfirmed = async () => {
+    try {
+      const result = await deleteUser({ id: idToDelete }).unwrap();
+
+      toast.success(result.message);
+    } catch (err: any) {
+      toast.error(err?.data?.message || "Delete failed");
+    } finally {
+      setModalOpen(false);
+      setIdToDelete(null);
+    }
+  };
   return (
     <div className="">
       <div className="">
@@ -142,9 +164,9 @@ export default function AllUserList() {
         />
 
         {/* Table */}
-        <div className="bg-gray-800 rounded-lg overflow-hidden">
-          <div className="relative w-full border overflow-x-auto scrollbar-thin scrollbar-thumb-gray-3">
-            <Table>
+        <div className="rounded-lg overflow-hidden shadow-xl">
+          <div className="relative w-full overflow-x-auto scrollbar-thin scrollbar-thumb-gray-3">
+            <Table className="">
               {/* Table Header */}
               <TableHeader>
                 <TableRow>
@@ -183,7 +205,7 @@ export default function AllUserList() {
                 ) : (
                   paginatedUsers?.map((user: any) => (
                     <TableRow
-                      className={`hover:bg-muted/50  "bg-muted/50"}`}
+                      className={`hover:bg-muted/90 dark:hover:bg-muted/50  "dark:bg-dark dark:dark:bg-[#000] bg-white`}
                       key={user._id}
                     >
                       <TableCell>
@@ -276,9 +298,9 @@ export default function AllUserList() {
                             <Tooltip>
                               <TooltipTrigger asChild>
                                 <button
+                                  onClick={() => confirmDelete(user.id)}
                                   className="disabled:opacity-50"
                                   disabled={user.role === USER_ROLE.superAdmin}
-                                  //   onClick={() => confirmDelete([category._id])}
                                 >
                                   <Trash2 size={20} />
                                 </button>
@@ -312,24 +334,15 @@ export default function AllUserList() {
           />
         </div>
       </div>
-      {/* {selectedCategoryId && (
-        <EditDrawer
-          type="category"
-          itemId={selectedCategoryId}
-          isOpen={drawerOpen}
-          setIsOpen={setDrawerOpen}
-          title="Edit Category"
-        />
-      )} */}
-      {/* {modalOpen && (
+      {modalOpen && (
         <ConfirmationModal
-          isLoading={isDeleteLoading}
+          onCancel={() => setModalOpen(false)}
+          isLoading={deleteLoading}
           title={`Are You Sure?`}
           message="This action cannot be undone. This will permanently delete the category and its associated data from the database."
-          onCancel={() => setModalOpen(false)}
           onConfirm={handleDeleteConfirmed}
         />
-      )} */}
+      )}
     </div>
   );
 }

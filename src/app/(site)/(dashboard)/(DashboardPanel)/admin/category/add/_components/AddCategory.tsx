@@ -101,7 +101,7 @@ const CreateCategory = () => {
         description="Here can create a new Category"
       />
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-        <div className="dark:bg-dark bg-gray-3 p-6 rounded-xl">
+        <div className="dark:bg-dark bg-white p-6 rounded-xl">
           <h2 className="text-xl md:text-2xl border-b dark:border-gray-6 border-gray-5 pb-4">
             Create Category
           </h2>
@@ -130,8 +130,8 @@ const CreateCategory = () => {
             />
           </div>
 
-          <div className="dark:bg-dark bg-gray-3 p-6 rounded-xl mt-10">
-            <h2 className="text-xl md:text-2xl border-b dark:border-gray-6 border-gray-5 pb-4">
+          <div className="dark:bg-dark bg-gray-2 p-6 rounded-xl mt-10">
+            <h2 className="text-xl md:text-2xl  dark:border-gray-6 border-gray-5 pb-4">
               Product Images
             </h2>
             <SingleImageUploadField

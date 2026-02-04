@@ -35,7 +35,7 @@ import Image from "next/image";
 const tableHeading = ["Sub Category Name", "Category", "Published", "Actions"];
 export default function SubCategoryLists() {
   const token = useAppSelector(selectCurrentToken);
-  const { data } = useGetSubCategoryQuery(token);
+  const { data, isLoading } = useGetSubCategoryQuery(token);
   const { data: categoryData } = useGetAllCategoryForAdminQuery(token);
   const [deleteSubCategory] = useDeleteSubCategoryMutation();
   const allCategories = categoryData?.data;
@@ -233,8 +233,8 @@ export default function SubCategoryLists() {
           })
         }
       />
-      <div className="bg-gray-800 rounded-lg overflow-hidden">
-        <div className="overflow-x-auto">
+      <div className="rounded-lg overflow-hidden shadow-xl">
+        <div className="relative w-full overflow-x-auto scrollbar-thin scrollbar-thumb-gray-3">
           <Table>
             {/* Table Header */}
             <TableHeader>
@@ -262,91 +262,107 @@ export default function SubCategoryLists() {
             </TableHeader>
 
             {/* Table Body */}
-            <TableBody className="dark:bg-[#000] bg-gray-2">
-              {paginatedSubCategory?.map((subCategory: any) => (
-                <TableRow
-                  className={`hover:bg-muted/50 ${selectedCategories.includes(subCategory._id) && "bg-muted/50"}`}
-                  key={subCategory._id}
-                >
-                  <TableCell>
-                    <div className="flex items-center gap-x-5">
-                      <div className="flex  items-center gap-x-2 rounded-full">
-                        <input
-                          type="checkbox"
-                          checked={selectedCategories.includes(subCategory._id)}
-                          onChange={() => toggleSelect(subCategory._id)}
-                          className="w-4 h-4 cursor-pointer"
-                        />
-                        <div className="flex items-center gap-3">
-                          <div className="p-2 h-12 w-12 rounded-full bg-gray-4">
-                            <Image
-                              className="w-full h-full rounded-full"
-                              src={subCategory?.image?.url}
-                              width={50}
-                              height={50}
-                              alt={subCategory.name}
-                            />
-                          </div>
-                          <h2 className="text-base">{subCategory.name}</h2>
-                        </div>
-                      </div>
-                    </div>
-                  </TableCell>
-
-                  <TableCell>
-                    <div className="flex items-center gap-x-5">
-                      <div className="flex  items-center gap-x-2 rounded-full">
-                        <h2 className="text-base">
-                          {subCategory.categoryName}
-                        </h2>
-                      </div>
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    {subCategory.published ? (
-                      <span className="text-green bg-green/20 p-2 rounded-full">
-                        Published
-                      </span>
-                    ) : (
-                      <span className="text-red bg-red/20 p-2 rounded-full">
-                        Unpublished
-                      </span>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex justify-start items-center gap-x-5">
-                      <TooltipProvider delayDuration={1}>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <button
-                              onClick={() => handleEditClick(subCategory._id)}
-                            >
-                              <SquarePen size={20} />
-                            </button>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>Edit Sub Category</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                      <TooltipProvider delayDuration={1}>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <button
-                              onClick={() => confirmDelete([subCategory._id])}
-                            >
-                              <Trash2 size={20} />
-                            </button>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p>Delete Sub Category</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    </div>
+            <TableBody className="dark:bg-[#000] bg-white">
+              {isLoading ? (
+                <TableRow>
+                  <TableCell colSpan={4} className="h-24 text-center text-base">
+                    Loading...
                   </TableCell>
                 </TableRow>
-              ))}
+              ) : paginatedSubCategory.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={4} className="h-24 text-center text-base">
+                    No Sub Category found.
+                  </TableCell>
+                </TableRow>
+              ) : (
+                paginatedSubCategory?.map((subCategory: any) => (
+                  <TableRow
+                    className={`dark:hover:bg-muted/50 hover:bg-muted/50 dark:bg-[#000] bg-white ${selectedCategories.includes(subCategory._id) && "dark:bg-muted/50 bg-muted/50"}`}
+                    key={subCategory._id}
+                  >
+                    <TableCell>
+                      <div className="flex items-center gap-x-5">
+                        <div className="flex  items-center gap-x-2 rounded-full">
+                          <input
+                            type="checkbox"
+                            checked={selectedCategories.includes(
+                              subCategory._id,
+                            )}
+                            onChange={() => toggleSelect(subCategory._id)}
+                            className="w-4 h-4 cursor-pointer"
+                          />
+                          <div className="flex items-center gap-3">
+                            <div className="p-2 h-12 w-12 rounded-full bg-gray-4">
+                              <Image
+                                className="w-full h-full rounded-full"
+                                src={subCategory?.image?.url}
+                                width={50}
+                                height={50}
+                                alt={subCategory.name}
+                              />
+                            </div>
+                            <h2 className="text-base">{subCategory.name}</h2>
+                          </div>
+                        </div>
+                      </div>
+                    </TableCell>
+
+                    <TableCell>
+                      <div className="flex items-center gap-x-5">
+                        <div className="flex  items-center gap-x-2 rounded-full">
+                          <h2 className="text-base">
+                            {subCategory.categoryName}
+                          </h2>
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      {subCategory.published ? (
+                        <span className="text-green bg-green/20 p-2 rounded-full">
+                          Published
+                        </span>
+                      ) : (
+                        <span className="text-red bg-red/20 p-2 rounded-full">
+                          Unpublished
+                        </span>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex justify-start items-center gap-x-5">
+                        <TooltipProvider delayDuration={1}>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <button
+                                onClick={() => handleEditClick(subCategory._id)}
+                              >
+                                <SquarePen size={20} />
+                              </button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Edit Sub Category</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                        <TooltipProvider delayDuration={1}>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <button
+                                onClick={() => confirmDelete([subCategory._id])}
+                              >
+                                <Trash2 size={20} />
+                              </button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Delete Sub Category</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </div>

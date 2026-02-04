@@ -234,8 +234,8 @@ export default function AllCategoryLists() {
         />
 
         {/* Table */}
-        <div className="bg-gray-800 rounded-lg overflow-hidden">
-          <div className="relative w-full border overflow-x-auto scrollbar-thin scrollbar-thumb-gray-3">
+        <div className="rounded-lg overflow-hidden shadow-xl">
+          <div className="relative w-full overflow-x-auto scrollbar-thin scrollbar-thumb-gray-3">
             <Table>
               {/* Table Header */}
               <TableHeader>
@@ -285,7 +285,7 @@ export default function AllCategoryLists() {
                 ) : (
                   paginatedCategory?.map((category: TCategory) => (
                     <TableRow
-                      className={`hover:bg-muted/50 ${selectedCategories.includes(category._id) && "bg-muted/50"}`}
+                      className={`dark:hover:bg-muted/50 hover:bg-muted/50 dark:bg-dark-2 bg-white ${selectedCategories.includes(category._id) && "dark:bg-muted/50 bg-muted/50"}`}
                       key={category._id}
                     >
                       <TableCell>

@@ -9,8 +9,6 @@ import {
 import { setUser, logout } from "@/redux/features/auth/authSlice";
 import { API_BASE } from "@/data";
 
-
-
 const authApi = baseApi.injectEndpoints({
   overrideExisting: true,
   endpoints: (builder) => ({
@@ -42,7 +40,6 @@ const authApi = baseApi.injectEndpoints({
     }),
 
     getMe: builder.query<ApiResponse<IUser>, string | void>({
-
       query: (token) => ({
         url: "/users/me",
         method: "GET",
@@ -59,7 +56,7 @@ const authApi = baseApi.injectEndpoints({
         method: "GET",
         headers: {
           Authorization: `${token}`,
-        }
+        },
       }),
       providesTags: ["User"],
     }),
@@ -68,7 +65,6 @@ const authApi = baseApi.injectEndpoints({
       query: (id) => ({
         url: `/users/${id}`,
         method: "GET",
-
       }),
       providesTags: (_res, _err, id) => [{ type: "User", id }],
     }),
@@ -99,6 +95,13 @@ const authApi = baseApi.injectEndpoints({
         body,
       }),
       invalidatesTags: (_res, _err, { id }) => [{ type: "User", id }, "Me"],
+    }),
+    deleteUser: builder.mutation({
+      query: ({ id }) => ({
+        url: `/users/delete/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["User"],
     }),
 
     //---------------- Address----------------
@@ -136,7 +139,6 @@ const authApi = baseApi.injectEndpoints({
       invalidatesTags: (_res, _err, { id }) => [{ type: "User", id }, "Me"],
     }),
 
-
     //---------------- Avatar----------------
     updateAvatar: builder.mutation<
       ApiResponse<IUser>,
@@ -171,51 +173,52 @@ const authApi = baseApi.injectEndpoints({
     toggleStatusChange: builder.mutation({
       query: (data) => ({
         url: `/users/status/${data.id}`,
-        method: 'PATCH',
+        method: "PATCH",
         headers: {
           Authorization: `${data.token}`,
-        }
+        },
       }),
-      invalidatesTags: ['User']
+      invalidatesTags: ["User"],
     }),
 
+    oauthFinalize: builder.mutation<ApiResponse<{ accessToken: string }>, void>(
+      {
+        query: () => ({
+          url: "/auth/refresh-token",
+          method: "POST",
+        }),
+        async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
+          try {
+            const refreshRes = await queryFulfilled;
 
-    oauthFinalize: builder.mutation<ApiResponse<{ accessToken: string }>, void>({
-      query: () => ({
-        url: "/auth/refresh-token",
-        method: "POST",
-      }),
-      async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
-        try {
-          const refreshRes = await queryFulfilled;
+            // adjust this line if your response shape differs
+            const accessToken = refreshRes.data?.data?.accessToken;
 
-          // adjust this line if your response shape differs
-          const accessToken = refreshRes.data?.data?.accessToken;
+            if (!accessToken) {
+              dispatch(logout());
+              return;
+            }
 
-          if (!accessToken) {
+            // fetch profile (cookie+token both supported)
+            const meRes = await fetch(`${API_BASE}/users/me`, {
+              method: "GET",
+              credentials: "include",
+              headers: { Authorization: `${accessToken}` },
+            }).then((r) => r.json());
+
+            if (meRes?.success) {
+              dispatch(setUser({ user: meRes?.data, token: accessToken }));
+              // optional: trigger refetch for Me tagged queries
+              dispatch(baseApi.util.invalidateTags(["Me"]));
+            } else {
+              dispatch(logout());
+            }
+          } catch {
             dispatch(logout());
-            return;
           }
-
-          // fetch profile (cookie+token both supported)
-          const meRes = await fetch(`${API_BASE}/users/me`, {
-            method: "GET",
-            credentials: "include",
-            headers: { Authorization: `${accessToken}` },
-          }).then((r) => r.json());
-
-          if (meRes?.success) {
-            dispatch(setUser({ user: meRes?.data, token: accessToken }));
-            // optional: trigger refetch for Me tagged queries
-            dispatch(baseApi.util.invalidateTags(["Me"]));
-          } else {
-            dispatch(logout());
-          }
-        } catch {
-          dispatch(logout());
-        }
+        },
       },
-    }),
+    ),
   }),
 });
 
@@ -234,6 +237,7 @@ export const {
   useRemoveAddressMutation,
   useSetDefaultAddressMutation,
   useUpdateAvatarMutation,
+  useDeleteUserMutation,
 
   // ✅ OAuth
   useGetGoogleAuthUrlQuery,

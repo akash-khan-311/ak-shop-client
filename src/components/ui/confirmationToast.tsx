@@ -6,7 +6,7 @@ interface ConfirmationModalProps {
   message: string;
   confirmText?: string;
   cancelText?: string;
-  onConfirm: () => Promise<void> | void;
+  onConfirm: any;
   onCancel?: () => void;
   children?: ReactNode; // optional icon or element
 }

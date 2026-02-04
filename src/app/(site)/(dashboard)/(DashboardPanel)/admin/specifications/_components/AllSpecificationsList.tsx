@@ -26,6 +26,7 @@ import {
 import { useGetAllCategoryForAdminQuery } from "@/redux/features/category/categoryApi";
 import {
   useDeleteSpecTemplateMutation,
+  useGetTemplateForAdminQuery,
   useGetTemplatesQuery,
   useToggleTemplatePublishedMutation,
 } from "@/redux/features/specTemplate/specTemplate";
@@ -57,8 +58,8 @@ export default function AllSpecificationsList() {
     () => categoriesData?.data || [],
     [categoriesData],
   );
-  const userId = user?.userId;
-  const { data, isLoading } = useGetTemplatesQuery(
+  const userId = user?.id;
+  const { data, isLoading } = useGetTemplateForAdminQuery(
     { token, userId },
     { skip: !token },
   );
@@ -251,8 +252,8 @@ export default function AllSpecificationsList() {
         }
       />
       {/* Table */}
-      <div className="bg-gray-800 rounded-lg overflow-hidden">
-        <div className="relative w-full border overflow-x-auto scrollbar-thin scrollbar-thumb-gray-3">
+      <div className="rounded-lg overflow-hidden shadow-xl">
+        <div className="relative w-full overflow-x-auto scrollbar-thin scrollbar-thumb-gray-3">
           <Table>
             {/* Header */}
             <TableHeader>
@@ -280,7 +281,7 @@ export default function AllSpecificationsList() {
             </TableHeader>
 
             {/* Body */}
-            <TableBody className="dark:bg-[#000] bg-gray-2">
+            <TableBody className="dark:bg-[#000] bg-white">
               {isLoading ? (
                 <TableRow>
                   <TableCell colSpan={7} className="h-24 text-center text-base">
@@ -297,7 +298,7 @@ export default function AllSpecificationsList() {
                 paginatedTemplates.map((t: any) => (
                   <TableRow
                     key={t._id}
-                    className={`hover:bg-muted/50 ${selectedTemplates.includes(t._id) && "bg-muted/50"}`}
+                    className={`dark:hover:bg-muted/50 hover:bg-muted/50 dark:bg-[#000] bg-white ${selectedTemplates.includes(t._id) && "dark:bg-muted/50 bg-muted/50"}`}
                   >
                     {/* Category */}
                     <TableCell>
@@ -326,9 +327,12 @@ export default function AllSpecificationsList() {
 
                     {/* Added by */}
                     <TableCell>
-                      <span className="font-medium capitalize">
-                        {userDetails?.name} {userData?.lastName}
-                      </span>
+                      <div className="font-medium  flex flex-col">
+                        <span className="capitalize">{userDetails?.name}</span>
+                        <span className="text-gray-5">
+                          {userDetails?.email}
+                        </span>
+                      </div>
                     </TableCell>
                     <TableCell>
                       <label className="relative inline-block">

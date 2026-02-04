@@ -17,7 +17,7 @@ export default function SingleImageUploadField({
 }: Props) {
   const [preview, setPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  console.log(existingImage)
+  console.log(existingImage);
   useEffect(() => {
     if (existingImage) {
       setPreview(existingImage);
@@ -50,7 +50,7 @@ export default function SingleImageUploadField({
         onDragOver={(e) => e.preventDefault()}
         onDrop={handleDrop}
       >
-        <div className="flex flex-col items-center text-gray-4">
+        <div className="flex flex-col items-center dark:text-gray-4 text-gray-5">
           <Upload />
           <p>Drag image or click to upload</p>
           <p className="text-sm text-gray-400">(JPEG, PNG, WEBP only)</p>

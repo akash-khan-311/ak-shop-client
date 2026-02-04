@@ -15,7 +15,7 @@ export default function DataTableActions({
   selectedProducts,
 }: Props) {
   return (
-    <div className="bg-white dark:bg-dark border  rounded-lg p-4 mb-4 flex flex-wrap gap-3 items-center justify-between">
+    <div className="bg-white dark:bg-dark border shadow-xl  rounded-lg p-4 mb-4 flex flex-wrap gap-3 items-center justify-between">
       <div className="flex gap-2">
         <button
           onClick={exportCSV}

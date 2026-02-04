@@ -4,9 +4,9 @@ import Image from "next/image";
 const ShippingMethod = () => {
   const [shippingMethod, setShippingMethod] = useState("free");
   return (
-    <div className="bg-white shadow-1 rounded-[10px] mt-7.5">
+    <div className="bg-white dark:bg-dark-2 shadow-1 rounded-[10px] mt-7.5">
       <div className="border-b border-gray-3 py-5 px-4 sm:px-8.5">
-        <h3 className="font-medium text-xl text-dark">Shipping Method</h3>
+        <h3 className="font-medium text-xl ">Shipping Method</h3>
       </div>
 
       <div className="p-4 sm:p-8.5">
@@ -27,7 +27,7 @@ const ShippingMethod = () => {
               <div
                 className={`flex h-4 w-4 items-center justify-center rounded-full ${
                   shippingMethod === "free"
-                    ? "border-4 border-blue"
+                    ? "border-4 border-pink"
                     : "border border-gray-4"
                 }`}
               ></div>
@@ -50,13 +50,13 @@ const ShippingMethod = () => {
               <div
                 className={`flex h-4 w-4 items-center justify-center rounded-full ${
                   shippingMethod === "fedex"
-                    ? "border-4 border-blue"
+                    ? "border-4 border-pink"
                     : "border border-gray-4"
                 }`}
               ></div>
             </div>
 
-            <div className="rounded-md border-[0.5px] py-3.5 px-5 ease-out duration-200 hover:bg-gray-2 hover:border-transparent hover:shadow-none">
+            <div className="rounded-md border-[0.5px] py-3.5 px-5 ease-out duration-200 bg-gray-1 text-dark-2  hover:bg-gray-2 hover:border-transparent hover:shadow-none">
               <div className="flex items-center">
                 <div className="pr-4">
                   <Image
@@ -68,7 +68,7 @@ const ShippingMethod = () => {
                 </div>
 
                 <div className="border-l border-gray-4 pl-4">
-                  <p className="font-semibold text-dark">$10.99</p>
+                  <p className="font-semibold ">$10.99</p>
                   <p className="text-custom-xs">Standard Shipping</p>
                 </div>
               </div>
@@ -90,13 +90,13 @@ const ShippingMethod = () => {
               <div
                 className={`flex h-4 w-4 items-center justify-center rounded-full ${
                   shippingMethod === "dhl"
-                    ? "border-4 border-blue"
+                    ? "border-4 border-pink"
                     : "border border-gray-4"
                 }`}
               ></div>
             </div>
 
-            <div className="rounded-md border-[0.5px] py-3.5 px-5 ease-out duration-200 hover:bg-gray-2 hover:border-transparent hover:shadow-none">
+            <div className="rounded-md border-[0.5px] py-3.5 px-5 ease-out duration-200 bg-gray-1 text-dark-2 hover:bg-gray-2 hover:border-transparent hover:shadow-none">
               <div className="flex items-center">
                 <div className="pr-4">
                   <Image
