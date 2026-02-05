@@ -21,37 +21,18 @@ const NavbarRight = ({ wishlists, user }) => {
             href="/wishlist"
             className="flex items-center gap-1.5 font-medium dark:text-white dark:hover:text-pink  text-custom-sm text-dark hover:text-pink"
           >
-            <Heart size={16} />
+            <Heart
+              size={16}
+              className={`${wishlists?.length > 0 && "text-pink fill-pink"}`}
+            />
             Wishlist
-            {wishlists.length > 0 && (
+            {wishlists?.length > 0 && (
               <span className="flex items-center justify-center font-medium text-2xs ml-1 bg-pink w-4.5 h-4.5 rounded-full text-white">
-                {wishlists.length}
+                {wishlists?.length}
               </span>
             )}
           </Link>
         </li>
-        {!user && (
-          <li className="py-4">
-            <Link
-              href="/seller"
-              className="flex items-center uppercase gap-1.5 font-medium dark:text-white dark:hover:text-pink  text-custom-sm text-dark hover:text-pink"
-            >
-              <Heart size={16} />
-              Become a Seller
-            </Link>
-          </li>
-        )}
-        {user && user?.role === USER_ROLE.user && (
-          <li className="py-4">
-            <Link
-              href="/seller"
-              className="flex items-center uppercase gap-1.5 font-medium dark:text-white dark:hover:text-pink  text-custom-sm text-dark hover:text-pink"
-            >
-              <Heart size={16} />
-              Become a Seller
-            </Link>
-          </li>
-        )}
       </ul>
     </div>
   );

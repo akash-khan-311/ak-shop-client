@@ -196,6 +196,7 @@ const authApi = baseApi.injectEndpoints({
 
             if (!accessToken) {
               dispatch(logout());
+              dispatch(baseApi.util.invalidateTags(["Me", "cart", "wishlist"]));
               return;
             }
 
@@ -208,8 +209,8 @@ const authApi = baseApi.injectEndpoints({
 
             if (meRes?.success) {
               dispatch(setUser({ user: meRes?.data, token: accessToken }));
-              // optional: trigger refetch for Me tagged queries
-              dispatch(baseApi.util.invalidateTags(["Me"]));
+              // trigger refetch for Me tagged queries
+              dispatch(baseApi.util.invalidateTags(["Me", "cart", "wishlist"]));
             } else {
               dispatch(logout());
             }

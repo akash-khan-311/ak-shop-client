@@ -7,10 +7,16 @@ import Link from "next/link";
 import EmptyCart from "./EmptyCart";
 import { CircleX } from "lucide-react";
 import { useGetMyCartQuery } from "@/redux/features/cart/cartApi";
+import { useAppSelector } from "@/redux/hook";
+import { selectCurrentToken } from "@/redux/features/auth/authSlice";
 
 const CartSidebarModal = () => {
   const { isCartModalOpen, closeCartModal } = useCartModalContext();
-  const { data: cartData } = useGetMyCartQuery(undefined);
+  const token = useAppSelector(selectCurrentToken);
+  const { data: cartData, refetch } = useGetMyCartQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+    refetchOnFocus: true,
+  });
   const cart = cartData?.data || null;
   const cartItems = cart?.items;
 
@@ -38,6 +44,9 @@ const CartSidebarModal = () => {
       return sum + price * qty;
     }, 0) || 0;
 
+  useEffect(() => {
+    refetch();
+  }, [token, refetch]);
   return (
     <div
       className={`fixed top-0 left-0 z-99999 overflow-y-auto no-scrollbar w-full h-screen bg-dark/70 dark:bg-dark-2/70 ease-linear duration-300 ${

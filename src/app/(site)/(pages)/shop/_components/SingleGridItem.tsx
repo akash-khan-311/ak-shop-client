@@ -1,32 +1,43 @@
 "use client";
-import React from "react";
+import React, { useMemo } from "react";
 import { Product } from "@/types/product";
 import { useModalContext } from "@/app/context/QuickViewModalContext";
 
 import Link from "next/link";
 import Image from "next/image";
-import {
-  ArrowLeftRight,
-  Eye,
-  Heart,
-  RefreshCw,
-  ShoppingCart,
-  Star,
-} from "lucide-react";
+import { Star } from "lucide-react";
 import { useAppDispatch } from "@/redux/hook";
 import { addToWishlist } from "@/redux/features/wishListsSlice";
 import AddToCartButton from "./AddToCartButton";
 import { useAddToCartMutation } from "@/redux/features/cart/cartApi";
 import toast from "react-hot-toast";
+import AddToWishListButton from "./AddToWishListButton";
+import {
+  useAddToWishlistMutation,
+  useGetMyWishlistQuery,
+  useRemoveWishlistItemMutation,
+} from "@/redux/features/wishlist/wishlistApi";
 
 const SingleGridItem = ({ item }: any) => {
   const { openModal } = useModalContext();
   const [addToCart] = useAddToCartMutation();
-  const dispatch = useAppDispatch();
-  // update the QuickView state
-  const handleQuickViewUpdate = () => {
-    console.log("Opened");
-  };
+  const { data: wishlistData } = useGetMyWishlistQuery(undefined);
+
+  const wishlistItems = useMemo(
+    () => wishlistData?.data?.items || [],
+    [wishlistData],
+  );
+
+  const wishlistIdSet = useMemo(() => {
+    return new Set(wishlistItems.map((i: any) => i?.product?._id));
+  }, [wishlistItems]);
+  const isWished = wishlistIdSet.has(item._id);
+  const [addToWishlist, { isLoading: addWishlistLoading }] =
+    useAddToWishlistMutation();
+  const [removeWish, { isLoading: removingWishlistLoading }] =
+    useRemoveWishlistItemMutation();
+
+  const wishlistBusy = addWishlistLoading || removingWishlistLoading;
 
   // add to cart
   const handleAddToCart = async (id: string) => {
@@ -39,17 +50,20 @@ const SingleGridItem = ({ item }: any) => {
     }
   };
 
-  const handleItemToWishList = (item: any) => {
-    const data = {
-      id: item.id,
-      title: item.title,
-      price: item.discountedPrice,
-      image: item.images.thumbnail,
-      slug: item.slug,
-      inStock: item.stock > 0,
-    };
-
-    dispatch(addToWishlist(data));
+  const handleToggleWishlist = async (id: string) => {
+    try {
+      if (!isWished) {
+        const result = await addToWishlist({ productId: id }).unwrap();
+        if (result?.success)
+          toast.success(result?.message || "Added to wishlist");
+      } else {
+        const result = await removeWish({ productId: id }).unwrap();
+        if (result?.success)
+          toast.success(result?.message || "Removed from wishlist");
+      }
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Wishlist action failed");
+    }
   };
 
   return (
@@ -67,12 +81,12 @@ const SingleGridItem = ({ item }: any) => {
 
         {/* Hover Action Buttons */}
         <div className="absolute right-3 top-3 flex flex-col gap-2 transform   transition-all duration-300">
-          <button
-            onClick={() => handleItemToWishList(item)}
-            className="w-8 h-8 sm:w-9 sm:h-9 bg-white dark:bg-dark rounded-full shadow-md flex items-center justify-center  text-pink hover:shadow-lg transition-all duration-200"
-          >
-            <Heart className="w-4 h-4 sm:w-5 sm:h-5" />
-          </button>
+          <AddToWishListButton
+            product={item}
+            isWished={isWished}
+            onToggle={handleToggleWishlist}
+            disabled={wishlistBusy}
+          />
         </div>
       </div>
 

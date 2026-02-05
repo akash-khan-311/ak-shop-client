@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { logout } from "@/redux/features/auth/authSlice";
 import { useLogoutMutation } from "@/redux/features/auth/authApi";
 import toast from "react-hot-toast";
+import { baseApi } from "@/redux/api/baseApi";
 export default function Logout({ className }: { className?: string }) {
   const dispatch = useAppDispatch();
   const router = useRouter();
@@ -15,11 +16,11 @@ export default function Logout({ className }: { className?: string }) {
   const handleLogout = async () => {
     try {
       const result = await logoutApi(undefined).unwrap();
-      console.log(result);
       if (result.success) {
         dispatch(logout());
+        dispatch(baseApi.util.resetApiState());
         toast.success("Logout successfully");
-        router.push("/signin");
+        router.replace("/signin");
       }
     } catch (error) {}
   };

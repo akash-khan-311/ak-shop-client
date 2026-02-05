@@ -78,6 +78,7 @@ export const baseApi = createApi({
     "CouponList",
     "CouponApply",
     "cart",
+    "wishlist",
   ],
   endpoints: () => ({}),
 });

@@ -5,10 +5,15 @@ import Breadcrumb from "../Common/Breadcrumb";
 
 import SingleItem from "./SingleItem";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
+import { useGetMyWishlistQuery } from "@/redux/features/wishlist/wishlistApi";
+import { useAddToCartMutation } from "@/redux/features/cart/cartApi";
+import toast from "react-hot-toast";
 
 export const Wishlist = () => {
-  const wishlistItems = useAppSelector((state) => state.wishlist.items);
   const dispatch = useAppDispatch();
+  const { data: wishListData } = useGetMyWishlistQuery(undefined);
+  const wishlist = wishListData?.data || null;
+  const wishlistItems = wishlist?.items;
 
   const handleClearWishList = () => {
     dispatch(clearWishlist());
@@ -28,11 +33,11 @@ export const Wishlist = () => {
             </button>
           </div>
 
-          <div className="bg-white dark:bg-dark-3 rounded-[10px] shadow-1 dark:shadow-xl">
+          <div className="bg-white dark:bg-dark-2 rounded-[10px] shadow-1 dark:shadow-xl">
             <div className="w-full overflow-x-auto">
               <div className="min-w-[1170px]">
                 {/* <!-- table header --> */}
-                <div className="flex items-center py-5.5 px-10">
+                <div className="flex items-center py-5.5 px-10 border-b">
                   <div className="min-w-[83px]"></div>
                   <div className="min-w-[387px]">
                     <p className="text-dark dark:text-white">Product</p>
@@ -54,7 +59,7 @@ export const Wishlist = () => {
                 </div>
 
                 {/* <!-- wish item --> */}
-                {wishlistItems.length > 0 ? (
+                {wishlistItems?.length > 0 ? (
                   wishlistItems?.map((item, key) => (
                     <SingleItem item={item} key={key} />
                   ))

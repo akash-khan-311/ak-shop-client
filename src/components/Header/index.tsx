@@ -26,6 +26,7 @@ import AppThemeSwitch from "../ui/ThemeSwitch";
 import { USER_ROLE } from "@/constant";
 import AdminDropDown from "../ui/Dropdown/admin.dropdown";
 import { useGetMyCartQuery } from "@/redux/features/cart/cartApi";
+import { useGetMyWishlistQuery } from "@/redux/features/wishlist/wishlistApi";
 
 const Header = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -37,8 +38,11 @@ const Header = () => {
   const user = useAppSelector(selectCurrentUser);
   const [isOpen, setIsOpen] = useState(false);
   const { data: cartData } = useGetMyCartQuery(undefined);
+  const { data: wishListData } = useGetMyWishlistQuery(undefined);
   const cart = cartData?.data || null;
   const cartItems = cart?.items;
+  const wishlist = wishListData?.data || null;
+  const wishlistItems = wishlist?.items;
   const pathname = usePathname();
   const handleOpenCartModal = () => {
     openCartModal();
@@ -250,7 +254,7 @@ const Header = () => {
             {/* // <!--=== Main Nav End ===--> */}
 
             {/* // <!--=== Nav Right Start ===--> */}
-            <NavbarRight user={user} wishlists={wishlists} />
+            <NavbarRight user={user} wishlists={wishlistItems} />
             {/* <!--=== Nav Right End ===--> */}
           </div>
         </div>

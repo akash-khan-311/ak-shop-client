@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Discount from "./Discount";
 import OrderSummary from "./OrderSummary";
 
@@ -14,9 +14,14 @@ import {
 import { ShoppingBag, ShoppingCart } from "lucide-react";
 import toast from "react-hot-toast";
 import { ConfirmationModal } from "../ui/confirmationToast";
+import { selectCurrentToken } from "@/redux/features/auth/authSlice";
 
 const Cart = () => {
-  const { data: cartData } = useGetMyCartQuery(undefined);
+  const token = useAppSelector(selectCurrentToken);
+  const { data: cartData, refetch } = useGetMyCartQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+    refetchOnFocus: true,
+  });
   const [clearCart, { isLoading: clearing }] = useClearCartMutation();
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
   const cart = cartData?.data || null;
@@ -37,6 +42,10 @@ const Cart = () => {
       setIsConfirmOpen(false);
     }
   };
+
+  useEffect(() => {
+    refetch();
+  }, [token, refetch]);
   return (
     <>
       {/* <!-- ===== Breadcrumb Section Start ===== --> */}
