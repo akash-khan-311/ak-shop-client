@@ -1,10 +1,11 @@
 import React from "react";
 import Image from "next/image";
+import Container from "@/components/ui/Container";
 
 const PromoBanner = () => {
   return (
     <section className="overflow-hidden py-20 dark:bg-dark-2">
-      <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
+      <Container>
         {/* <!-- promo banner big --> */}
         <div className="relative z-1 overflow-hidden rounded-lg bg-[#F5F5F7] dark:bg-dark-3 py-12.5 lg:py-17.5 xl:py-22.5 px-4 sm:px-7.5 lg:px-14 xl:px-19 mb-7.5">
           <div className="max-w-[550px] w-full">
@@ -104,7 +105,7 @@ const PromoBanner = () => {
             </div>
           </div>
         </div>
-      </div>
+      </Container>
     </section>
   );
 };

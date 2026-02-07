@@ -5,13 +5,14 @@ import Link from "next/link";
 import shopData from "@/components/Shop/shopData";
 import { Handbag } from "lucide-react";
 import { useGetAllProductsQuery } from "@/redux/features/products/productApi";
+import Container from "@/components/ui/Container";
 
 const BestSeller = () => {
   const { data } = useGetAllProductsQuery(undefined);
   const products = data?.data || [];
   return (
     <section className="overflow-hidden dark:bg-dark-2">
-      <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
+      <Container>
         {/* <!-- section title --> */}
         <div className="mb-10 flex items-center justify-between">
           <div>
@@ -40,7 +41,7 @@ const BestSeller = () => {
             View All
           </Link>
         </div>
-      </div>
+      </Container>
     </section>
   );
 };

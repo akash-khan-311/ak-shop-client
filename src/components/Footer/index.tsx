@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Container from "../ui/Container";
 
 const Footer = () => {
   const pathname = usePathname();
@@ -22,9 +23,9 @@ const Footer = () => {
 
   return (
     <footer
-      className={` ${isAdminDashboard && "hidden"} ${isSuperAdminDashboard && "hidden"} overflow-hidden border-t`}
+      className={` ${isAdminDashboard && "hidden"} ${isSuperAdminDashboard && "hidden"} overflow-hidden border-t mt-10`}
     >
-      <div className="max-w-[1170px] mx-auto px-4 sm:px-8 xl:px-0">
+      <Container>
         {/* <!-- footer menu start --> */}
         <div className="flex flex-wrap xl:flex-nowrap gap-10 xl:gap-19 xl:justify-between pt-17.5 xl:pt-22.5 pb-10 xl:pb-15">
           <div className="max-w-[330px] w-full">
@@ -220,11 +221,11 @@ const Footer = () => {
           </div>
         </div>
         {/* <!-- footer menu end --> */}
-      </div>
+      </Container>
 
       {/* <!-- footer bottom start --> */}
-      <div className="py-5 xl:py-7.5 bg-gray-1 dark:bg-dark-3">
-        <div className="max-w-[1170px] mx-auto px-4 sm:px-8 xl:px-0">
+      <div className="py-5 xl:py-7.5 bg-gray-3 dark:bg-dark">
+        <Container>
           <div className="flex gap-5 flex-wrap items-center justify-between">
             <p className="text-dark dark:text-gray-4 font-medium">
               &copy; {year}. All rights reserved by{" "}
@@ -278,7 +279,7 @@ const Footer = () => {
               </div>
             </div>
           </div>
-        </div>
+        </Container>
       </div>
       {/* <!-- footer bottom end --> */}
     </footer>

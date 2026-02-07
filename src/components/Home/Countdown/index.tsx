@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import Container from "@/components/ui/Container";
 
 const CounDown = () => {
   const [days, setDays] = useState(0);
@@ -28,7 +29,7 @@ const CounDown = () => {
 
   return (
     <section className="overflow-hidden py-20">
-      <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
+      <Container>
         <div className="relative overflow-hidden z-1 rounded-lg bg-[#D0E9F3] dark:bg-dark-2 p-4 sm:p-7.5 lg:p-10 xl:p-15">
           <div className="max-w-[422px] w-full">
             <span className="block font-medium text-custom-1 text-pink mb-2.5">
@@ -129,7 +130,7 @@ const CounDown = () => {
             height={376}
           />
         </div>
-      </div>
+      </Container>
     </section>
   );
 };

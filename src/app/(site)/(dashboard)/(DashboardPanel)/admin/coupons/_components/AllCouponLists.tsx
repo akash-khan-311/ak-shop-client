@@ -197,7 +197,6 @@ export default function AllCouponLists() {
         description="Manage your coupon codes here"
       />
       <DataTableActions
-        add={"Create Coupons"}
         exportCSV={exportCSV}
         exportJSON={exportJSON}
         bulkDelete={bulkDelete}

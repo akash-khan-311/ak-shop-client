@@ -1,10 +1,11 @@
 import React from "react";
 import Image from "next/image";
+import Container from "../ui/Container";
 
 const Newsletter = () => {
   return (
     <section className="overflow-hidden">
-      <div className="max-w-[1170px] mx-auto px-4 sm:px-8 xl:px-0">
+      <Container>
         <div className="relative z-1 overflow-hidden rounded-xl">
           {/* <!-- bg shapes --> */}
           <Image
@@ -48,7 +49,7 @@ const Newsletter = () => {
             </div>
           </div>
         </div>
-      </div>
+      </Container>
     </section>
   );
 };

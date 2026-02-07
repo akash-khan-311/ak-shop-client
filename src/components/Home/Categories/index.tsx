@@ -11,6 +11,7 @@ import SingleItem from "./SingleItem";
 import { ChevronLeft, ChevronRight, Tag } from "lucide-react";
 import { useGetAllCategoriesForUserQuery } from "@/redux/features/category/categoryApi";
 import { TCategory } from "@/types/category";
+import Container from "@/components/ui/Container";
 
 const Categories = () => {
   const sliderRef = useRef(null);
@@ -34,8 +35,8 @@ const Categories = () => {
 
   return (
     <section className="overflow-hidden pt-17.5  dark:bg-dark-2">
-      <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0 pb-15 border-b border-gray-3">
-        <div className="swiper categories-carousel common-carousel">
+      <Container>
+        <div className="swiper categories-carousel common-carousel pb-15 border-b border-gray-3">
           {/* <!-- section title --> */}
           <div className="mb-10 flex items-center justify-between">
             <div>
@@ -84,7 +85,7 @@ const Categories = () => {
             ))}
           </Swiper>
         </div>
-      </div>
+      </Container>
     </section>
   );
 };

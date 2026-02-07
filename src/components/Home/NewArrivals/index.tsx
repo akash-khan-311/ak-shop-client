@@ -6,13 +6,14 @@ import ProductItem from "@/components/Common/ProductItem";
 import shopData from "@/components/Shop/shopData";
 import { Handbag } from "lucide-react";
 import { useGetAllProductsQuery } from "@/redux/features/products/productApi";
+import Container from "@/components/ui/Container";
 
 const NewArrival = () => {
   const { data } = useGetAllProductsQuery(undefined);
   const products = data?.data || [];
   return (
     <section className="overflow-hidden pt-15 dark:bg-dark-2">
-      <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
+      <Container>
         {/* <!-- section title --> */}
         <div className="mb-7 flex items-center justify-between">
           <div>
@@ -39,7 +40,7 @@ const NewArrival = () => {
             <ProductItem item={product} key={product._id} />
           ))}
         </div>
-      </div>
+      </Container>
     </section>
   );
 };

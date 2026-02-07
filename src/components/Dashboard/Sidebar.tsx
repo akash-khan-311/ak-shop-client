@@ -1,32 +1,13 @@
 "use client";
 import Logout from "@/components/ui/Auth/Logout";
-import { formatMonthYear, verifyToken } from "@/utils";
-import {
-  CalendarArrowUp,
-  Camera,
-  Heart,
-  LayoutDashboard,
-  MapPin,
-  TicketCheck,
-  Trash,
-  User,
-} from "lucide-react";
+import { formatMonthYear } from "@/utils";
 import Image from "next/image";
-import {
-  adminMenuItems,
-  userMenuItems,
-  vendorMenuItems,
-} from "./constant/SidebarMenus";
+import { userMenuItems } from "./constant/SidebarMenus";
 import { skipToken } from "@reduxjs/toolkit/query";
 import UploadProfileImage from "./UploadProfileImage";
 import { useGetMeQuery } from "@/redux/features/auth/authApi";
-import { useAppDispatch, useAppSelector } from "@/redux/hook";
-import {
-  logout,
-  selectCurrentToken,
-  selectCurrentUser,
-} from "@/redux/features/auth/authSlice";
-import { useEffect } from "react";
+import { useAppSelector } from "@/redux/hook";
+import { selectCurrentToken } from "@/redux/features/auth/authSlice";
 import UserMenuItems from "./MenuItem/UserMenuItems";
 import { useRouter } from "next/navigation";
 import { USER_ROLE } from "@/constant";
@@ -34,8 +15,7 @@ import { USER_ROLE } from "@/constant";
 function Sidebar() {
   const token = useAppSelector(selectCurrentToken);
 
-  const router = useRouter();
-  const { data, isLoading, error } = useGetMeQuery(token ? token : skipToken);
+  const { data } = useGetMeQuery(token ? token : skipToken);
   const user = data?.data;
 
   const joinedDate = formatMonthYear(user?.createdAt);

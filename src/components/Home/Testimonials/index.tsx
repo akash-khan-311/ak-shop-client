@@ -9,6 +9,7 @@ import "swiper/css/navigation";
 import "swiper/css";
 import SingleItem from "./SingleItem";
 import { Users } from "lucide-react";
+import Container from "@/components/ui/Container";
 
 const Testimonials = () => {
   const sliderRef = useRef(null);
@@ -25,7 +26,7 @@ const Testimonials = () => {
 
   return (
     <section className="overflow-hidden py-16.5 dark:bg-dark-2">
-      <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
+      <Container>
         <div className="">
           <div className="swiper testimonial-carousel common-carousel p-5">
             {/* <!-- section title --> */}
@@ -84,7 +85,7 @@ const Testimonials = () => {
             </Swiper>
           </div>
         </div>
-      </div>
+      </Container>
     </section>
   );
 };

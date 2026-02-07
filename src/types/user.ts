@@ -1,71 +1,71 @@
 export type AddressType = "shipping" | "billing";
 
 export type IUserAddress = {
-    _id?: string;
-    label?: string;
-    type: AddressType;
+  _id?: string;
+  label?: string;
+  type: AddressType;
 
-    division?: string;
-    district?: string;
-    upazila?: string;
-    union?: string;
+  division?: string;
+  district?: string;
+  upazila?: string;
+  union?: string;
 
-    fullAddress: string;
-    phone?: string;
-    isDefault?: boolean;
+  fullAddress: string;
+  phone?: string;
+  isDefault?: boolean;
 
-    createdAt?: string;
-    updatedAt?: string;
+  createdAt?: string;
+  updatedAt?: string;
 };
 
 export type TUserAvatar = {
-    url: string;
-    public_id: string;
+  url: string;
+  public_id: string;
 };
 
 export type IUser = {
-    userId: any;
-    _id?: string;
-    id: number;
-    name: string;
-    email?: string;
-    phone?: string;
-    avatar?: TUserAvatar;
-    dateOfBirth?: string;
-    gender?: "male" | "female" | "other";
+  userId: any;
+  _id?: string;
+  id: number;
+  name: string;
+  email?: string;
+  phone?: string;
+  avatar?: TUserAvatar;
+  dateOfBirth?: string;
+  gender?: "male" | "female" | "other";
 
-    addresses?: IUserAddress[];
-    defaultShippingAddressId?: string | null;
-    defaultBillingAddressId?: string | null;
+  addresses?: IUserAddress[];
+  defaultShippingAddressId?: string | null;
+  defaultBillingAddressId?: string | null;
 
-    role: "user" | "admin" | "superAdmin" | "vendor";
-    status: "active" | "blocked";
-    isDeleted: boolean;
+  role: "user" | "admin" | "superAdmin";
+  status: "active" | "blocked";
+  isDeleted: boolean;
 
-    createdAt?: string;
-    updatedAt?: string;
+  createdAt?: string;
+  updatedAt?: string;
 };
 
 export type ApiResponse<T> = {
-    status?: number;
-    success: boolean;
-    message?: string;
-    data: T;
+  status?: number;
+  success: boolean;
+  message?: string;
+  data: T;
 };
 
 export type AuthTokensResponse = {
-    accessToken: string;
-    refreshToken: string;
-    user: IUser;
+  accessToken: string;
+  refreshToken: string;
+  user: IUser;
 };
 
 export type RegisterPayload = {
-    name: string;
-    email?: string;
-    phone?: string;
-    password: string;
+  name: string;
+  email?: string;
+  phone?: string;
+  password: string;
 };
 
 export type UpdateUserPayload = Partial<
-    Pick<IUser, "name" | "dateOfBirth" | "gender">
+  Pick<IUser, "name" | "dateOfBirth" | "gender">
 >;

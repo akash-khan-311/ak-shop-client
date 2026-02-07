@@ -12,7 +12,6 @@ export default function Profile() {
   const { data, isLoading } = useGetMeQuery(token);
   const user = data?.data;
   const isAdmin = user?.role === "admin";
-  const isVendor = user?.role === "vendor";
 
   if (isLoading) return <Loader />;
   return (
@@ -23,7 +22,7 @@ export default function Profile() {
           <div className="flex items-center gap-4">
             <div className="relative w-40 h-40 rounded-full overflow-hidden border border-gray-6">
               <Image
-                src={user?.avatar || "/demo_male.png"}
+                src={user?.avatar?.url || "/demo_male.png"}
                 alt={`${user?.name} profile photo`}
                 width={150}
                 height={150}
@@ -49,13 +48,7 @@ export default function Profile() {
           {/* Role-based primary actions */}
           <div className="flex flex-wrap gap-2">
             <Link
-              href={
-                isAdmin
-                  ? "/admin/dashboard"
-                  : isVendor
-                    ? "/vendor/dashboard"
-                    : "/user/dashboard"
-              }
+              href={isAdmin ? "/admin/dashboard" : "/user/dashboard"}
               className="px-4 py-2 rounded-xl bg-pink text-white text-sm font-medium"
             >
               Go to Dashboard
@@ -67,15 +60,6 @@ export default function Profile() {
             >
               Edit Profile
             </Link>
-
-            {isVendor && (
-              <Link
-                href="/vendor/products"
-                className="px-4 py-2 rounded-xl border border-gray-6 text-sm font-medium hover:bg-gray-2 dark:hover:bg-dark"
-              >
-                Manage Products
-              </Link>
-            )}
 
             {isAdmin && (
               <Link
@@ -123,43 +107,17 @@ export default function Profile() {
         {/* Role panel */}
         <div className="lg:col-span-2 rounded-2xl border border-gray-6 bg-white/60 dark:bg-dark-2/40 p-6 shadow-sm">
           <h2 className="text-base font-semibold mb-4">
-            {isAdmin ? "Admin Panel" : isVendor ? "Vendor Panel" : "User Panel"}
+            {isAdmin ? "Admin Panel" : "User Panel"}
           </h2>
 
-          {isVendor ? (
-            <div className="space-y-3 text-sm">
-              <p className="text-gray-6 dark:text-gray-4">
-                Manage your store, products, orders, and payouts.
-              </p>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <InfoCard title="Shop Name" value={user?.shopName || "—"} />
-                <InfoCard title="Shop Slug" value={user?.shopSlug || "—"} />
-              </div>
-
-              <div className="pt-2 flex gap-2 flex-wrap">
-                <Link
-                  className="px-4 py-2 rounded-xl bg-gray-7 text-white text-sm"
-                  href="/vendor/orders"
-                >
-                  View Orders
-                </Link>
-                <Link
-                  className="px-4 py-2 rounded-xl bg-gray-7 text-white text-sm"
-                  href="/vendor/payouts"
-                >
-                  Payouts
-                </Link>
-              </div>
-            </div>
-          ) : isAdmin ? (
+          {isAdmin ? (
             <div className="space-y-3 text-sm">
               <p className="text-gray-6 dark:text-gray-4">
                 Manage users, vendors, categories, products, and system
                 settings.
               </p>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <InfoCard
                   title="Permissions"
                   value={
@@ -169,7 +127,7 @@ export default function Profile() {
                   }
                 />
                 <InfoCard title="Status" value={user?.status || "—"} />
-              </div>
+              </div> */}
 
               <div className="pt-2 flex gap-2 flex-wrap">
                 <Link

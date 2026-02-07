@@ -1,17 +1,12 @@
-// app/(dashboard)/profile/RoleBadges.tsx
 export default function RoleBadges({
   role,
   status,
 }: {
-  role: "admin" | "vendor" | "user";
+  role: "admin" | "user" | "superAdmin";
   status?: string;
 }) {
   const roleStyle =
-    role === "admin"
-      ? "bg-red/15 text-red"
-      : role === "vendor"
-        ? "bg-orange text-blue"
-        : "bg-green/15 text-green";
+    role === "admin" ? "bg-red/15 text-red" : "bg-green/15 text-green";
 
   return (
     <div className="flex items-center gap-2">
