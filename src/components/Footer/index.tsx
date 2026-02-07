@@ -15,14 +15,14 @@ import { usePathname } from "next/navigation";
 
 const Footer = () => {
   const pathname = usePathname();
-  const isVendorDashboard = pathname.startsWith("/vendor/");
+
   const isAdminDashboard = pathname.startsWith("/admin/");
   const isSuperAdminDashboard = pathname.startsWith("/superAdmin/");
   const year = new Date().getFullYear();
 
   return (
     <footer
-      className={`${isVendorDashboard && "hidden"} ${isAdminDashboard && "hidden"} ${isSuperAdminDashboard && "hidden"} overflow-hidden`}
+      className={` ${isAdminDashboard && "hidden"} ${isSuperAdminDashboard && "hidden"} overflow-hidden border-t`}
     >
       <div className="max-w-[1170px] mx-auto px-4 sm:px-8 xl:px-0">
         {/* <!-- footer menu start --> */}

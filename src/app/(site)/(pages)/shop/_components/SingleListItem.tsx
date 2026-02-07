@@ -1,59 +1,26 @@
-"use client";
-import React from "react";
-
-import { Product } from "@/types/product";
-import { useModalContext } from "@/app/context/QuickViewModalContext";
-
 import Link from "next/link";
 import Image from "next/image";
-import { Heart, Star } from "lucide-react";
-import { useAppDispatch } from "@/redux/hook";
-import { addToWishlist } from "@/redux/features/wishListsSlice";
-import { useAddToCartMutation } from "@/redux/features/cart/cartApi";
+import { Star } from "lucide-react";
+
 import AddToCartButton from "./AddToCartButton";
+import AddToWishListButton from "./AddToWishListButton";
 
 const SingleListItem = ({ item }: any) => {
-  const { openModal } = useModalContext();
-  const [addToCart] = useAddToCartMutation();
-  const dispatch = useAppDispatch();
-
-  // update the QuickView state
-  const handleQuickViewUpdate = () => {};
-
-  // add to cart
-
-  const handleItemToWishList = (item: any) => {
-    const data = {
-      id: item.id,
-      title: item.title,
-      price: item.discountedPrice,
-      image: item.images.thumbnail,
-      slug: item.slug,
-      inStock: item.stock > 0,
-    };
-
-    dispatch(addToWishlist(data));
-  };
-
-  const handleAddToCart = async (id: string) => {
-    try {
-      console.log("this is product id", id);
-    } catch (error) {}
-  };
-
   return (
     <div className="group rounded-lg bg-white dark:bg-dark-2 shadow-xl relative">
       <div className="flex">
-        <div className="shadow-list relative overflow-hidden flex items-center justify-center max-w-[270px] w-full sm:min-h-[270px] p-4">
-          <div className="flex flex-col justify-center items-center">
+        <div className="shadow-list relative overflow-hidden flex flex-col items-center justify-center max-w-[270px] w-full sm:min-h-[270px] p-4">
+          <div className="flex flex-col justify-center items-center w-full h-full overflow-hidden">
             <Image
               src={item?.images[0].url}
               alt={item.productName}
               width={250}
               height={250}
-              className="w-full h-full object-contain hover:scale-110 ease-in duration-300"
+              className="w-full h-full object-contain hover:scale-110 ease-in duration-300 overflow-hidden"
             />
-            <AddToCartButton addToCart={handleAddToCart} product={item} />
+          </div>
+          <div className="flex justify-center items-center w-full  mt-10">
+            <AddToCartButton product={item} />
           </div>
         </div>
 
@@ -89,12 +56,7 @@ const SingleListItem = ({ item }: any) => {
       </div>
       {/* Hover Action Buttons */}
       <div className="absolute right-5 top-3 flex flex-col gap-2 transform   transition-all duration-300">
-        <button
-          onClick={() => handleItemToWishList(item)}
-          className="w-8 h-8 sm:w-9 sm:h-9 bg-white dark:bg-dark rounded-full shadow-md flex items-center justify-center  text-pink hover:shadow-lg transition-all duration-200"
-        >
-          <Heart className="w-4 h-4 sm:w-5 sm:h-5" />
-        </button>
+        <AddToWishListButton product={item} />
       </div>
     </div>
   );

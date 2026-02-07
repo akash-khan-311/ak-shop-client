@@ -17,18 +17,22 @@ export function middleware(req: NextRequest) {
   const isAuthPage = pathname === "/signin" || pathname === "/signup";
 
   const isAdminRoute = pathname.startsWith("/admin");
-  const isVendorRoute = pathname.startsWith("/vendor");
   const isUserRoute = pathname.startsWith("/user");
 
   const isDashboardAlias =
     pathname === "/dashboard" || pathname.startsWith("/dashboard/");
 
+  // ✅ NEW
+  const isCheckoutRoute =
+    pathname === "/checkout" || pathname.startsWith("/checkout/");
+
+  // ✅ UPDATED
   const isProtectedRoute =
-    isAdminRoute || isVendorRoute || isUserRoute || isDashboardAlias;
+    isAdminRoute || isUserRoute || isDashboardAlias || isCheckoutRoute;
 
   const signinRedirect = () =>
     NextResponse.redirect(
-      new URL(`/signin?redirect=${pathname}${search || ""}`, req.url)
+      new URL(`/signin?redirect=${pathname}${search || ""}`, req.url),
     );
 
   const forceLogout = () => {
@@ -44,9 +48,9 @@ export function middleware(req: NextRequest) {
 
   if (token) {
     try {
-      user = verifyToken(token); // must contain role
+      user = verifyToken(token);
     } catch (e) {
-      return forceLogout(); // invalid/expired token
+      return forceLogout();
     }
   }
 
@@ -62,10 +66,8 @@ export function middleware(req: NextRequest) {
 
   // role-based strict protection
   if (user) {
-    if (isAdminRoute && user.role !== "admin")
+    if (isAdminRoute && user.role !== "admin" && user.role !== "superAdmin")
       return NextResponse.redirect(new URL(ROLE_DASHBOARD[user.role], req.url));
-
-
 
     if (isUserRoute && user.role !== "user")
       return NextResponse.redirect(new URL(ROLE_DASHBOARD[user.role], req.url));
@@ -80,6 +82,8 @@ export const config = {
     "/admin/:path*",
     "/dashboard/:path*",
     "/dashboard",
+    "/checkout/:path*",
+    "/checkout",
     "/signin",
     "/signup",
   ],

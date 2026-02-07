@@ -106,7 +106,7 @@ const Cart = () => {
         </section>
       ) : (
         <>
-          <div className="text-center mt-8 flex flex-col justify-center items-center">
+          <div className="text-center mt-8 flex flex-col justify-center items-center min-h-[calc(100vh-95px)]">
             <div className="mx-auto pb-7.5">
               <div className="dark:bg-white bg-dark-4 text-white dark:text-gray-7 rounded-full p-6 flex justify-center items-center w-44 h-44 mx-auto mb-6 shadow-1 ">
                 <ShoppingCart size={100} />

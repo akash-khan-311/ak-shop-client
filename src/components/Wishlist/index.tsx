@@ -5,20 +5,39 @@ import Breadcrumb from "../Common/Breadcrumb";
 
 import SingleItem from "./SingleItem";
 import { useAppDispatch, useAppSelector } from "@/redux/hook";
-import { useGetMyWishlistQuery } from "@/redux/features/wishlist/wishlistApi";
-import { useAddToCartMutation } from "@/redux/features/cart/cartApi";
+import {
+  useClearWishlistMutation,
+  useGetMyWishlistQuery,
+} from "@/redux/features/wishlist/wishlistApi";
 import toast from "react-hot-toast";
+import { useState } from "react";
+import { ConfirmationModal } from "../ui/confirmationToast";
 
 export const Wishlist = () => {
-  const dispatch = useAppDispatch();
   const { data: wishListData } = useGetMyWishlistQuery(undefined);
+  const [clearWishlist, { isLoading: clearWishlistLoading }] =
+    useClearWishlistMutation();
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+
   const wishlist = wishListData?.data || null;
   const wishlistItems = wishlist?.items;
 
-  const handleClearWishList = () => {
-    dispatch(clearWishlist());
+  const openConfirm = () => {
+    if (!wishlistItems?.length) return;
+    setIsConfirmOpen(true);
   };
-
+  const handleConfirmClear = async () => {
+    try {
+      const result = await clearWishlist({}).unwrap();
+      if (result.success) {
+        toast.success("Wishlist cleared successfully");
+      }
+    } catch (e: any) {
+      toast.error(e?.data?.message || "Failed to clear wishlist");
+    } finally {
+      setIsConfirmOpen(false);
+    }
+  };
   return (
     <>
       <Breadcrumb title={"Wishlist"} pages={["Wishlist"]} />
@@ -28,7 +47,7 @@ export const Wishlist = () => {
             <h2 className="font-medium text-dark dark:text-white text-2xl">
               Your Wishlist
             </h2>
-            <button onClick={handleClearWishList} className="text-pink">
+            <button onClick={openConfirm} className="text-pink">
               Clear Wishlist Cart
             </button>
           </div>
@@ -74,6 +93,15 @@ export const Wishlist = () => {
             </div>
           </div>
         </div>
+        {isConfirmOpen && (
+          <ConfirmationModal
+            isLoading={clearWishlistLoading}
+            title={`Are You Sure?`}
+            message="This action cannot be undone."
+            onCancel={() => setIsConfirmOpen(false)}
+            onConfirm={handleConfirmClear}
+          />
+        )}
       </section>
     </>
   );
