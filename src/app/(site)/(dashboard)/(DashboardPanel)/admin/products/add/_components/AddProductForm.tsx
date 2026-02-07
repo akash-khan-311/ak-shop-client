@@ -54,11 +54,11 @@ export default function AddProductForm({
   const { data } = useGetAllCategoriesForUserQuery(token, { skip: !token });
   const categories = useMemo(() => data?.data || [], [data]);
   const categoryOptions = categories.map((cat: any) => cat.name);
-  console.log("this is categories", categories);
+
   const selectedCategory = watch("category");
   const selectedSubCategory = watch("subcategory");
 
-  // ✅ selected objects
+  //  selected objects
   const selectedCatObj = useMemo(() => {
     if (!selectedCategory) return null;
     return categories.find((cat: any) => cat.name === selectedCategory) || null;
@@ -73,10 +73,11 @@ export default function AddProductForm({
     );
   }, [selectedCatObj, selectedSubCategory]);
 
-  // ✅ slugs (recommended for backend)
-  const categorySlug = selectedCatObj?.slug;
-  const subcategorySlug = selectedSubObj?.slug;
-
+  //  slugs (recommended for backend)
+  const categoryId = selectedCatObj?._id;
+  const subcategoryId = selectedSubObj?._id;
+  const subCategorySlug = selectedSubObj?.slug;
+  console.log("this is categories", selectedCatObj);
   // Subcategory options from DB
   const subCategoryOptions =
     selectedCatObj?.subcategories?.map((sub: any) => sub.name) || [];
@@ -87,16 +88,15 @@ export default function AddProductForm({
   const user = useAppSelector(selectCurrentUser);
   const userId = user?._id;
 
-  // ✅ fetch dynamic spec template
+  //  fetch dynamic spec template
   const { data: tplRes, isLoading: tplLoading } = useGetEffectiveTemplateQuery(
-    { subcategorySlug, adminId: String(userId) },
-    { skip: !subcategorySlug },
+    { subcategorySlug: subCategorySlug, adminId: String(userId) },
+    { skip: !subCategorySlug },
   );
 
   const specsFields: TSpecField[] = (tplRes?.data?.fields ||
     []) as TSpecField[];
 
-  console.log("this is templates", tplRes);
   // Reset subcategory & brand when category changes
   useEffect(() => {
     setValue("subcategory", "");
@@ -111,15 +111,12 @@ export default function AddProductForm({
   //  Reset specifications when subcategory changes (important)
   useEffect(() => {
     setValue("specifications", {});
-  }, [subcategorySlug, setValue]);
+  }, [subcategoryId, setValue]);
 
   const handleFinalSubmit = async (formData: any) => {
     try {
       const payload = {
         ...formData,
-        categorySlug,
-        subcategorySlug,
-        vendorId: userId,
         specifications: formData?.specifications || {},
       };
 
@@ -128,9 +125,8 @@ export default function AddProductForm({
       fd.append("productName", payload.productName || "");
       fd.append("category", payload.category || "");
       fd.append("subcategory", payload.subcategory || "");
-      fd.append("categorySlug", payload.categorySlug || "");
-      fd.append("subcategorySlug", payload.subcategorySlug || "");
-
+      fd.append("categoryId", String(categoryId));
+      fd.append("subcategoryId", String(subcategoryId));
       fd.append("brand", payload.brand || "");
       fd.append("color", payload.color || "");
       if (payload.price !== undefined && payload.price !== "")
@@ -371,7 +367,7 @@ export default function AddProductForm({
         </div>
 
         {/* Product Specifications */}
-        {subcategorySlug && (
+        {subcategoryId && (
           <div className="dark:bg-dark bg-gray-3 p-6 rounded-xl mt-10">
             <h2 className="text-xl md:text-2xl border-b dark:border-gray-6 border-gray-5 pb-4">
               Product Specifications
@@ -392,7 +388,7 @@ export default function AddProductForm({
                     className="dark:bg-dark-2 bg-white"
                     key={field.name}
                     label={field.label}
-                    name={`specifications.${field.name}`} // ✅ nested object
+                    name={`specifications.${field.name}`} //  nested object
                     type={field.type as any}
                     options={field.options}
                     register={register}
